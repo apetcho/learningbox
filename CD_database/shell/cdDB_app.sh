@@ -13,7 +13,7 @@ current_cd=""
 title_file="title.cdb"
 tracks_file="tracks.cdb"
 temp_file=/tmp/cdb.$$
-trap 'rm -f $temp_file'  EXIT
+trap '*rm -f $temp_file'  EXIT
 
 # ---------------------
 # UTILITIES FUNCTIONS
@@ -336,9 +336,51 @@ list_tracks(){
 }
 
 
-#
-main(){}
+# ---------------------
+#  M A I N   E N T R Y
+# ---------------------
+# main(){}
+rm -f $temp_file
+if [ ! -f $title_file ]
+then
+    touch $title_file
+fi
 
+if [ ! -f $tracks_file ]
+then
+    touch $tracks_file
+fi
 
-#####
-main
+# *******************************
+# ----- APPLICTION MAIN LOOP ----
+# *******************************
+clear
+echo
+echo
+echo "Mini CD manager"
+sleep 1
+
+QUIT=n
+while [ "$QUIT" != "y" ]
+do
+    set_menu_choice
+    case "$menu_choice" in
+        a) add_records;;
+        r) remove_records;;
+        f) find_cd y;;
+        u) update_cd;;
+        c) count_cds;;
+        l) list_tracks;;
+        b)
+            echo
+            more $title_file
+            echo
+            get_return;;
+        q | Q) QUIT=y;;
+        *) "Sorry, choice not recognized";;
+    esac
+done
+
+######################
+### END OF MAINLOOP ##
+######################
