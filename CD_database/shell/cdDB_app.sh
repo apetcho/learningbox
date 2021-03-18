@@ -15,11 +15,33 @@ tracks_file="tracks.cdb"
 temp_file=/tmp/cdb.$$
 trap 'rm -f $temp_file'  EXIT
 
-#
-get_return(){}
+# ---------------------
+# UTILITIES FUNCTIONS
+# ---------------------
+get_return(){
+    echo -e "Press return \c"
+    read x
+    return 0
+}
 
-#
-get_confirm(){}
+
+get_confirm(){
+    echo -e "Are you sure? [Y/n]: \c"
+    while true
+    do
+        read x
+        case "$x" in
+            y | yes | Y | Yes | YES)
+                return 0;;
+            n | no | N | No | NO)
+                echo
+                echo "Cancelled"
+                return 1;;
+            *)
+                echo "Please enter yes or no";;
+        esac
+    done
+}
 
 #
 get_menu_choice(){}
