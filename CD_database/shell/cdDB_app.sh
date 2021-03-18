@@ -1,5 +1,19 @@
 #!/bin/sh
 
+# A basic and simple shell script for managine a CD collection.
+#
+
+# ------------------
+# GLOBAL VARIBALES
+# ------------------
+# These variables are used throught the program.
+
+menu_choice=""
+current_cd=""
+title_file="title.cdb"
+tracks_file="tracks.cdb"
+temp_file=/tmp/cdb.$$
+trap 'rm -f $temp_file'  EXIT
 
 #
 get_return(){}
