@@ -70,13 +70,24 @@ get_menu_choice(){
     return
 }
 
-#
-insert_title(){}
+# ------------------
+# insert_title()
+# ------------------
+insert_title(){
+    echo $* >> $title_file
+    return
+}
 
-#
-insert_track(){}
+# ------------------
+# insert_track()
+# ------------------
+insert_track(){
+    echo $* >> $tracks_file
+    return
+}
 
-#
+# -------------------
+# insert
 add_record_tracks(){}
 
 #
