@@ -87,8 +87,37 @@ insert_track(){
 }
 
 # -------------------
-# insert
-add_record_tracks(){}
+# add_record_tracks()
+# -------------------
+add_record_tracks(){
+    echo
+    echo "Enter track information for this CD"
+    echo "When no more tracks enter 'q'"
+    echo
+    cdtrack=1
+    cdttitle=""
+    while [ "$cdttitle" != "q" ]
+    do
+        echo -e "Track $cdtrack, track title? \c"
+        read tmp
+        cdttitle=${tmp%%,*}
+        if [ "$tmp" != "$cdttitle" ]
+        then
+            echo "Sorry, no commas allowed"
+            continue
+        fi
+        if [ -n "$cdttitle" ]
+        then
+            if [ "$cdttitle" != "q" ]
+            then
+                insert_track $cdcatnum, $cdtrack, $cdttitle
+            fi
+        else
+            cdtrack=$((cdtrack-1))
+        fi
+        cdtrack=$((cdtrack+1))
+    done
+}
 
 #
 add_records(){}
