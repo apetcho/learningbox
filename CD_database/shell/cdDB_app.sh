@@ -119,8 +119,44 @@ add_record_tracks(){
     done
 }
 
-#
-add_records(){}
+# -----------------------------------------------------------------------------
+# add_records()
+# Allows entry of the main CD information for a new CD.
+# -----------------------------------------------------------------------------
+add_records(){
+    # Prompt for the initial information
+    echo -e "Enter catalog name \c"
+    read tmp
+    cdcatnum=${tmp%%,*}
+
+    echo -e "Enter title \c"
+    read tmp
+    cdtitle=${tmp%%,*}
+
+    echo -e "Enter type \c"
+    read tmp
+    cdtype=${tmp%%,*}
+
+    echo -e "Enter artist/composer \c"
+    read tmp
+    cdac=${tmp%%,*}
+
+    # Check that the want to enter the information
+
+
+    echo "About to add new entry"
+    echo "$cdcatnum $cdtitle $cdtype $cdac"
+
+    # If confirmed then append it to the titles file.
+    if get_confirm; then
+        insert_title $cdcatnum, $cdtitle, $cdtype, $cdac
+        add_record_tracks
+    else
+        remove_tracks
+    fi
+
+    return
+}
 
 #
 find_cd(){}
