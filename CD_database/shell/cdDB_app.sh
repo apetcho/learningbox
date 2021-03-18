@@ -158,8 +158,85 @@ add_records(){
     return
 }
 
+# --------------
+# find_cd()
+# --------------
+# Searches for the catalog name text in the CD title file using the grep command.
+# We need to know how many times the string was found, but grep only returns a
+# value telling us if it matched zero times or many. To get around this, we store
+# the words and characters in the file. We use the $(wc -l $temp_file)  notation
+# to extract the first parameter from the output to set the linesfound variable.
+# If we wanted another, later parameter we would use the set command to set the
+# shell's parameter variables to the command output. We change the IFS (Internal
+# Field Separator) to a , (comma), so we can separate the comma-delimited fields.
+# An alternative command is cut.
 #
-find_cd(){}
+find_cd(){
+    if [ "$1" = "n" ]
+    then
+        asklist=n
+    else
+        asklist=y
+    fi
+    cdcatnum=""
+    echo -e "Enter a string to search for in the CD titles \c"
+    read searchstr
+    if [ "$searchstr" = "" ]
+    then
+        return 0
+    fi
+
+    grep "$searchstr" $title_file > $temp_file
+
+    set $(wc -l $temp_file)
+    linesfound=$1
+
+    case "$linesfound" in
+    0)
+        echo "Sorry, nothing found"
+        get_return
+        return 0
+        ;;
+    1)  ;;
+    2)
+        echo "Sorry, not unique."
+        echo "Found the following"
+        cat $temp_file
+        get_return
+        return 0
+    esac
+
+    IFS=","
+    read cdcatnum cdtitle cdtype cdac < $temp_file
+    IFS=" "
+
+    if [ -z "$cdcatnum" ]
+    then
+        echo "Sorry, could not extract catalog field from $temp_file"
+        get_return
+        return 0
+    fi
+
+    echo
+    echo "Catalog number: $cdcatnum"
+    echo "Title: $cdtitle"
+    echo "Type: $cdtype"
+    echo "Artist/Composer: $cdac"
+    echo
+    get_return
+
+    if [ "$asklist" = "y" ]
+    then
+        echo -e "View tracks for this CD? \c"
+        read x
+        if [ "$x" = "y" ]
+        then
+            echo
+            list_tracks
+        fi
+    fi
+    return 1
+}
 
 #
 update_cd(){}
