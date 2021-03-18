@@ -280,8 +280,32 @@ count_cds(){
     return
 }
 
-#
-remove_records(){}
+# ------------------
+# remove_records()
+# ------------------
+# Strips entries from the database files.
+remove_records(){
+    if [ -z "$cdcatnum" ]
+    then
+        echo "You must select a CD first"
+        find_cd n
+    fi
+    if [ -n "$cdcatnum" ]
+    then
+        echo "You are about to delete $cdtitle"
+        get_confirm && {
+            grep -v "^${cdcatnum}," $title_file > $temp_file
+            mv $temp_file $title_file
+            grep -v "^{cdcatnum}," $tracks_file > $temp_file
+            mv $temp_file $tracks_file
+            cdcatnum=""
+            echo "Entry removed"
+        }
+        get_return
+    fi
+
+    return
+}
 
 
 #
