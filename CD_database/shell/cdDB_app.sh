@@ -308,8 +308,32 @@ remove_records(){
 }
 
 
-#
-list_tracks(){}
+# --------------
+# list_tracks()
+# --------------
+list_tracks(){
+    if [ "$cdcatnum" = "" ]
+    then
+        echo "no CD selected yet"
+        return
+    else
+        grep "^${cdcatnum}," $tracks_file > $temp_file
+        num_tracks=$(wc -l $temp_file)
+        if [ "$num_tracks" = "0" ]
+        then
+            echo "no tracks found for $cdtitle"
+        else {
+            echo
+            echo "$cdtitle :-"
+            echo
+            cut -f 2- -d , $temp_file
+            echo
+        } | ${PAGER:-more}
+        fi
+    fi
+    get_return
+    return
+}
 
 
 #
