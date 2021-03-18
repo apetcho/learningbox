@@ -238,8 +238,32 @@ find_cd(){
     return 1
 }
 
-#
-update_cd(){}
+# -------------
+# update_cd()
+# -------------
+# Allows us to re-enter information for a CD.
+update_cd(){
+    if [ -z "$cdcatnum" ]
+    then
+        echo "You must select a CD first"
+        find_cd n
+    fi
+
+    if [ -n "$cdcatnum" ]
+    then
+        echo "Current tracks are :-"
+        list_tracks
+        echo
+        echo "This will re-enter the tracs for $cdtitle"
+        get_confirm && {
+            grep -v "^${cdcatnum}," $tracks_file > $temp_file
+            mv $temp_file $tracks_file
+            echo
+            add_record_tracks
+        }
+    fi
+    return
+}
 
 #
 count_cds(){}
