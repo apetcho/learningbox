@@ -265,8 +265,20 @@ update_cd(){
     return
 }
 
-#
-count_cds(){}
+# ------------
+# count_cds()
+# ------------
+# Gives a quick count of the contents of our database.
+count_cds(){
+
+    set $(wc -l $title_file)
+    num_titles=$1
+    set $(wc -l $tracks_file)
+    num_tracks=$1
+    echo "Found $num_titles CDs, with a total of $num_tracks tracks"
+    get_return
+    return
+}
 
 #
 remove_records(){}
