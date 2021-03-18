@@ -43,8 +43,32 @@ get_confirm(){
     done
 }
 
+# -----------------------
+# MENU FUNCTIONS
+# -----------------------
+# - set_menu_choice()
+# This function displays a dynamical menu, adapting its the text it displays
+# based on the context.
 #
-get_menu_choice(){}
+get_menu_choice(){
+    clear
+    echo "Options : -"
+    echo
+    echo "  a) Add new CD"
+    echo "  b) Find CD"
+    echo "  c) Count the CDs and tracks in the catalog"
+    if [ "$cdcatnum" != "" ]
+    then
+        echo "  l) List tracks on $cdtitle"
+        echo "  r) Remove $cdtitle"
+        echo "  u) Update track information for $cdtitle"
+    fi
+    echo "  q) Quit"
+    echo
+    echo -e "Please enter choice then press return \c"
+    read menu_choice
+    return
+}
 
 #
 insert_title(){}
