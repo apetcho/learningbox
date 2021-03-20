@@ -19,3 +19,10 @@
 static char current_cd[MAX_STRING] = '\0';
 static char current_cat[MAX_STRING];
 
+/**
+ * Declare some filenames.
+ * For simplicity, the files are fixed in this version
+ */
+const char *title_file = "title.cdb";
+const char *tracks_file = "tracks.cdb";
+const char *temp_file = "cdb.tmp";
