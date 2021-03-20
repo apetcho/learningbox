@@ -46,3 +46,28 @@ void list_tracks(void);
 void remove_tracks(void);
 void remove_cd(void);
 void update_cd(void);
+
+
+/**
+ * Menu tables
+ */
+
+// TODO: write each as: "[a] add new CD", ...
+char *main_menu[] = {
+    "add new CD",
+    "find CD",
+    "count CDs and tracks in the catalog",
+    "quit",
+    0,
+};
+
+char *extended_menu[] = {
+    "add new CD",
+    "find CD",
+    "count CDs and tracks in the catalog",
+    "list tracks on current CD",
+    "remove current CD",
+    "update track information",
+    "quit",
+    0,
+};
