@@ -325,10 +325,26 @@ int get_confirm(void){
     return confirmed;
 }
 
+/**
+ * @brief Adds a title to the CD database by appending the title string to the end
+ * of the titles file.
+ * 
+ * @param cdtitle 
+ */
+void insert_title(char *cdtitle){
+    FILE *fp = fopen(title_file, "a");
+    if(!fp){
+        mvprintw(ERROR_LINE, 0, "cannot open CD titles database");
+    }else{
+        fprintf(fp, "%s\n", cdtitle);
+        fclose(fp);
+    }
+}
+
+// -----------------
+// Updating Records
+// -----------------
 void get_return(void);
-
-void insert_title(char *cdtitle);
-
 
 void count_cds(void);
 void find_cd(void);
