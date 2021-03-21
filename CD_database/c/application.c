@@ -292,8 +292,41 @@ void get_string(char *string){
     }
 }
 
+/**
+ * @brief Prompts and reads user confirmation.
+ * 
+ * It reads user's input string and checks the first character for Y or y.
+ * If it finds any other character, it gives no confirmation.
+ * 
+ * @return Returns 1 if found 'y' or 'Y' otherwise returns 0.
+ */
+int get_confirm(void){
+    int confirmed = 0;
+    char first_char;
+
+    mvprintw(Q_LINE, 5, "Are you sure? ");
+    clrtoeol();
+    refresh();
+
+    cbreak();
+    first_char = getch();
+    if(first_char == 'Y' || first_char == 'y'){
+        confirmed = 1;
+    }
+    nocbreak();
+
+    if(!confirmed){
+        mvprintw(Q_LINE, 1, "   Cancelled");
+        clrtoeol();
+        refresh();
+        sleep(1);
+    }
+
+    return confirmed;
+}
+
 void get_return(void);
-int get_confirm(void);
+
 void insert_title(char *cdtitle);
 
 
