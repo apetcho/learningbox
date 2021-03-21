@@ -178,11 +178,42 @@ int get_choice(char *greet, char *choices[]){
 
     return selected;
 }
+
+/**
+ * @brief Draw Application Menu.
+ * 
+ * @param options       Options table
+ * @param highlight     Highlighting flag
+ * @param start_row     Starting row for text display on the screen
+ * @param start_col     Starting column for text display on the screen
+ */
+void draw_menu(char *options[], int highlight, int start_row, int start_col){
+    int current_row = 0;
+    char **option_ptr;
+    char *txt_ptr;
+    option_ptr = options;
+
+    while(*option_ptr){
+        if(current_row == highlight)
+            attron(A_STANDOUT);
+        txt_ptr = options[current_row];
+        txt_ptr++;
+        mvprintw(start_row + current_row, start_col, "%s", txt_ptr);
+        if(current_row == highlight)
+            attroff(A_STANDOUT);
+        current_row++;
+        option_ptr++;
+    }
+
+    mvprintw(start_row + current_row + 3, start_col,
+        "Move highligh then press Return " );
+    refresh();
+}
 void clear_all_screen(void);
 void get_return(void);
 int get_confirm(void);
 
-void draw_menu(char *options[], int highlight, int start_row, int start_col);
+
 void insert_title(char *cdtitle);
 void get_string(char *string);
 void add_record(void);
