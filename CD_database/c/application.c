@@ -276,10 +276,26 @@ void add_record(void){
     }
 }
 
+/**
+ * @brief Prompts for and reads in a string at the current screen position.
+ * 
+ * It also deletes any trailing newline.
+ * 
+ * @param[out] string String read as client input. 
+ */
+void get_string(char *string){
+    int len;
+    wgetnstr(stdscr, string, MAX_STRING);
+    len = strlen(string);
+    if(len > 0 && string[len - 1] == '\n'){
+        string[len-1] = '\0';
+    }
+}
+
 void get_return(void);
 int get_confirm(void);
 void insert_title(char *cdtitle);
-void get_string(char *string);
+
 
 void count_cds(void);
 void find_cd(void);
