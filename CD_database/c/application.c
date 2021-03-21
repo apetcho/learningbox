@@ -114,10 +114,74 @@ int main()
 /******************************
  * Functions' implementation  *
  ******************************/
+
+// 1- Building the menu
+/**
+ * @brief Get the choice object
+ * 
+ * Prompt the user a menu to choose an option from.
+ * 
+ * @param greet   Introduction to the client/user 
+ * @param choices Pointers array pointing the appropriate menu table.
+ * @return int  Returns a character corresponding to the choice selected from the menu.
+ */
+int get_choice(char *greet, char *choices[]){
+    static int selected_row = 0;
+    int max_row = 0;
+    int start_screenrow = MESSAGE_LINE;
+    int start_screencol = 10;
+    char **option;
+    int selected;
+    int key = 0;
+
+    option = choices;
+    // count the number of options available in this menu table.
+    while(*option){
+        max_row++;
+        option++;
+    }
+    /* protect against menu getting shorter when CD deleted */
+    if(selected_row >= max_row){
+        selected_row = 0;
+    }
+
+    clear_all_screen();
+    mvprintw(start_screenrow-2, start_screencol, greet);
+    keypad(stdscr, TRUE);
+    cbreak();
+    noecho();
+    key = 0;
+    while(key != 'q' && key != KEY_ENTER && key != '\n'){
+        if(key == KEY_UP){
+            if(selected_row == 0)
+                selected_row = max_row -1;
+            else
+            selected_row--;
+        }
+        if(key == KEY_DOWN){
+            if(selected_row == (max_row - 1))
+                selected_row = 0;
+            else
+            selected_row++;
+        }
+        selected = *choices[selected_row];
+        draw_menu(choices, selected_row, start_screenrow, start_screencol);
+        key = getch();
+    }
+
+    keypad(stdscr, FALSE);
+    nocbreak();
+    echo();
+
+    if(key == 'q')
+        selected = 'q';
+
+    return selected;
+}
 void clear_all_screen(void);
 void get_return(void);
 int get_confirm(void);
-int get_choice(char *greet, char *choices[]);
+
 void draw_menu(char *options[], int highlight, int start_row, int start_col);
 void insert_title(char *cdtitle);
 void get_string(char *string);
