@@ -179,6 +179,7 @@ int get_choice(char *greet, char *choices[]){
     return selected;
 }
 
+// 2.
 /**
  * @brief Draw Application Menu.
  * 
@@ -209,7 +210,23 @@ void draw_menu(char *options[], int highlight, int start_row, int start_col){
         "Move highligh then press Return " );
     refresh();
 }
-void clear_all_screen(void);
+
+// 3.
+
+/**
+ * @brief Clear the screen.
+ * 
+ */
+void clear_all_screen(void){
+    clear();
+    mvprintw(2, 20, "%s", "CD Datababse Application");
+    if (current_cd[0]){
+        mvprintw(ERROR_LINE, 0, "Current CD: %s %s\n",
+            current_cat, current_cd);
+    }
+
+    refresh();
+}
 void get_return(void);
 int get_confirm(void);
 
