@@ -531,10 +531,67 @@ void count_cds(void){
         titles, tracks);
     
     get_return();
-};
+}
+
+
+/**
+ * @brief This function prompts for a substring to match in the database and set
+ *        global variable 'current_cd'to the CD title found.
+ * 
+ */
+void find_cd(void){
+    char match[MAX_STRING];
+    char entry[MAX_ENTRY];
+    FILE *titles_fp;
+    int count = 0;
+    char *found;
+    char *title;
+    char *catalog;
+
+    mvprintw(Q_LINE, 0, "Enter a string to search for in CD titles: ");
+    get_string(match);
+
+    titles_fp = fopen(title_file, "r");
+
+    if(titles_fp){
+        while(fgets(entry, MAX_ENTRY, titles_fp)){
+            // Skip pas catalog number
+            catalog = entry;
+            if(found == strstr(catalog, ",")){
+                *found = '\0';
+                title = found + 1;
+
+                // Zap the next comma in the entry to reduce it to title only
+                if(found == strstr(title, ",")){
+                    *found = '\0';
+
+                    // Now see if the match substring is present
+                    if(found == strstr(title, match)){
+                        count++;
+                        strcpy(current_cd, title);
+                        strcpy(current_cat, catalog);
+                    }
+                }
+            }
+        }
+        fclose(titles_fp);
+    }
+    if(count != 1){
+        if(count == 0){
+            mvprintw(ERROR_LINE, 0, "Sorry, no matching CD found.");
+        }
+        if(count > 1){
+            mvprintw(ERROR_LINE, 0,
+                "Sorry, match is ambiguous: %d CDs found. ", count);
+        }
+        current_cd[0] = '\0';
+        get_return();
+    }
+}
+
 
 void get_return(void);
 
 
-void find_cd(void);
+
 void list_tracks(void);
