@@ -589,9 +589,93 @@ void find_cd(void){
     }
 }
 
+/**
+ * @brief Lists the selected CD's tracks on the screen.
+ * 
+ */
+void list_tracks(void){
+    FILE *tracks_fp;
+    char entry[MAX_ENTRY];
+    int cat_length;
+    int lines_op = 0;
+    WINDOW *track_pad_ptr;
+    int tracks = 0;
+    int key;
+    int first_line = 0;
 
-void get_return(void);
+    if(current_cd[0] == '\0'){
+        mvprintw(ERROR_LINE, 0, "You must select a CD first. ");
+        get_return();
+        return;
+    }
+    clear_all_screen();
 
+    cat_length = strlen(current_cat);
 
+    // First count the number of tracks for the current CD
+    tracks_fp = fopen(tracks_file, "r");
+    if(!tracks_fp)
+        return;
 
-void list_tracks(void);
+    while(fgets(entry, MAX_ENTRY, tracks_fp)){
+        if(strncmp(current_cat, entry, cat_length) == 0)
+            tracks++;
+    }
+    fclose(tracks_fp);
+
+    // Make a new pad, ensure that even if there is only a single track, the PAD
+    // is large enough so the later prefresh() is always valid.
+    track_pad_ptr = newpad(tracks + 1 + 1 + BOXED_LINES, BOXED_ROWS + 1);
+    if(!track_pad_ptr)
+        return;
+
+    tracks_fp = fopen(tracks_file, "r");
+    if(!tracks_fp)
+        return;
+    mvprintw(4, 0, "CD Track Listing\n");
+
+    // write the track information into the pad.
+    while(fgets(entry, MAX_ENTRY, tracks_fp)){
+        // Compare catalog number and output rest of entry
+        if(strncmp(current_cat, entry, cat_length) == 0){
+            mvwprintw(track_pad_ptr, lines_op++, 0, "%s", entry + cat_length +1);
+        }
+    }
+    fclose(tracks_fp);
+
+    if(lines_op > BOXED_LINES){
+        mvprintw(MESSAGE_LINE, 0, "Move keys to scroll, RETURN or q to exit");
+    } else {
+        mvprintw(MESSAGE_LINE, 0, "RETURN or q to exit");
+    }
+    wrefresh(stdscr);
+    keypad(stdscr, TRUE);
+    cbreak();
+    noecho();
+
+    key = 0;
+    while(key != 'q' && key != KEY_ENTER && key != '\n'){
+        if(key == KEY_UP){
+            if(first_line > 0)
+                first_line--;
+        }
+        if(key == KEY_DOWN){
+            if(first_line + BOXED_LINES + 1 < tracks)
+                first_line++;
+        }
+
+        // now draw the appropriate part of the pad on the screen
+        prefresh(track_pad_ptr, first_line, 0, BOX_LINE_POS, BOX_ROW_POS,
+            BOX_LINE_POS + BOXED_LINES, BOX_ROW_POS + BOXED_ROWS);
+        key = getch();
+    }
+    delwin(track_pad_ptr);
+    keypad(stdscr, FALSE);
+    nocbreak();
+    echo();
+}
+
+//!
+void get_return(void){
+
+}
