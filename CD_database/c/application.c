@@ -499,8 +499,42 @@ void remove_tracks(void){
 }
 
 
+// Quering the CD Database
+
+/**
+ * @brief Scans the database, counting titles and tracks.
+ * 
+ */
+void count_cds(void){
+    FILE *titles_fp;
+    FILE *tracks_fp;
+
+    char entry[MAX_ENTRY];
+    int titles = 0;
+    int tracks = 0;
+
+    titles_fp = fopen(title_file, "r");
+    if(titles_fp){
+        while(fgets(entry, MAX_ENTRY, titles_fp))
+            titles++;
+        fclose(titles_fp);
+    }
+
+    tracks_fp = fopen(tracks_file, "r");
+    if(tracks_fp){
+        while(fgets(entry, MAX_ENTRY, tracks_fp))
+            tracks++;
+        fclose(tracks_fp);
+    }
+
+    mvprintw(ERROR_LINE, 0, "Database contains %d titles, with a total of %d tracks.",
+        titles, tracks);
+    
+    get_return();
+};
+
 void get_return(void);
 
-void count_cds(void);
+
 void find_cd(void);
 void list_tracks(void);
