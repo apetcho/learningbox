@@ -349,6 +349,79 @@ void insert_title(char *cdtitle){
 // -----------------
 // Updating Records
 // -----------------
+
+/**
+ * @brief Enables the user to re-enter the tracks for the current CD.
+ * 
+ * If the previous tracks records is deleted, it prompts for new information.
+ * 
+ */
+void update_cd(void){
+    FILE *tracks_fp;
+    char track_name[MAX_STRING];
+    int len;
+    int track = 1;
+    int screen_line = 1;
+    WINDOW *box_window_ptr;
+    WINDOW *sub_window_ptr;
+
+    clear_all_screen();
+    mvprintw(PROMPT_LINE, 0, "Re-entering tracks for CD.");
+    if(!get_confirm()){
+        return;
+    }
+    move(PROMPT_LINE, 0);
+    clrtoeol();
+
+    remove_tracks();
+    mvprintw(MESSAGE_LINE, 0, "Enter a blank line to finish");
+    tracks_fp = fopen(tracks_file, "a");
+
+    // HOW TO ENTER INFORMATION IN A SCROLLING, BOXED SUBWINDOW:
+    // ---------------------------------------------------------
+    // First, set up a subwindow, draw a box around the edge, and then
+    // add a new scrolling subwindow just inside the boxed subwindow.
+
+    box_window_ptr = subwin(stdscr, BOXED_LINES + 2, BOXED_ROWS + 2,
+        BOX_LINE_POS - 1, BOX_ROW_POS - 1);
+    if(!box_window_ptr){
+        return;
+    }
+    box(box_window_ptr, ACS_VLINE, ACS_HLINE);
+
+    sub_window_ptr = subwin(stdscr, BOXED_LINES, BOXED_ROWS,
+        BOX_LINE_POS, BOX_ROW_POS);
+    if(!sub_window_ptr){
+        return;
+    }
+    scrollok(sub_window_ptr, TRUE);
+    werase(sub_window_ptr);
+    touchwin(stdscr);
+
+    do {
+        mvwprintw(sub_window_ptr, screen_line++, BOX_ROW_POS + 2,
+            "Track %d: ", track);
+        clrtoeol();
+        refresh();
+        wgetnstr(sub_window_ptr, track_name, MAX_STRING);
+        len = strlen(track_name);
+        if(len > 0 && track_name[len - 1] == '\n')
+            track_name[len - 1] = '\0';
+
+        if (*track_name)
+            fprintf(tracks_fp, "%s,%d,%s\n", current_cat, track, track_name);
+        track++;
+        if(screen_line > BOXED_LINES - 1){
+            /* time to start scrolling */
+            scroll(sub_window_ptr);
+            screen_line--;
+        }
+    } while(*track_name);
+    delwin(sub_window_ptr);
+
+    fclose(tracks_fp);
+}
+
 void get_return(void);
 
 void count_cds(void);
@@ -356,6 +429,6 @@ void find_cd(void);
 void list_tracks(void);
 void remove_tracks(void);
 void remove_cd(void);
-void update_cd(void);
+
 
 
