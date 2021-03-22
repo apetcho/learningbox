@@ -464,9 +464,43 @@ void remove_cd(void){
     current_cd[0] = '\0';
 }
 
+/**
+ * @brief Deletes the tracks from the current CD.
+ * 
+ */
+void remove_tracks(void){
+    FILE *tracks_fp;
+    FILE *temp_fp;
+    char entry[MAX_ENTRY];
+    int cat_length;
+
+    if(current_cd[0] == '\0')
+        return;
+
+    cat_length = strlen(current_cat);
+
+    tracks_fp = fopen(tracks_file, "r");
+    if(tracks_fp == (FILE *)NULL){
+        return;
+    }
+    temp_fp = fopen(temp_file, "w");
+
+    while( fgets(entry, MAX_ENTRY, tracks_fp)){
+        // Compare catalog number and copy entry if no match
+        if(strncmp(current_cat, entry, cat_length) != 0)
+            fputs(entry, temp_fp);
+    }
+    fclose(tracks_fp);
+    fclose(temp_fp);
+
+    // Delete the tracks file, and rename the temporary file
+    unlink(tracks_file);
+    rename(temp_file, tracks_file);
+}
+
+
 void get_return(void);
 
 void count_cds(void);
 void find_cd(void);
 void list_tracks(void);
-void remove_tracks(void);
