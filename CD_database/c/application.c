@@ -12,6 +12,11 @@
 #define Q_LINE          20      // Line for questions
 #define PROMPT_LINE     18      // Line for prompting on
 
+/* Constants used in boxed subwindow*/
+#define BOXED_LINES     11
+#define BOXED_ROWS      60
+#define BOX_LINE_POS    8
+#define BOX_ROW_POS     2
 
 /**
  * Define the needed global variables.
