@@ -675,7 +675,13 @@ void list_tracks(void){
     echo();
 }
 
-//!
+/**
+ * @brief Prompts for and reads a carriage return, ignoring other characters.
+ * 
+ */
 void get_return(void){
-
+    int ch;
+    mvprintw(23, 0, "%s", " Press return ");
+    refresh();
+    while((ch = getchar()) != '\n' && ch != EOF);
 }
