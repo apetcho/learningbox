@@ -422,13 +422,51 @@ void update_cd(void){
     fclose(tracks_fp);
 }
 
+// Removing Records
+void remove_cd(void){
+    FILE *titles_fp;
+    FILE *temp_fp;
+    char entry[MAX_ENTRY];
+    int cat_length;
+
+    if(current_cd[0] == '\0')
+        return;
+
+    clear_all_screen();
+    mvprintw(PROMPT_LINE, 0, "About to remove the CD %s: %s. ",
+        current_cat, current_cd);
+    if(!get_confirm())
+        return;
+
+    cat_length = strlen(current_cat);
+
+    /* Copy the titles file to a temporary file, ignoring this CD */
+    titles_fp = fopen(title_file, "r");
+    temp_fp = fopen(temp_file, "w");
+
+    while(fgets(entry, MAX_ENTRY, titles_fp)){
+        /* Compare catalog number and copy entry if no match */
+        if(strncmp(current_cat, entry, cat_length) != 0){
+            fputs(entry, temp_fp);
+        }
+    }
+    fclose(titles_fp);
+    fclose(temp_fp);
+
+    /* Delete the titles file, and rename the temporary file. */
+    unlink(temp_file);
+    rename(temp_file, title_file);
+
+    /* Now do the same for the tracks file */
+    remove_tracks();
+
+    /* Reset current CD to 'None' */
+    current_cd[0] = '\0';
+}
+
 void get_return(void);
 
 void count_cds(void);
 void find_cd(void);
 void list_tracks(void);
 void remove_tracks(void);
-void remove_cd(void);
-
-
-
