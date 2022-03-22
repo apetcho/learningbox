@@ -4,6 +4,7 @@
 #include<signal.h>
 #include<errno.h>
 #include<stdio.h>
+#include<time.h>
 
 #include "maze.h"
 
@@ -242,6 +243,7 @@ void maze_add_cell(MazeCell_t const *cell){
 void maze_readfile(char const *filename){
     int nrow;
     int ncol;
+    MazeCell_t* cell;
     signal(MAZE_EVENT_RUNTIME_ERROR, maze_signal_handler);
     FILE *fp;
     fp = fopen(filename, "r");
@@ -257,13 +259,13 @@ void maze_readfile(char const *filename){
         for(int j=0; j < ncol; j++){
             if(i == xstart && j == ystart){
                 value = MAZE_PATH_START;
-                MazeCell_t* cell = maze_allocate_cell(xstart, ystart, value);
+                cell = maze_allocate_cell(xstart, ystart, value);
                 maze_add_cell(cell);
             }
             fscanf(fp, "%d", &ival);
             if(ival == 1){ value = MAZE_PATH_WALL; }
             else{ value = MAZE_PATH_OPEN; }
-            MazeCell_t *cell = maze_allocate_cell(i, j, value);
+            cell = maze_allocate_cell(i, j, value);
             maze_add_cell(cell);
         }
     }
@@ -354,5 +356,46 @@ int maze_find_path(int x, int y){
     return 0;
 }
 
+//
 
-void maze_generate_random(char const *filename);
+static double get_probability(int x, int y){
+    double maxval = (double)(MAZE_MAXCOL * MAZE_MAXROW);
+    int nrow = rand() % 10 + 10;
+    int ncol = rand() % 10 + 10;
+    double a = (double)(x*nrow)/(double)MAZE_MAXROW;
+    double b = (double)(y*ncol)/(double)MAZE_MAXCOL;
+    double xy = (double)(rand()%16+1) / (double)MAZE_MAXROW;
+    double prob;
+    double val = (a*b)/maxval;
+    prob = (val > 1.0) ? xy : val; 
+
+    return prob;
+}
+
+void maze_generate_random(char const *filename){
+    srand((unsigned)time(NULL));
+    int nrow, ncol;
+    nrow = rand() % 10 + 10;
+    ncol = rand() % 10 + 10;
+    xstart = rand() % (nrow/2) + (nrow/5);
+    ystart = rand() % (ncol/2) + (ncol/5);
+    maze_allocate(nrow, ncol);
+    double prob = 0.0;
+
+    char cval;
+    MazeCell_t *cell;
+
+    for(int i=0; i < nrow; i++){
+        for(int j=0; j < ncol; j++){
+            if((i==xstart) || (j==ystart)){
+                cval = MAZE_PATH_START;
+                cell = maze_allocate_cell(xstart, ystart, cval);
+            }
+            prob = get_probability(i, j);
+            cval = (prob > 0.4) ? MAZE_PATH_OPEN : MAZE_PATH_WALL;
+            cell = maze_allocate_cell(i, j, cval);
+        }
+    }
+
+    maze_save_file(filename);
+}
