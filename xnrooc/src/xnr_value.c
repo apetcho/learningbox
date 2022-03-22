@@ -111,8 +111,15 @@ static double _do_add(const void *tree){
     );
 }
 
+/***/
+static double _do_sub(const void *tree){
+    return (
+        _xnr_exec(((xnr_binary_op_t*)tree)->left) -
+        _xnr_exec(((xnr_binary_op_t*)tree)->right)
+    );
+}
 
-static double _do_sub(const void *tree){}
+
 static double _do_mult(const void *tree){}
 static double _do_div(const void *tree){}
 static void _free_binary_op(void *tree){}
