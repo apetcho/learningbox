@@ -29,3 +29,19 @@ void* xnr_new(const void* type, ...){
 void xnr_delete(void *item){
     free(item);
 }
+
+//
+void* xnr_set_add(void* _set, const void* _element){
+    xnr_set_t *set = _set;
+    xnr_object_t *element = (void*)_element;
+
+    assert(set);
+    assert(element);
+
+    if(!element->in){ element->in = set; }
+    else{ assert(element->in == set); }
+    ++element->count;
+    ++set->count;
+
+    return element;
+}
