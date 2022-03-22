@@ -60,3 +60,18 @@ void* xnr_set_find(const void* _set, const void* _element){
 int xnr_set_contains(const void* _set, const void* _element){
     return xnr_set_find(_set, _element) != 0;
 }
+
+//
+void *xnr_set_drop(void *_set, const void* _element){
+    xnr_set_t *set = _set;
+    xnr_object_t *element = xnr_set_find(set, _element);
+
+    if(element){
+        if(--element->count == 0){
+            element->in = 0;
+        }
+        --set->count;
+    }
+
+    return element;
+}
