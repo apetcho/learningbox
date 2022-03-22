@@ -127,8 +127,22 @@ static double _do_mult(const void *tree){
     );
 }
 
-static double _do_div(const void *tree){}
-static void _free_binary_op(void *tree){}
+/***/
+static double _do_div(const void *tree){
+    double left = _xnr_exec(((xnr_binary_op_t*)tree)->left);
+    double right = _xnr_exec(((xnr_binary_op_t*)tree)->right);
+    if(right == 0.0){
+        xnr_error("division by zero");
+    }
+    return left / right;
+}
+
+/***/
+static void _free_binary_op(void *tree){
+    xnr_delete(((xnr_binary_op_t*)tree)->left);
+    xnr_delete(((xnr_binary_op_t*)tree)->right);
+    free(tree);
+}
 
 /** types */
 static xnr_type_t _Add = {_make_binary_op, _do_add, _free_binary_op};
