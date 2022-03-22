@@ -32,7 +32,12 @@ static double _xnr_exec(const void *tree){
     return (*(xnr_type_t **)tree)->exec(tree);
 }
 
-void xnr_process(const void *tree){}
+/***/
+void xnr_process(const void *tree){
+    printf("\t%g\n", _xnr_exec(tree));
+}
+
+
 void xnr_delete(void *tree){}
 
 /** Number */
