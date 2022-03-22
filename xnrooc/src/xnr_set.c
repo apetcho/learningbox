@@ -24,3 +24,13 @@ void* xnr_new(const void* type, ...){
 
     return p;
 }
+
+//
+void xnr_delete(void* item){
+    int *xnr_item = item;
+
+    if(xnr_item){
+        assert(xnr_item > xnr_heap && xnr_item < xnr_heap + XNR_MANY);
+        *xnr_item = 0;
+    }
+}
