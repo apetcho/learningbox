@@ -52,3 +52,16 @@ void* xnr_set_add(void *_set, const void* _element){
 
     return (void*)element;
 }
+
+//
+void* xnr_set_find(const void* _set, const void* _element){
+    const int *set = _set;
+    const int *element = _element;
+
+    assert(set > xnr_heap && set < xnr_heap + XNR_MANY);
+    assert(*set == XNR_MANY);
+    assert(element > xnr_heap && element < xnr_heap + XNR_MANY);
+    assert(*element);
+
+    return *element == (set - xnr_heap) ? (void*)element : 0;
+}
