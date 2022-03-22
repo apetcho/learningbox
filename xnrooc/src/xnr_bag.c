@@ -75,3 +75,11 @@ void *xnr_set_drop(void *_set, const void* _element){
 
     return element;
 }
+
+//
+unsigned xnr_set_length(const void* _set){
+    const xnr_set_t *set = _set;
+
+    assert(set);
+    return set->count;
+}
