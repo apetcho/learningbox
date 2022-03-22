@@ -30,8 +30,13 @@ static void* _string_dtor(void *_self){
     return self;
 }
 
+//
+static void* _string_clone(const void *_self){
+    const xnr_string_t *self = _self;
+    return xnr_new(xnr_string, self->text);
+}
 
-static void* _string_clone(const void *_self){}
+
 static int _string_differ(const void *_self, const void *other){}
 
 static const xnr_class _String = {
