@@ -28,7 +28,7 @@
 struct MazeCell_s{
     int row;
     int col;
-    int val;
+    char value;
 };
 
 struct Maze_s{
@@ -137,16 +137,16 @@ static void maze_error(int maze_signum, MazeRoutine_t routineIndex){
     maze_set_routine_info(routineIndex);
     switch(maze_signum){
     case MAZE_EVENT_NONE:
-        signal(MAZE_EVENT_NONE, maze_signal_handler);
+        raise(MAZE_EVENT_NONE);
         break;
     case MAZE_EVENT_INVALID_DATA:
-        signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
+        raise(MAZE_EVENT_INVALID_DATA);
         break;
     case MAZE_EVENT_MEMORY_ERROR:
-        signal(MAZE_EVENT_MEMORY_ERROR, maze_signal_handler);
+        raise(MAZE_EVENT_MEMORY_ERROR);
         break;
     case MAZE_EVENT_RUNTIME_ERROR:
-        signal(MAZE_EVENT_RUNTIME_ERROR, maze_signal_handler);
+        raise(MAZE_EVENT_RUNTIME_ERROR);
         break;
     default:
         break;
@@ -155,7 +155,19 @@ static void maze_error(int maze_signum, MazeRoutine_t routineIndex){
 }
 
 //
-MazeCell_t* maze_allocate_cell(int row, int col);
+MazeCell_t* maze_allocate_cell(int row, int col, char val){
+    signal(MAZE_EVENT_MEMORY_ERROR, maze_signal_handler);
+    MazeCell_t *cell = (MazeCell_t*)malloc(sizeof(*cell));
+    if(cell == NULL){
+        maze_error(MAZE_EVENT_MEMORY_ERROR, ALLOCATE_CELL);
+        return NULL;
+    }
+    cell->col = col;
+    cell->row = row;
+    cell->value = val;
+    return cell;
+}
+
 void maze_deallocate_cell(MazeCell_t *cell);
 Maze_t* maze_allocate();
 void maze_deallocate(Maze_t *maze);

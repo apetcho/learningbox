@@ -12,7 +12,7 @@ typedef struct MazeCell_s MazeCell_t;
 
 typedef struct Maze_s Maze_t;
 
-MazeCell_t* maze_allocate_cell(int row, int col);
+MazeCell_t* maze_allocate_cell(int row, int col, char val);
 void maze_deallocate_cell(MazeCell_t *cell);
 Maze_t* maze_allocate();
 void maze_deallocate(Maze_t *maze);
