@@ -30,7 +30,13 @@ void* xnr_new(const void *_klass, ...){
 }
 
 //
-void xnr_delete(void *item){}
+void xnr_delete(void *self){
+    const xnr_class **cp = self;
+    if(self && *cp && (*cp)->dtor){
+        self = (*cp)->dtor(self);
+    }
+    free(self);
+}
 
 //
 void* xnr_clone(const void *self){}
