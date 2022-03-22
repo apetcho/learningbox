@@ -69,3 +69,13 @@ void* xnr_set_find(const void* _set, const void* _element){
 int xnr_set_contains(const void* _set, const void* _element){
     return xnr_set_find(_set, _element) != 0;
 }
+
+//
+void* xnr_set_drop(void* _set, const void* _element){
+    int *element = xnr_set_find(_set, _element);
+    if(element){
+        *element = XNR_MANY;
+    }
+
+    return element;
+}
