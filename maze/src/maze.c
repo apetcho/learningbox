@@ -35,7 +35,7 @@ struct MazeCell_s{
 struct Maze_s{
     int nrow;
     int ncol;
-    MazeCell_t* grid[MAZE_MAXROW][MAZE_MAXCOL];
+    MazeCell_t* grid[MAZE_MAXROW+1][MAZE_MAXCOL+1];
 };
 
 typedef enum {
@@ -184,6 +184,7 @@ void maze_deallocate_cell(MazeCell_t *cell){
     if(cell != NULL){
         free(cell);
     }
+    cell = NULL;
     return;
 }
 
@@ -207,6 +208,7 @@ void maze_allocate(int nrow, int ncol){
             maze->grid[i][j] = NULL;
         }
     }
+    maze = NULL;
     return;
 }
 
@@ -283,7 +285,7 @@ void maze_save_file(char const *filename){
     }
     int nrow = maze->nrow;
     int ncol = maze->ncol;
-    char cval;
+    //char cval;
     FILE *fp;
     MazeCell_t *cell;
     fp = fopen(filename, "w");
@@ -291,10 +293,14 @@ void maze_save_file(char const *filename){
         maze_error(MAZE_EVENT_RUNTIME_ERROR, SAVE_FILE);
         return;
     }
+    fprintf(fp, "%d %d %d %d\n", nrow, ncol, xstart, ystart);
+    int xyval;
     for(int i=0; i < nrow; i++){
         for(int j=0; j < ncol; j++){
             cell = maze->grid[i][j];
-            fprintf(fp, "%c", cell->value);
+            if(cell->value == MAZE_PATH_WALL){ xyval = 1; }
+            else{ xyval = 0; }
+            fprintf(fp, "%d", xyval);
         }
         putc('\n', fp);
     }
@@ -398,4 +404,5 @@ void maze_generate_random(char const *filename){
     }
 
     maze_save_file(filename);
+    maze_deallocate(maze);
 }

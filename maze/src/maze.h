@@ -4,16 +4,15 @@
 #define MAZE_MAXROW     20
 #define MAZE_MAXCOL     20
 
+typedef struct MazeCell_s MazeCell_t;
+typedef struct Maze_s Maze_t;
+
 const char MAZE_PATH_WALL = '#';
 const char MAZE_PATH_OPEN = ' ';
 const char MAZE_PATH_MARK = 'X';
 const char MAZE_PATH_START = 'S';
 extern int xstart;
 extern int ystart;
-
-typedef struct MazeCell_s MazeCell_t;
-
-typedef struct Maze_s Maze_t;
 extern Maze_t *maze;
 
 MazeCell_t* maze_allocate_cell(int row, int col, char val);
