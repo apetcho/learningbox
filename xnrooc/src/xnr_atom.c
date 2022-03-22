@@ -74,7 +74,10 @@ static void* _string_clone(const void *_self){
 }
 
 
-static int _string_differ(const void *self, const void *other){}
+//
+static int _string_differ(const void *self, const void *other){
+    return self != other;
+}
 
 
 //
