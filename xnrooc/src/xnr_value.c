@@ -77,8 +77,12 @@ static void* _make_unary_op(va_list args){
     return node;
 }
 
+/***/
+static double _do_minus(const void *tree){
+    return - _xnr_exec(((xnr_unary_op_t*)tree)->arg);
+}
 
-static double _do_minus(const void *tree){}
+
 static void _free_unary_op(void *tree){}
 
 /** binary operator */
