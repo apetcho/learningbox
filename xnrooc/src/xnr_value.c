@@ -83,7 +83,10 @@ static double _do_minus(const void *tree){
 }
 
 
-static void _free_unary_op(void *tree){}
+static void _free_unary_op(void *tree){
+    xnr_delete(((xnr_unary_op_t*)tree)->arg);
+    free(tree);
+}
 
 /** binary operator */
 typedef struct xnr_binary_op{
