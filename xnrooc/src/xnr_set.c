@@ -34,3 +34,21 @@ void xnr_delete(void* item){
         *xnr_item = 0;
     }
 }
+
+//
+void* xnr_set_add(void *_set, const void* _element){
+    int *set = _set;
+    const int* element = _element;
+
+    assert(set > xnr_heap && set < xnr_heap + XNR_MANY);
+    assert(*set == XNR_MANY);
+    assert(element > xnr_heap && element < xnr_heap + XNR_MANY);
+
+    if(*element == XNR_MANY){
+        *(int*)element = set - xnr_heap;
+    }else{
+        assert(*element == set - xnr_heap);
+    }
+
+    return (void*)element;
+}
