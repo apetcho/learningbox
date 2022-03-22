@@ -53,4 +53,8 @@ int xnr_differ(const void *self, const void *other){
 }
 
 //
-size_t xnr_sizeof(const void *self){}
+size_t xnr_sizeof(const void *self){
+    const xnr_class *const *cp = self;
+    assert(self && *cp);
+    return (*cp)->size;
+}
