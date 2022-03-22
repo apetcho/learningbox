@@ -45,7 +45,28 @@ static void* _string_ctor(void *_self, va_list *args){
     return self;
 }
 
-static void* _string_dtor(void *_self){}
+//
+static void* _string_dtor(void *_self){
+    xnr_string_t *self = _self;
+    if(--self->count > 0){ return 0; }
+    assert(ring);
+    if(ring == self){ ring = self->next; }
+    if(ring == self){ ring = 0; }
+    else{
+        xnr_string_t *ptr = ring;
+        while(ptr->next != self){
+            ptr = ptr->next;
+            assert(ptr != ring);
+        }
+        ptr->next = self->next;
+    }
+
+    free(self->text);
+    self->text = 0;
+    return self;
+}
+
+
 static void* _string_clone(const void *_self){}
 static int _string_differ(const void *self, const void *other){}
 
