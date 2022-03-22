@@ -45,3 +45,13 @@ void* xnr_set_add(void* _set, const void* _element){
 
     return element;
 }
+
+//
+void* xnr_set_find(const void* _set, const void* _element){
+    const xnr_object_t *element = _element;
+
+    assert(_set);
+    assert(element);
+
+    return element->in == _set ? (void*)element : 0;
+}
