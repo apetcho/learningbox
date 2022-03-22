@@ -3,11 +3,10 @@ project(xnrproj LANGUAGES C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
-add_executable(xnrstring
-    src/main.c src/xnr_string.c src/xnr_object.c 
-    src/xnr_string.h  src/xnr_object.h
+add_executable(xnrpostfix
+    src/xnr_postfix.c src/xnr_parser.c src/xnr_value.h src/xnr_parser.h
 )
-add_executable(xnratom 
-    src/main.c src/xnr_atom.c src/xnr_object.c 
-    src/xnr_object.h src/xnr_string.h)
-
+add_executable(xnrvalue 
+    src/xnr_value.c src/xnr_parser.c src/xnr_value.h src/xnr_parser.h)
+add_executable(xnrinfix
+    src/xnr_infix.c src/xnr_parser.c src/xnr_value.h src/xnr_parser.h)
