@@ -38,7 +38,11 @@ void xnr_process(const void *tree){
 }
 
 
-void xnr_delete(void *tree){}
+/***/
+void xnr_delete(void *tree){
+    assert(tree && *(xnr_type_t **)tree && (*(xnr_type_t**)tree)->delete);
+    (*(xnr_type_t**)tree)->delete(tree);   
+}
 
 /** Number */
 typedef struct xnr_value{
