@@ -3,6 +3,8 @@
 
 #include<stddef.h>
 
+typedef struct xnr_class xnr_class;
+
 void* xnr_new(const void* klass, ...);
 void xnr_delete(void *item);
 void* xnr_clone(const void *self);
