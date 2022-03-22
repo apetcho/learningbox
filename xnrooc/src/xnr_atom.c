@@ -66,8 +66,14 @@ static void* _string_dtor(void *_self){
     return self;
 }
 
+//
+static void* _string_clone(const void *_self){
+    xnr_string_t *self = (void*)_self;
+    ++self->count;
+    return self;
+}
 
-static void* _string_clone(const void *_self){}
+
 static int _string_differ(const void *self, const void *other){}
 
 
