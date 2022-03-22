@@ -4,13 +4,7 @@
 #include<stdio.h>
 
 #include "xnr_object.h"
-struct xnr_class{
-    size_t size;
-    void* (*ctor)(void *self, va_list *args);
-    void* (*dtor)(void *self);
-    void* (*clone)(const void *self);
-    int (*differ)(const void *self, const void *other);
-};
+
 
 //
 void* xnr_new(const void *_klass, ...){

@@ -3,7 +3,13 @@
 
 #include<stddef.h>
 
-typedef struct xnr_class xnr_class;
+typedef struct xnr_class{
+    size_t size;
+    void* (*ctor)(void *self, va_list *args);
+    void* (*dtor)(void *self);
+    void* (*clone)(const void *self);
+    int (*differ)(const void *self, const void *other);
+} xnr_class;
 
 void* xnr_new(const void* klass, ...);
 void xnr_delete(void *item);
