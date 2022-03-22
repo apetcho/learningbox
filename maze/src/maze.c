@@ -217,8 +217,21 @@ void maze_deallocate(Maze_t *maze){
     return;
 }
 
-void maze_add_cell(Maze_t *maze, MazeCell_t const *cell);
+//
+void maze_add_cell(Maze_t *maze, MazeCell_t const *cell, int x, int y){
+    signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
+    if(maze == NULL || cell == NULL){
+        maze_error(MAZE_EVENT_INVALID_DATA, ADD_CELL);
+    }
+    int nrow = maze->nrow;
+    int ncol = maze->ncol;
+    if((x < 0) || (x >= nrow) || (y < 0 ) || (y >= ncol)){
+        maze_error(MAZE_EVENT_INVALID_DATA, ADD_CELL);
+    }
+
+    maze->grid[x][y] = cell;
+}
 Maze_t* maze_readfile(char const *filename);
 void maze_writefile(char const *filename, Maze_t *maze);
 void maze_print(Maze_t const *maze);
-int maze_find_path(Maze_t const *maze, int row, int col);
+int maze_find_path(Maze_t *maze, int row, int col);
