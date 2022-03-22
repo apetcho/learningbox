@@ -58,3 +58,9 @@ size_t xnr_sizeof(const void *self){
     assert(self && *cp);
     return (*cp)->size;
 }
+
+size_t xnr_len(const void *self){
+    const xnr_class *const *cp = self;
+    assert(self && *cp);
+    return (*cp)->size;
+}

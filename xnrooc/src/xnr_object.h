@@ -10,6 +10,7 @@ void xnr_delete(void *item);
 void* xnr_clone(const void *self);
 int xnr_differ(const void *self, const void *other);
 size_t xnr_sizeof(const void *self);
+size_t xnr_len(const void *self);
 
 
 #endif
