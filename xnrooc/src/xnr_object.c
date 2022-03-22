@@ -39,7 +39,11 @@ void xnr_delete(void *self){
 }
 
 //
-void* xnr_clone(const void *self){}
+void* xnr_clone(const void *self){
+    const xnr_class *const *cp = self;
+    assert(self && *cp && (*cp)->clone);
+    return (*cp)->clone(self);
+}
 
 //
 int xnr_differ(const void *self, const void *other){}
