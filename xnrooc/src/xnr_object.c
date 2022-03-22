@@ -11,7 +11,7 @@ void* xnr_new(const void *_klass, ...){
     const xnr_class *klass = _klass;
     void *ptr = calloc(1, klass->size);
     assert(ptr);
-    *(xnr_class **)ptr = klass;
+    *(const xnr_class **)ptr = klass;
 
     if(klass->ctor){
         va_list args;
