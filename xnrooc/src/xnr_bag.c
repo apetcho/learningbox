@@ -55,3 +55,8 @@ void* xnr_set_find(const void* _set, const void* _element){
 
     return element->in == _set ? (void*)element : 0;
 }
+
+//
+int xnr_set_contains(const void* _set, const void* _element){
+    return xnr_set_find(_set, _element) != 0;
+}
