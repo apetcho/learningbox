@@ -36,8 +36,14 @@ static void* _string_clone(const void *_self){
     return xnr_new(xnr_string, self->text);
 }
 
-
-static int _string_differ(const void *_self, const void *other){}
+//
+static int _string_differ(const void *_self, const void *_other){
+    const xnr_string_t *self = _self;
+    const xnr_string_t *other = _other;
+    if(self==other){ return 0; }
+    if( !other || other->klass != xnr_string){ return 1;}
+    return strcmp(self->text, other->text);
+}
 
 static const xnr_class _String = {
     sizeof(xnr_string_t),
