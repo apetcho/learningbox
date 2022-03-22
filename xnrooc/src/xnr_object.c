@@ -46,7 +46,11 @@ void* xnr_clone(const void *self){
 }
 
 //
-int xnr_differ(const void *self, const void *other){}
+int xnr_differ(const void *self, const void *other){
+    const xnr_class *const *cp = self;
+    assert(self && *cp && (*cp)->differ);
+    return (*cp)->differ(self, other);
+}
 
 //
 size_t xnr_sizeof(const void *self){}
