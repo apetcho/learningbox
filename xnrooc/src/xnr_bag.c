@@ -24,3 +24,8 @@ void* xnr_new(const void* type, ...){
     assert(p);
     return p;
 }
+
+//
+void xnr_delete(void *item){
+    free(item);
+}
