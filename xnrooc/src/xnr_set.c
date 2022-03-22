@@ -79,3 +79,8 @@ void* xnr_set_drop(void* _set, const void* _element){
 
     return element;
 }
+
+//
+int xnr_differ(const void* lhs, const void* rhs){
+    return lhs != rhs;
+}
