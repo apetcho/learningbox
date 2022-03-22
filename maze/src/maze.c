@@ -314,7 +314,7 @@ void maze_print(){
     FILE *fp;
     MazeCell_t *cell;
     fp = stdout;
-    
+
     for(int i=0; i < nrow; i++){
         for(int j=0; j < ncol; j++){
             cell = maze->grid[i][j];
@@ -326,5 +326,33 @@ void maze_print(){
     return;
 }
 
-int maze_find_path(int row, int col);
+//
+int maze_find_path(int x, int y){
+    signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
+    if(maze == NULL){
+        maze_error(MAZE_EVENT_INVALID_DATA, FIND_PATH);
+        return -1;
+    }
+    int nrow = maze->nrow;
+    int ncol = maze->ncol;
+    MazeCell_t *cell;
+    if((x < 1) || (x > nrow) || (y < 1) || (y > ncol)){
+        return 0;
+    }
+    cell = maze->grid[x][y];
+    if(cell->value == MAZE_PATH_WALL){ return 0; }
+    if(cell->value == MAZE_PATH_MARK){ return 0; }
+    cell->value = MAZE_PATH_MARK;
+    if((x==1)||(x==nrow) || (y==1)||(y==ncol)){ return 1; }
+
+    if(maze_find_path(x-1, y)){ return 1; }
+    if(maze_find_path(x, y+1)){ return 1; }
+    if(maze_find_path(x+1, y)){ return 1; }
+    if(maze_find_path(x, y-1)){ return 1; }
+    cell->value = MAZE_PATH_OPEN;
+
+    return 0;
+}
+
+
 void maze_generate_random(char const *filename);
