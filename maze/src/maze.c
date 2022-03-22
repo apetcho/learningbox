@@ -201,7 +201,21 @@ Maze_t* maze_allocate(int nrow, int ncol){
     return maze;
 }
 
-void maze_deallocate(Maze_t *maze);
+void maze_deallocate(Maze_t *maze){
+    if(maze != NULL){
+        int nrow = maze->nrow;
+        int ncol = maze->ncol;
+        for(int i=0; i < nrow; i++){
+            for(int j=0; j < ncol; j++){
+                if(maze->grid[i][j] != NULL){
+                    maze_deallocate_cell(maze->grid[i][j]);
+                }
+            }
+        }
+        free(maze);
+    }
+    return;
+}
 
 void maze_add_cell(Maze_t *maze, MazeCell_t const *cell);
 Maze_t* maze_readfile(char const *filename);
