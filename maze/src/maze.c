@@ -34,7 +34,7 @@ struct MazeCell_s{
 struct Maze_s{
     int nrow;
     int ncol;
-    MazeCell_t *grid;
+    MazeCell_t* grid[MAZE_MAXROW][MAZE_MAXCOL];
 };
 
 typedef enum {
@@ -176,7 +176,31 @@ void maze_deallocate_cell(MazeCell_t *cell){
     return;
 }
 
-Maze_t* maze_allocate();
+//
+Maze_t* maze_allocate(int nrow, int ncol){
+    signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
+    if((nrow<=0) || (nrow>MAZE_MAXROW) || (ncol<=0) || (ncol>MAZE_MAXCOL)){
+        maze_error(MAZE_EVENT_INVALID_DATA, ALLOCATE_MAZE);
+        return NULL;
+    }
+    signal(MAZE_EVENT_MEMORY_ERROR, maze_signal_handler);
+    Maze_t *maze;
+    maze = (Maze_t*)malloc(sizeof(*maze));
+    if(maze == NULL){
+        maze_error(MAZE_EVENT_MEMORY_ERROR, ALLOCATE_MAZE);
+        return NULL;
+    }
+    maze->ncol = ncol;
+    maze->nrow = nrow;
+    for(int i=0; i < nrow; i++){
+        for(int j=0; j < ncol; j++){
+            maze->grid[i][j] = NULL;
+        }
+    }
+
+    return maze;
+}
+
 void maze_deallocate(Maze_t *maze);
 
 void maze_add_cell(Maze_t *maze, MazeCell_t const *cell);

@@ -14,7 +14,7 @@ typedef struct Maze_s Maze_t;
 
 MazeCell_t* maze_allocate_cell(int row, int col, char val);
 void maze_deallocate_cell(MazeCell_t *cell);
-Maze_t* maze_allocate();
+Maze_t* maze_allocate(int nrow, int ncol);
 void maze_deallocate(Maze_t *maze);
 void maze_add_cell(Maze_t *maze, MazeCell_t const *cell);
 Maze_t* maze_read_file(char const *filename);
