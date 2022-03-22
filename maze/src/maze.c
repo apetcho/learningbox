@@ -51,12 +51,16 @@ enum MazeRoutine_e {
     DEALLOCATE_MAZE,
     ADD_CELL,
     READ_FILE,
-    WRITE_FILE,
+    SAVE_FILE,
     PRINT,
-    FIND_PATH
+    FIND_PATH,
+    GENERATE_RANDOM
 };
 typedef enum MazeRoutine_e MazeRoutine_t;
 
+int xstart = -1;
+int ystart = -1;
+Maze_t *maze = NULL;
 static char maze_routine_name[20];
 static MazeRoutine_t maze_routine_index;
 
@@ -67,9 +71,10 @@ static char const *const maze_routines[] = {
     [DEALLOCATE_MAZE] = MAZE_ROUTINE(deallocate),
     [ADD_CELL] = MAZE_ROUTINE(add_cell),
     [READ_FILE] = MAZE_ROUTINE(read_file),
-    [WRITE_FILE] = MAZE_ROUTINE(write_file),
+    [SAVE_FILE] = MAZE_ROUTINE(save_file),
     [PRINT] = MAZE_ROUTINE(print),
     [FIND_PATH] = MAZE_ROUTINE(find_path),
+    [GENERATE_RANDOM] = MAZE_ROUTINE(generate_random),
     NULL
 };
 //
@@ -81,14 +86,17 @@ static void maze_signal_handler(int maze_signum){
     case MAZE_EVENT_INVALID_DATA:
         sprintf(message, "invalid data.");
         MAZE_ERROR_MESSAGE(maze_routine_name, message);
+        if(maze){ maze_deallocate();}
         exit(EXIT_FAILURE);
     case MAZE_EVENT_MEMORY_ERROR:
         sprintf(message, "memory error.");
         MAZE_ERROR_MESSAGE(maze_routine_name, message);
+        if(maze){ maze_deallocate();}
         exit(EXIT_FAILURE);
     case MAZE_EVENT_RUNTIME_ERROR:
         sprintf(message, "runtime error.");
         MAZE_ERROR_MESSAGE(maze_routine_name, message);
+        if(maze){ maze_deallocate();}
         exit(EXIT_FAILURE);
     default:
         break;
@@ -115,8 +123,8 @@ static void maze_set_routine_info(MazeRoutine_t routine){
     case ADD_CELL:
         MAZE_SET_ROUTINE_INFO(ADD_CELL);
         break;
-    case WRITE_FILE:
-        MAZE_SET_ROUTINE_INFO(WRITE_FILE);
+    case SAVE_FILE:
+        MAZE_SET_ROUTINE_INFO(SAVE_FILE);
         break;
     case READ_FILE:
         MAZE_SET_ROUTINE_INFO(READ_FILE);
@@ -126,10 +134,12 @@ static void maze_set_routine_info(MazeRoutine_t routine){
     case FIND_PATH:
         MAZE_SET_ROUTINE_INFO(FIND_PATH);
         break;
+    case GENERATE_RANDOM:
+        MAZE_SET_ROUTINE_INFO(GENERATE_RANDOM);
+        break;
     default:
         break;
     }
-
     return;
 }
 
@@ -177,14 +187,13 @@ void maze_deallocate_cell(MazeCell_t *cell){
 }
 
 //
-Maze_t* maze_allocate(int nrow, int ncol){
+void maze_allocate(int nrow, int ncol){
     signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
     if((nrow<=0) || (nrow>MAZE_MAXROW) || (ncol<=0) || (ncol>MAZE_MAXCOL)){
         maze_error(MAZE_EVENT_INVALID_DATA, ALLOCATE_MAZE);
         return NULL;
     }
     signal(MAZE_EVENT_MEMORY_ERROR, maze_signal_handler);
-    Maze_t *maze;
     maze = (Maze_t*)malloc(sizeof(*maze));
     if(maze == NULL){
         maze_error(MAZE_EVENT_MEMORY_ERROR, ALLOCATE_MAZE);
@@ -197,11 +206,10 @@ Maze_t* maze_allocate(int nrow, int ncol){
             maze->grid[i][j] = NULL;
         }
     }
-
-    return maze;
+    return;
 }
 
-void maze_deallocate(Maze_t *maze){
+void maze_deallocate(){
     if(maze != NULL){
         int nrow = maze->nrow;
         int ncol = maze->ncol;
@@ -218,20 +226,82 @@ void maze_deallocate(Maze_t *maze){
 }
 
 //
-void maze_add_cell(Maze_t *maze, MazeCell_t const *cell, int x, int y){
+void maze_add_cell(MazeCell_t const *cell){
     signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
     if(maze == NULL || cell == NULL){
         maze_error(MAZE_EVENT_INVALID_DATA, ADD_CELL);
     }
     int nrow = maze->nrow;
     int ncol = maze->ncol;
-    if((x < 0) || (x >= nrow) || (y < 0 ) || (y >= ncol)){
-        maze_error(MAZE_EVENT_INVALID_DATA, ADD_CELL);
-    }
-
+    int x = cell->row;
+    int y = cell->col;
     maze->grid[x][y] = cell;
 }
-Maze_t* maze_readfile(char const *filename);
-void maze_writefile(char const *filename, Maze_t *maze);
-void maze_print(Maze_t const *maze);
-int maze_find_path(Maze_t *maze, int row, int col);
+
+//
+void maze_readfile(char const *filename){
+    int nrow;
+    int ncol;
+    signal(MAZE_EVENT_RUNTIME_ERROR, maze_signal_handler);
+    FILE *fp;
+    fp = fopen(filename, "r");
+    if(fp == NULL){
+        maze_error(MAZE_EVENT_RUNTIME_ERROR, READ_FILE);
+        return NULL;
+    }
+    fscanf(fp, "%d %d %d %d", &nrow, &ncol, &xstart, &ystart);
+    maze_allocate(nrow, ncol);
+    char value;
+    int ival;
+    for(int i=0; i < nrow; i++){
+        for(int j=0; j < ncol; j++){
+            if(i == xstart && j == ystart){
+                value = MAZE_PATH_START;
+                MazeCell_t* cell = maze_allocate_cell(xstart, ystart, value);
+                maze_add_cell(cell);
+            }
+            fscanf(fp, "%d", &ival);
+            if(ival == 1){ value = MAZE_PATH_WALL; }
+            else{ value = MAZE_PATH_OPEN; }
+            MazeCell_t *cell = maze_allocate_cell(i, j, value);
+            maze_add_cell(cell);
+        }
+    }
+    if(fp){fclose(fp);}
+    return;
+}
+
+//
+void maze_save_file(char const *filename){
+    signal(MAZE_EVENT_RUNTIME_ERROR, maze_signal_handler);
+    signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
+    if(maze == NULL){
+        maze_error(MAZE_EVENT_INVALID_DATA, SAVE_FILE);
+        return;
+    }
+    int nrow = maze->nrow;
+    int ncol = maze->ncol;
+    char cval;
+    FILE *fp;
+    MazeCell_t *cell;
+    fp = fopen(filename, "w");
+    if(fp == NULL){
+        maze_error(MAZE_EVENT_RUNTIME_ERROR, SAVE_FILE);
+        return;
+    }
+    for(int i=0; i < nrow; i++){
+        for(int j=0; j < ncol; j++){
+            cell = maze->grid[i][j];
+            fprintf(fp, "%c", cell->value);
+        }
+        putc('\n', fp);
+    }
+
+    if(fp){fclose(fp);}
+    return;
+}
+
+
+void maze_print(){}
+int maze_find_path(int row, int col);
+void maze_generate_random(char const *filename);
