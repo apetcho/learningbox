@@ -83,3 +83,8 @@ unsigned xnr_set_length(const void* _set){
     assert(set);
     return set->count;
 }
+
+//
+int xnr_differ(const void* lhs, const void* rhs){
+    return lhs != rhs;
+}
