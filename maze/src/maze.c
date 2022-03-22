@@ -10,12 +10,12 @@
 
 #define MAZE_ROUTINE(name) maze_ ## name
 
-#define MAZE_ERROR_MESSAGE(routine, ...) \
+#define MAZE_ERROR_MESSAGE(routine, fmt, ...) \
     do{\
         char buf[80];\
-        sprintf(buf, "%s(): %s", (routine), strerror(errno));\
+        sprintf(buf, "%s(): %s" , routine, strerror(errno));\
         fprintf(stderr, "%s\n", buf);\
-        fprintf(stderr, __VA_ARGS__);\
+        fprintf(stderr, fmt, __VA_ARGS__);\
         fprintf(stderr, "\n");\
     } while(0)
 
@@ -55,27 +55,31 @@ enum MazeRoutine_e {
     SAVE_FILE,
     PRINT,
     FIND_PATH,
+    GRID_SHAPE,
     GENERATE_RANDOM
 };
 typedef enum MazeRoutine_e MazeRoutine_t;
 
 int xstart = -1;
 int ystart = -1;
+int nrow = -1;
+int ncol = -1;
 Maze_t *maze = NULL;
 static char maze_routine_name[20];
 static MazeRoutine_t maze_routine_index;
 
-static char const *const maze_routines[] = {
-    [ALLOCATE_CELL] = MAZE_ROUTINE(allocate_cell),
-    [ALLOCATE_MAZE] = MAZE_ROUTINE(allocate),
-    [DEALLOCATE_CELL] = MAZE_ROUTINE(deallocate_cell),
-    [DEALLOCATE_MAZE] = MAZE_ROUTINE(deallocate),
-    [ADD_CELL] = MAZE_ROUTINE(add_cell),
-    [READ_FILE] = MAZE_ROUTINE(read_file),
-    [SAVE_FILE] = MAZE_ROUTINE(save_file),
-    [PRINT] = MAZE_ROUTINE(print),
-    [FIND_PATH] = MAZE_ROUTINE(find_path),
-    [GENERATE_RANDOM] = MAZE_ROUTINE(generate_random),
+static char* maze_routines[] = {
+    /*[ALLOCATE_CELL] =*/ (char*)MAZE_ROUTINE(allocate_cell),
+    /*[ALLOCATE_MAZE] =*/ (char*)MAZE_ROUTINE(allocate),
+    /*[DEALLOCATE_CELL] =*/ (char*)MAZE_ROUTINE(deallocate_cell),
+    /*[DEALLOCATE_MAZE] =*/ (char*)MAZE_ROUTINE(deallocate),
+    /*[ADD_CELL] = */ (char*)MAZE_ROUTINE(add_cell),
+    /*[READ_FILE] =*/ (char*)MAZE_ROUTINE(read_file),
+    /*[SAVE_FILE] */ (char*)MAZE_ROUTINE(save_file),
+    /*[PRINT] =*/ (char*)MAZE_ROUTINE(print),
+    /*[FIND_PATH] =*/ (char*)MAZE_ROUTINE(find_path),
+    /**/ (char*)MAZE_ROUTINE(grid_shape),
+    /*[GENERATE_RANDOM] =*/ (char*)MAZE_ROUTINE(generate_random),
     NULL
 };
 //
@@ -86,17 +90,17 @@ static void maze_signal_handler(int maze_signum){
         return;
     case MAZE_EVENT_INVALID_DATA:
         sprintf(message, "invalid data.");
-        MAZE_ERROR_MESSAGE(maze_routine_name, message);
+        MAZE_ERROR_MESSAGE(maze_routine_name, "%s\n", message);
         if(maze){ maze_deallocate();}
         exit(EXIT_FAILURE);
     case MAZE_EVENT_MEMORY_ERROR:
         sprintf(message, "memory error.");
-        MAZE_ERROR_MESSAGE(maze_routine_name, message);
+        MAZE_ERROR_MESSAGE(maze_routine_name, "%s\n", message);
         if(maze){ maze_deallocate();}
         exit(EXIT_FAILURE);
     case MAZE_EVENT_RUNTIME_ERROR:
         sprintf(message, "runtime error.");
-        MAZE_ERROR_MESSAGE(maze_routine_name, message);
+        MAZE_ERROR_MESSAGE(maze_routine_name, "%s\n", message);
         if(maze){ maze_deallocate();}
         exit(EXIT_FAILURE);
     default:
@@ -134,6 +138,9 @@ static void maze_set_routine_info(MazeRoutine_t routine){
         break;
     case FIND_PATH:
         MAZE_SET_ROUTINE_INFO(FIND_PATH);
+        break;
+    case GRID_SHAPE:
+        MAZE_SET_ROUTINE_INFO(GRID_SHAPE);
         break;
     case GENERATE_RANDOM:
         MAZE_SET_ROUTINE_INFO(GENERATE_RANDOM);
@@ -193,22 +200,21 @@ void maze_allocate(int nrow, int ncol){
     signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
     if((nrow<=0) || (nrow>MAZE_MAXROW) || (ncol<=0) || (ncol>MAZE_MAXCOL)){
         maze_error(MAZE_EVENT_INVALID_DATA, ALLOCATE_MAZE);
-        return NULL;
+        return;
     }
     signal(MAZE_EVENT_MEMORY_ERROR, maze_signal_handler);
     maze = (Maze_t*)malloc(sizeof(*maze));
     if(maze == NULL){
         maze_error(MAZE_EVENT_MEMORY_ERROR, ALLOCATE_MAZE);
-        return NULL;
+        return;
     }
     maze->ncol = ncol;
     maze->nrow = nrow;
-    for(int i=0; i < nrow; i++){
-        for(int j=0; j < ncol; j++){
+    for(int i=0; i < MAZE_MAXROW; i++){
+        for(int j=0; j < MAZE_MAXCOL; j++){
             maze->grid[i][j] = NULL;
         }
     }
-    maze = NULL;
     return;
 }
 
@@ -225,24 +231,23 @@ void maze_deallocate(){
         }
         free(maze);
     }
+    maze = NULL;
     return;
 }
 
 //
-void maze_add_cell(MazeCell_t const *cell){
+void maze_add_cell(MazeCell_t *cell){
     signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
     if(maze == NULL || cell == NULL){
         maze_error(MAZE_EVENT_INVALID_DATA, ADD_CELL);
     }
-    int nrow = maze->nrow;
-    int ncol = maze->ncol;
     int x = cell->row;
     int y = cell->col;
     maze->grid[x][y] = cell;
 }
 
 //
-void maze_readfile(char const *filename){
+void maze_read_file(char const *filename){
     int nrow;
     int ncol;
     MazeCell_t* cell;
@@ -251,7 +256,7 @@ void maze_readfile(char const *filename){
     fp = fopen(filename, "r");
     if(fp == NULL){
         maze_error(MAZE_EVENT_RUNTIME_ERROR, READ_FILE);
-        return NULL;
+        return;
     }
     fscanf(fp, "%d %d %d %d", &nrow, &ncol, &xstart, &ystart);
     maze_allocate(nrow, ncol);
@@ -266,7 +271,9 @@ void maze_readfile(char const *filename){
             }
             fscanf(fp, "%d", &ival);
             if(ival == 1){ value = MAZE_PATH_WALL; }
-            else{ value = MAZE_PATH_OPEN; }
+            else if(ival==0){ value = MAZE_PATH_OPEN; }
+            else if(ival==2){ value = MAZE_PATH_START; }
+            //else{ value = MAZE_PATH_MARK; }
             cell = maze_allocate_cell(i, j, value);
             maze_add_cell(cell);
         }
@@ -299,13 +306,16 @@ void maze_save_file(char const *filename){
         for(int j=0; j < ncol; j++){
             cell = maze->grid[i][j];
             if(cell->value == MAZE_PATH_WALL){ xyval = 1; }
-            else{ xyval = 0; }
+            else if(cell->value == MAZE_PATH_START){ xyval = 2; }
+            else if(cell->value == MAZE_PATH_MARK){ xyval = 0; }
+            else if(cell->value == MAZE_PATH_OPEN){ xyval = 0; }
             fprintf(fp, "%d", xyval);
         }
         putc('\n', fp);
     }
 
     if(fp){fclose(fp);}
+    maze_deallocate();
     return;
 }
 
@@ -318,7 +328,7 @@ void maze_print(){
     }
     int nrow = maze->nrow;
     int ncol = maze->ncol;
-    char cval;
+    //char cval;
     FILE *fp;
     MazeCell_t *cell;
     fp = stdout;
@@ -330,7 +340,6 @@ void maze_print(){
         }
         putc('\n', fp);
     }
-
     return;
 }
 
@@ -350,9 +359,9 @@ int maze_find_path(int x, int y){
     cell = maze->grid[x][y];
     if(cell->value == MAZE_PATH_WALL){ return 0; }
     if(cell->value == MAZE_PATH_MARK){ return 0; }
-    cell->value = MAZE_PATH_MARK;
+    cell->value = MAZE_PATH_OPEN;
     if((x==1)||(x==nrow) || (y==1)||(y==ncol)){ return 1; }
-
+    cell->value = MAZE_PATH_MARK;
     if(maze_find_path(x-1, y)){ return 1; }
     if(maze_find_path(x, y+1)){ return 1; }
     if(maze_find_path(x+1, y)){ return 1; }
@@ -363,31 +372,34 @@ int maze_find_path(int x, int y){
 }
 
 //
-
-static double get_probability(int x, int y){
+static char get_probability(int x, int y){
     double maxval = (double)(MAZE_MAXCOL * MAZE_MAXROW);
     int nrow = rand() % 10 + 10;
     int ncol = rand() % 10 + 10;
     double a = (double)(x*nrow)/(double)MAZE_MAXROW;
     double b = (double)(y*ncol)/(double)MAZE_MAXCOL;
     double xy = (double)(rand()%16+1) / (double)MAZE_MAXROW;
-    double prob;
+    char prob;
     double val = (a*b)/maxval;
-    prob = (val > 1.0) ? xy : val; 
-
+    prob = (val < xy) ? MAZE_PATH_WALL : MAZE_PATH_OPEN; 
+    //printf("%.2lf\n", prob);
     return prob;
 }
 
-void maze_generate_random(char const *filename){
-    srand((unsigned)time(NULL));
-    int nrow, ncol;
+//
+void maze_grid_shape(){
     nrow = rand() % 10 + 10;
     ncol = rand() % 10 + 10;
     xstart = rand() % (nrow/2) + (nrow/5);
     ystart = rand() % (ncol/2) + (ncol/5);
+}
+//
+void maze_generate_random(char const *filename){
+    /*printf("nrow = %d\n", nrow);
+    printf("ncol = %d\n", ncol);
+    printf("xstart = %d\n", xstart);
+    printf("ystart = %d\n", ystart);*/
     maze_allocate(nrow, ncol);
-    double prob = 0.0;
-
     char cval;
     MazeCell_t *cell;
 
@@ -396,13 +408,14 @@ void maze_generate_random(char const *filename){
             if((i==xstart) || (j==ystart)){
                 cval = MAZE_PATH_START;
                 cell = maze_allocate_cell(xstart, ystart, cval);
+                maze_add_cell(cell);
             }
-            prob = get_probability(i, j);
-            cval = (prob > 0.4) ? MAZE_PATH_OPEN : MAZE_PATH_WALL;
+            cval = get_probability(i, j);
             cell = maze_allocate_cell(i, j, cval);
+            maze_add_cell(cell);
         }
     }
-
+    cell = NULL;
     maze_save_file(filename);
-    maze_deallocate(maze);
+    return;
 }
