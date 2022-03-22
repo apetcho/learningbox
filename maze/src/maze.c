@@ -168,7 +168,14 @@ MazeCell_t* maze_allocate_cell(int row, int col, char val){
     return cell;
 }
 
-void maze_deallocate_cell(MazeCell_t *cell);
+//
+void maze_deallocate_cell(MazeCell_t *cell){
+    if(cell != NULL){
+        free(cell);
+    }
+    return;
+}
+
 Maze_t* maze_allocate();
 void maze_deallocate(Maze_t *maze);
 
