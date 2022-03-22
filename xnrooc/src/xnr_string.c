@@ -21,7 +21,16 @@ static void* _string_ctor(void *_self, va_list *args){
     return self;
 }
 
-static void* _string_dtor(void *_self){}
+//
+static void* _string_dtor(void *_self){
+    xnr_string_t *self = _self;
+    free(self->text);
+    self->text = 0;
+
+    return self;
+}
+
+
 static void* _string_clone(const void *_self){}
 static int _string_differ(const void *_self, const void *other){}
 
