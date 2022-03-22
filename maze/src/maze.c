@@ -301,7 +301,30 @@ void maze_save_file(char const *filename){
     return;
 }
 
+//
+void maze_print(){
+    signal(MAZE_EVENT_INVALID_DATA, maze_signal_handler);
+    if(maze == NULL){
+        maze_error(MAZE_EVENT_INVALID_DATA, PRINT);
+        return;
+    }
+    int nrow = maze->nrow;
+    int ncol = maze->ncol;
+    char cval;
+    FILE *fp;
+    MazeCell_t *cell;
+    fp = stdout;
+    
+    for(int i=0; i < nrow; i++){
+        for(int j=0; j < ncol; j++){
+            cell = maze->grid[i][j];
+            fprintf(fp, "%c", cell->value);
+        }
+        putc('\n', fp);
+    }
 
-void maze_print(){}
+    return;
+}
+
 int maze_find_path(int row, int col);
 void maze_generate_random(char const *filename);
