@@ -4,9 +4,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
 add_executable(
-    xnrproj
-    src/main.c src/xnr_bag.c 
-    src/xnr_set.c src/xnr_object.c
-    src/xnr_set.h  src/xnr_object.h 
+    xnrbag src/main.c src/xnr_bag.c src/xnr_set.h  src/xnr_object.h
 )
+add_executable(xnrset src/main.c src/xnr_set.c src/xnr_object.c)
 
