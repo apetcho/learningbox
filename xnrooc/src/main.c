@@ -1,21 +1,21 @@
 #include<stdio.h>
 #include "xnr_object.h"
-#include "xnr_set.h"
+#include "xnr_string.h"
 
 
 int main(){
-    void *s = xnr_new(xnr_set);
-    void *a = xnr_set_add(s, xnr_new(xnr_object));
-    void *b = xnr_set_add(s, xnr_new(xnr_object));
-    void *c = xnr_new(xnr_object);
+    void *a = xnr_new(xnr_string, "a");
+    void **aa = xnr_clone(a);
+    void *b = xnr_new(xnr_string, "b");
 
-    if(xnr_set_contains(s, a) && xnr_set_contains(s, b)){ puts("OK"); }
-    if(xnr_set_contains(s, c)){ puts("contains?"); }
-    if(xnr_differ(a, xnr_set_add(s, a))){ puts("differ?"); }
-    if(xnr_set_contains(s, xnr_set_drop(s, a))){ puts("drop?"); }
+    printf("xnr_len(a) == %lu\n", (unsigned long)xnr_len(a));
+    if(xnr_differ(a, b)){ puts("OK"); }
+    if(xnr_differ(a, aa)){ puts("differ?");}
 
-    xnr_delete(xnr_set_drop(s, b));
-    xnr_delete(xnr_set_drop(s, c));
-    
+    if(a == aa){ puts("clone?"); }
+    xnr_delete(a);
+    xnr_delete(aa);
+    xnr_delete(b);
+
     return 0;
 }
