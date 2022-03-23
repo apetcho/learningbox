@@ -28,7 +28,7 @@ double xnr_exec(const void *tree){
 
 /***/
 void xnr_process(const void *tree){
-    printf("\t%g\n", _xnr_exec(tree));
+    printf("\t%g\n", xnr_exec(tree));
 }
 
 
