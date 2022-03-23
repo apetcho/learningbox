@@ -6,12 +6,6 @@
 #include "xnr_parser.h"
 #include "xnr_value.h"
 
-/** Evaluator driver */
-typedef struct xnr_type{
-    void* (*new)(va_list args);
-    double (*exec)(const void *tree);
-    void (*delete)(void *tree);
-} xnr_type_t;
 
 /***/
 void* xnr_new(const void *type, ...){
@@ -27,14 +21,14 @@ void* xnr_new(const void *type, ...){
 }
 
 /***/
-static double _xnr_exec(const void *tree){
+double xnr_exec(const void *tree){
     assert(tree && *(xnr_type_t **)tree && (*(xnr_type_t**)tree)->exec);
     return (*(xnr_type_t **)tree)->exec(tree);
 }
 
 /***/
 void xnr_process(const void *tree){
-    printf("\t%g\n", _xnr_exec(tree));
+    printf("\t%g\n", xnr_exec(tree));
 }
 
 
@@ -50,6 +44,8 @@ typedef struct xnr_value{
     double value;
 }xnr_value_t;
 
+#define XNR_VALUE(tree) (((xnr_value_t *)tree)->value)
+
 /***/
 static void* _make_value(va_list args){
     xnr_value_t *node = malloc(sizeof(xnr_value_t));
@@ -60,7 +56,7 @@ static void* _make_value(va_list args){
 
 /***/
 static double _do_value(const void *tree){
-    return ((xnr_value_t*)tree)->value;
+    return XNR_VALUE(tree);
 }
 
 /** unary operators */
@@ -68,6 +64,8 @@ typedef struct xnr_unary_op{
     const void *type;
     void *arg;
 } xnr_unary_op_t;
+
+#define XNR_ARG(tree) (((xnr_unary_op_t *)tree)->arg)
 
 /***/
 static void* _make_unary_op(va_list args){
@@ -79,7 +77,7 @@ static void* _make_unary_op(va_list args){
 
 /***/
 static double _do_minus(const void *tree){
-    return - _xnr_exec(((xnr_unary_op_t*)tree)->arg);
+    return - xnr_exec(XNR_ARG(tree));
 }
 
 
@@ -88,14 +86,8 @@ static void _free_unary_op(void *tree){
     free(tree);
 }
 
-/** binary operator */
-typedef struct xnr_binary_op{
-    const void *type;
-    void *left;
-    void *right;
-} xnr_binary_op_t;
 
-static void* _make_binary_op(va_list args){
+void* make_binary_op(va_list args){
     xnr_binary_op_t *node = malloc(sizeof(*node));
     assert(node);
     node->left = va_arg(args, void *);
@@ -145,10 +137,11 @@ static void _free_binary_op(void *tree){
 }
 
 /** types */
-static xnr_type_t _Add = {_make_binary_op, _do_add, _free_binary_op};
-static xnr_type_t _Sub = {_make_binary_op, _do_sub, _free_binary_op};
-static xnr_type_t _Mult = {_make_binary_op, _do_mult, _free_binary_op};
-static xnr_type_t _Div = {_make_binary_op, _do_div, _free_binary_op};
+
+static xnr_type_t _Add = {make_binary_op, _do_add, _free_binary_op};
+static xnr_type_t _Sub = {make_binary_op, _do_sub, _free_binary_op};
+static xnr_type_t _Mult = {make_binary_op, _do_mult, _free_binary_op};
+static xnr_type_t _Div = {make_binary_op, _do_div, _free_binary_op};
 static xnr_type_t _Minus = {_make_unary_op, _do_minus, _free_unary_op};
 static xnr_type_t _Value= {_make_value, _do_value, free};
 
