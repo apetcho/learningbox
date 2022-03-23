@@ -113,7 +113,11 @@ static void _do_binary_op(const void *tree, int rank, int par){
     if(par){putchar(')');}
 }
 
-static void _free_binary_op(void *tree){}
+static void _free_binary_op(void *tree){
+    xnr_delete(((xnr_binary_op_t*)tree)->left);
+    xnr_delete(((xnr_binary_op_t*)tree)->right);
+    free(tree);
+}
 
 // Ty
 static xnr_type_t _Add = {
