@@ -49,5 +49,12 @@ void xnr_install(const void *np){
 
 void *xnr_symbol;
 
-int xnr_screen(const char *name){}
+int xnr_screen(const char *name){
+    xnr_name_t **pp = _xnr_search(&name);
+    if(*pp == (void*)name){
+        *pp = xnr_new(xnr_variable, name);
+    }
+    xnr_symbol = *pp;
+    return (*pp)->token;
+}
 
