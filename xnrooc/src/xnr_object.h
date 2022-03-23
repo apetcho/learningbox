@@ -1,6 +1,7 @@
 #ifndef _XNR_OBJECT_H
 #define _XNR_OBJECT_H
 
+#include<stdarg.h>
 #include<stddef.h>
 
 typedef struct xnr_class{
