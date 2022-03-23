@@ -10,7 +10,13 @@ static void *_xnr_circle_ctor(void *_self, va_list *args){
     return self;
 }
 
-static void _xnr_circle_draw(const void *_self){}
+static void _xnr_circle_draw(const void *_self){
+    const xnr_circle_t *self = _self;
+    printf(
+        "<circle x=%d y=%d radius=%d>\n",
+        XNR_GETX(self), XNR_GETY(self), self->rad
+    );
+}
 
 
 //
