@@ -56,7 +56,7 @@ static void* _make_value(va_list args){
 
 /***/
 static double _do_value(const void *tree){
-    return ((xnr_value_t*)tree)->value;
+    return XNR_VALUE(tree);
 }
 
 /** unary operators */
