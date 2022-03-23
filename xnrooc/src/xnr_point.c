@@ -24,3 +24,9 @@ static const xnr_class _Point = {
 };
 
 const void *xnr_point = &_Point;
+
+void xnr_point_move(void *_self, int dx, int dy){
+    xnr_point_t *self = _self;
+    self->x += dx;
+    self->y += dy;
+}
