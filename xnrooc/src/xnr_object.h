@@ -23,10 +23,6 @@ struct xnr_class_{
     int (*puto)(const void *self, FILE *fp);
 };
 
-void* xnr_super_ctor(const void *klass, void *self, va_list *argp);
-void* xnr_super_dtor(const void *klass, void *self);
-int xnr_super_differ(const void *klass, const void *self, const void *b);
-int xnr_super_puto(const void *klass, const void *self, FILE *fp);
 
 extern const void *xnr_object;
 extern const void *xnr_class;
@@ -40,6 +36,11 @@ void* xnr_dtor(void *self);
 int xnr_differ(const void *self, const void *b);
 int xnr_puto(const void *self, FILE *fp);
 const void* xnr_super(const void *self);
+
+void* xnr_super_ctor(const void *klass, void *self, va_list *argp);
+void* xnr_super_dtor(const void *klass, void *self);
+int xnr_super_differ(const void *klass, const void *self, const void *b);
+int xnr_super_puto(const void *klass, const void *self, FILE *fp);
 
 
 #endif

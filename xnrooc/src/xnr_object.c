@@ -97,3 +97,9 @@ void* xnr_dtor(void *self){
     assert(klass->dtor);
     return klass->dtor(self);
 }
+
+void* xnr_super_dtor(const void *klass, void *self){
+    const xnr_class_t *superclass = xnr_super(klass);
+    assert(self && superclass->dtor);
+    return superclass->dtor(self);
+}
