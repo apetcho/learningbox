@@ -34,3 +34,8 @@ static double _do_varibale(const void *tree){
 }
 
 static void _free_variable(void *tree){}
+
+//
+static double _do_assign(const void *tree){
+    return XNR_VALUE(XNR_GETLEFT(tree)) = xnr_exec(XNR_GETRIGHT(tree));
+}
