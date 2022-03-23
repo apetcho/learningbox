@@ -87,7 +87,7 @@ static void _free_unary_op(void *tree){
 }
 
 
-void* make_binary_op(va_list args){
+void* xnr_make_binary_op(va_list args){
     xnr_binary_op_t *node = malloc(sizeof(*node));
     assert(node);
     node->left = va_arg(args, void *);
@@ -98,31 +98,31 @@ void* make_binary_op(va_list args){
 /***/
 static double _do_add(const void *tree){
     return (
-        _xnr_exec(((xnr_binary_op_t*)tree)->left) +
-        _xnr_exec(((xnr_binary_op_t*)tree)->right)
+        xnr_exec(((xnr_binary_op_t*)tree)->left) +
+        xnr_exec(((xnr_binary_op_t*)tree)->right)
     );
 }
 
 /***/
 static double _do_sub(const void *tree){
     return (
-        _xnr_exec(((xnr_binary_op_t*)tree)->left) -
-        _xnr_exec(((xnr_binary_op_t*)tree)->right)
+        xnr_exec(((xnr_binary_op_t*)tree)->left) -
+        xnr_exec(((xnr_binary_op_t*)tree)->right)
     );
 }
 
 /***/
 static double _do_mult(const void *tree){
     return (
-        _xnr_exec(((xnr_binary_op_t*)tree)->left) *
-        _xnr_exec(((xnr_binary_op_t*)tree)->right)
+        xnr_exec(((xnr_binary_op_t*)tree)->left) *
+        xnr_exec(((xnr_binary_op_t*)tree)->right)
     );
 }
 
 /***/
 static double _do_div(const void *tree){
-    double left = _xnr_exec(((xnr_binary_op_t*)tree)->left);
-    double right = _xnr_exec(((xnr_binary_op_t*)tree)->right);
+    double left = xnr_exec(((xnr_binary_op_t*)tree)->left);
+    double right = xnr_exec(((xnr_binary_op_t*)tree)->right);
     if(right == 0.0){
         xnr_error("division by zero");
     }
@@ -130,7 +130,7 @@ static double _do_div(const void *tree){
 }
 
 /***/
-static void _free_binary_op(void *tree){
+void xnr_free_binary_op(void *tree){
     xnr_delete(((xnr_binary_op_t*)tree)->left);
     xnr_delete(((xnr_binary_op_t*)tree)->right);
     free(tree);
@@ -138,10 +138,10 @@ static void _free_binary_op(void *tree){
 
 /** types */
 
-static xnr_type_t _Add = {make_binary_op, _do_add, _free_binary_op};
-static xnr_type_t _Sub = {make_binary_op, _do_sub, _free_binary_op};
-static xnr_type_t _Mult = {make_binary_op, _do_mult, _free_binary_op};
-static xnr_type_t _Div = {make_binary_op, _do_div, _free_binary_op};
+static xnr_type_t _Add = {xnr_make_binary_op, _do_add, xnr_free_binary_op};
+static xnr_type_t _Sub = {xnr_make_binary_op, _do_sub, xnr_free_binary_op};
+static xnr_type_t _Mult = {xnr_make_binary_op, _do_mult, xnr_free_binary_op};
+static xnr_type_t _Div = {xnr_make_binary_op, _do_div, xnr_free_binary_op};
 static xnr_type_t _Minus = {_make_unary_op, _do_minus, _free_unary_op};
 static xnr_type_t _Value= {_make_value, _do_value, free};
 
