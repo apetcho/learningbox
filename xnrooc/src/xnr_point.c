@@ -1,4 +1,4 @@
-#include<stdint.h>
+#include<stdio.h>
 #include<stdarg.h>
 
 #include "xnr_point.h"
@@ -11,7 +11,10 @@ static void* _xnr_point_ctor(void *_self, va_list *args){
     return self;
 }
 
-static void _xnr_point_draw(const void *_self){}
+static void _xnr_point_draw(const void *_self){
+    const xnr_point_t *self = _self;
+    printf("\".\" @(%d, %d)\n", self->x, self->y);
+}
 
 static const xnr_class _Point = {
     sizeof(xnr_point_t),
