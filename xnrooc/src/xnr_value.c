@@ -6,12 +6,6 @@
 #include "xnr_parser.h"
 #include "xnr_value.h"
 
-/** Evaluator driver */
-typedef struct xnr_type{
-    void* (*new)(va_list args);
-    double (*exec)(const void *tree);
-    void (*delete)(void *tree);
-} xnr_type_t;
 
 /***/
 void* xnr_new(const void *type, ...){
