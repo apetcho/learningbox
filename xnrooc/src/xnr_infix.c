@@ -33,7 +33,12 @@ static void _xnr_exec(const void *tree, int rank, int par){
 }
 
 
-void xnr_process(const void *tree){}
+void xnr_process(const void *tree){
+    putchar('\t');
+    _xnr_exec(tree, (*(xnr_type_t**)tree)->rank, 0);
+    putchar('\t');
+}
+
 void xnr_delete(void *tree){}
 
 // Number
