@@ -159,7 +159,7 @@ static void *_statement(void){
     case XNRTOK_LET:
         if(_xnr_scan(0) != XNRTOK_VAR){ xnr_error("bad assignment");}
         result = xnr_symbol;
-        if(_xnr_scan(0) != '0'){ xnr_error("expecting =");}
+        if(_xnr_scan(0) != '='){ xnr_error("expecting =");}
         _xnr_scan(0);
         return xnr_new(xnr_assign, result, _xnr_sum());
     default:
