@@ -8,6 +8,16 @@
 
 #include "xnr_parser.h"
 #include "xnr_value.h"
+#include "xnr_mathlib.h"
+#include "xnr_variable.h"
+#include "xnr_name.h"       // for setting reserved word
+
+/** @todo */
+static void _init_names(void){}
+
+#define XNR_ALNUM   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"    \
+                    "abcdefghijklmnopqrstuvwxyz"    \
+                    "_" "0123456789"
 
 /** Scanner */
 static xnr_token_t token;   // current input symbol
