@@ -121,3 +121,14 @@ int main(void){
 
     return errors > 0;
 }
+
+
+/***/
+void xnr_error(const char *fmt, ...){
+    va_list args;
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    putc('\n', stderr);
+    va_end(args);
+    longjmp(onError, 1);
+}
