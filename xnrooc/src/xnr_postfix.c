@@ -64,7 +64,13 @@ typedef struct xnr_unary_op{
     void *arg;
 }xnr_unary_op_t;
 
-static void* _make_unary_op(va_list args){}
+static void* _make_unary_op(va_list args){
+    xnr_unary_op_t *node = malloc(sizeof(*node));
+    assert(node);
+    node->arg = va_arg(args, void *);
+    return node;
+}
+
 static void _do_unary_op(const void *tree);
 static void _free_unary_op(void *tree){}
 
