@@ -39,3 +39,11 @@ static void _free_variable(void *tree){}
 static double _do_assign(const void *tree){
     return XNR_VALUE(XNR_GETLEFT(tree)) = xnr_exec(XNR_GETRIGHT(tree));
 }
+
+/** Variable types */
+static xnr_type_t _Var = {_xnr_make_variable, _do_varibale, _free_variable};
+static xnr_type_t _Assign = {
+    xnr_make_binary_op, _do_assign, xnr_free_binary_op};
+
+const void* xnr_variable = &_Var;
+const void* xnr_assign = &_Assign;
