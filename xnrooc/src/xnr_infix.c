@@ -57,7 +57,9 @@ static void* _make_value(va_list arg){
     return node;
 }
 
-static void _do_value(const void *tree, int rank, int par){}
+static void _do_value(const void *tree, int rank, int par){
+    printf(" %g", ((xnr_value_t*)tree)->value);
+}
 
 // unary op
 typedef struct xnr_unary_op {
