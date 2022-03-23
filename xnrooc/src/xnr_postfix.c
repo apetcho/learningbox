@@ -98,7 +98,12 @@ static void* _make_binary_op(va_list args){
     return node;
 }
 
-static void _do_binary_op(const void *tree);
+static void _do_binary_op(const void *tree){
+    _xnr_exec(((xnr_binary_op_t*)tree)->left);
+    _xnr_exec(((xnr_binary_op_t*)tree)->right);
+    printf(" %s ", (*(xnr_type_t**)tree)->name);
+}
+
 static void _free_binary_op(void *tree){}
 
 // types
