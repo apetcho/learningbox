@@ -86,12 +86,6 @@ static void _free_unary_op(void *tree){
     free(tree);
 }
 
-/** binary operator */
-typedef struct xnr_binary_op{
-    const void *type;
-    void *left;
-    void *right;
-} xnr_binary_op_t;
 
 static void* _make_binary_op(va_list args){
     xnr_binary_op_t *node = malloc(sizeof(*node));
