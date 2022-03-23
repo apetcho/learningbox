@@ -55,7 +55,13 @@ static xnr_token_t _xnr_scan(const char *buf){
     return token;
 }
 
-// factor: + factor | - factor | XNR_NUMBER | (sum)
+// factor: + factor |
+//         - factor |
+//         XNRTOK_NUMBER |
+//         XNRTOK_CONST |
+//         XNRTOK_VAR |
+//         XNRTOK_MATH (sum)
+//          ( sum )
 
 static void* _xnr_sum(void);
 
@@ -70,9 +76,21 @@ static void* _xnr_factor(void){
         return xnr_new(xnr_minus, _xnr_factor());
     default:
         xnr_error("bad factor: '%c' 0x%x", token, token);
-    case XNR_NUMBER:
+    case XNRTOK_NUMBER:
         result = xnr_new(xnr_value, number);
         break;
+    case XNRTOK_CONST:
+    case XNRTOK_VAR:
+        result = xnr_symbol;
+        break;
+    case XNRTOK_MATH:{
+        const xnr_name_t *fp = xnr_symbol;
+        if(_xnr_scan(0) != '('){ xnr_error("expecting ("); }
+        _xnr_scan(0);
+        result = xnr_new(xnr_math, fp, _xnr_sum());
+        if(token != ')'){ xnr_error("expecting"); }
+        break;
+    }
     case '(':
         _xnr_scan(0);
         result = _xnr_sum();
