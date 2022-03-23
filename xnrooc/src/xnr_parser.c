@@ -141,6 +141,23 @@ static void* _xnr_sum(void){
     }
 }
 
+/** @todo stmt: let var = sum
+ *              sum
+*/
+static void *_statement(void){
+    void *result;
+    switch(token){
+    case XNRTOK_LET:
+        if(_xnr_scan(0) != XNRTOK_VAR){ xnr_error("bad assignment");}
+        result = xnr_symbol;
+        if(_xnr_scan(0) != '0'){ xnr_error("expecting =");}
+        _xnr_scan(0);
+        return xnr_new(xnr_assign, result, _xnr_sum());
+    default:
+        return _xnr_sum();
+    }
+}
+
 //
 static jmp_buf onError;
 
