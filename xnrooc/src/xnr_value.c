@@ -77,7 +77,7 @@ static void* _make_unary_op(va_list args){
 
 /***/
 static double _do_minus(const void *tree){
-    return - _xnr_exec(((xnr_unary_op_t*)tree)->arg);
+    return - xnr_exec(((xnr_unary_op_t*)tree)->arg);
 }
 
 
