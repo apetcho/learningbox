@@ -16,4 +16,17 @@ typedef struct xnr_math_{
 
 #define XNR_FUNCTION(tree) (((xnr_math_t*)XNR_GETLEFT(tree))->fun)
 
+static double _do_math(const void *tree){
+    double result = xnr_exec(XNR_GETRIGHT(tree));
 
+    errno = 0;
+    result = XNR_FUNCTION(tree)(result);
+    if(errno){
+        xnr_error(
+            "error in %s: %s",
+            ((xnr_math_t *)XNR_GETLEFT(tree))->_.name,
+            strerror(errno)
+        );
+    }
+    return result;
+}
