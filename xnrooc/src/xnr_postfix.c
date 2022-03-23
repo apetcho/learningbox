@@ -25,7 +25,11 @@ void* xnr_new(const void *type, ...){
     return result;
 }
 
-static void _xnr_exec(const void *tree){}
+static void _xnr_exec(const void *tree){
+    assert(tree && *(xnr_type_t**)tree && (*(xnr_type_t**)tree)->exec);
+    (*(xnr_type_t**)tree)->exec(tree);
+}
+
 void xnr_process(const void *tree){}
 void xnr_delete(void *tree){}
 
