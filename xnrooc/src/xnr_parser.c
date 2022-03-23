@@ -81,7 +81,24 @@ static void* _xnr_product(void){
 }
 
 // sum : product { + | - product } ...
-static void* _xnr_sum(void){}
+static void* _xnr_sum(void){
+    void *result = _xnr_product();
+    const void *type;
+    for(;;){
+        switch((int)token){
+        case '+':
+            type = xnr_add;
+            break;
+        case '-':
+            type = xnr_sub;
+            break;
+        default:
+            return result;
+        }
+        _xnr_scan(0);
+        result = xnr_new(type, result, _xnr_product());
+    }
+}
 
 //
 static jmp_buf onError;
