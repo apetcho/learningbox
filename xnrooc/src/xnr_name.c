@@ -13,7 +13,12 @@
 #define XNR_NAMES   4
 #endif
 
-static int _xnr_cmp(const void *_key, const void *_elt){}
+//
+static int _xnr_cmp(const void *_key, const void *_elt){
+    const char *const *key = _key;
+    const xnr_name_t *const *elt = _elt;
+    return strcmp(*key, (*elt)->name);
+}
 
 static xnr_name_t **_xnr_search(const char **name){}
 
