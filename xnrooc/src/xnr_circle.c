@@ -4,7 +4,11 @@
 #include "xnr_circle.h"
 #include "xnr_object.h"
 
-static void *_xnr_circle_ctor(void *_self, va_list *args){}
+static void *_xnr_circle_ctor(void *_self, va_list *args){
+    xnr_circle_t *self = ((const xnr_class*)xnr_point)->ctor(_self, args);
+    self->rad = va_arg(*args, int);
+    return self;
+}
 
 static void _xnr_circle_draw(const void *_self){}
 
