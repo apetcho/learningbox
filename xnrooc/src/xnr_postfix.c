@@ -71,7 +71,11 @@ static void* _make_unary_op(va_list args){
     return node;
 }
 
-static void _do_unary_op(const void *tree);
+
+static void _do_unary_op(const void *tree){
+    _xnr_exec(((xnr_unary_op_t*)tree)->arg);
+    printf(" %s ", (*(xnr_type_t**)tree)->name);
+}
 static void _free_unary_op(void *tree){}
 
 
