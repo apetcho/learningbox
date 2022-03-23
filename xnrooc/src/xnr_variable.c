@@ -47,3 +47,19 @@ static xnr_type_t _Assign = {
 
 const void* xnr_variable = &_Var;
 const void* xnr_assign = &_Assign;
+
+void xnr_init_const(void){
+    static const xnr_variable_t constants[] = {
+        {{&_Var, "PI", XNRTOK_CONST},  3.14159265358979323846},
+		{{&_Var, "E", XNRTOK_CONST},   2.71828182845904523536},
+		{{&_Var, "GAMMA", XNRTOK_CONST}, 0.57721566490153286060}, /*Euler */
+		{{&_Var, "DEG", XNRTOK_CONST}, 57.29577951308232087680},  /*deg/radian*/
+		{{ &_Var, "PHI", XNRTOK_CONST}, 1.61803398874989484820 },
+		{{ 0 }}
+    };
+
+    const xnr_variable_t *vp;
+    for(vp = constants; vp->_.name; ++vp){
+        xnr_install(vp);
+    }
+}
