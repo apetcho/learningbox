@@ -80,7 +80,10 @@ static void _do_unary_op(const void *tree, int rank, int par){
     _xnr_exec(((xnr_unary_op_t*)tree)->arg, type->rank, 0);
 }
 
-static void _free_unary_op(void *tree){}
+static void _free_unary_op(void *tree){
+    xnr_delete(((xnr_unary_op_t*)tree)->arg);
+    free(tree);
+}
 
 
 // binary op
