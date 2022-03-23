@@ -86,8 +86,8 @@ static void _free_unary_op(void *tree){
 // binary op
 typedef struct xnr_binary_op{
     const void *type;
-    const *left;
-    const *right;
+    void *left;
+    void *right;
 }xnr_binary_op_t;
 
 static void* _make_binary_op(va_list args){
@@ -123,5 +123,6 @@ static xnr_type_t _Value = { "", _make_value, _do_value, free};
 const void *xnr_add = &_Add;
 const void *xnr_sub = &_Sub;
 const void *xnr_mult = &_Mul;
+const void *xnr_div = &_Div;
 const void *xnr_minus = &_Minus;
 const void *xnr_value = &_Value;
