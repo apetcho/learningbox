@@ -36,7 +36,28 @@ static xnr_token_t _xnr_scan(const char *buf){
 
 static void* _xnr_sum(void);
 
-static void* _xnr_factor(void){}
+static void* _xnr_factor(void){
+    void *result;
+    switch((int)token){
+    case '+':
+        _xnr_scan(0);
+        return _xnr_factor();
+    case '-':
+        _xnr_scan(0);
+        return xnr_new(xnr_minus, _xnr_factor());
+    case XNR_NUMBER:
+        result = xnr_new(xnr_value, number);
+        break;
+    case '(':
+        _xnr_scan(0);
+        result = _xnr_sum();
+        if(token != ')'){ xnr_error("expecting )");}
+    default:
+        xnr_error("bad factor: '%c' 0x%x", token, token);
+    }
+    _xnr_scan(0);
+    return result;
+}
 
 // product : factor { * | / factor } ...
 static void* _xnr_product(void){}
