@@ -137,11 +137,11 @@ static void _free_binary_op(void *tree){
 }
 
 /** types */
-/*
-static xnr_type_t _Add = {_make_binary_op, _do_add, _free_binary_op};
-static xnr_type_t _Sub = {_make_binary_op, _do_sub, _free_binary_op};
-static xnr_type_t _Mult = {_make_binary_op, _do_mult, _free_binary_op};
-static xnr_type_t _Div = {_make_binary_op, _do_div, _free_binary_op};
+
+static xnr_type_t _Add = {make_binary_op, _do_add, _free_binary_op};
+static xnr_type_t _Sub = {make_binary_op, _do_sub, _free_binary_op};
+static xnr_type_t _Mult = {make_binary_op, _do_mult, _free_binary_op};
+static xnr_type_t _Div = {make_binary_op, _do_div, _free_binary_op};
 static xnr_type_t _Minus = {_make_unary_op, _do_minus, _free_unary_op};
 static xnr_type_t _Value= {_make_value, _do_value, free};
 
@@ -151,4 +151,3 @@ const void *xnr_div = &_Div;
 const void *xnr_mult = &_Mult;
 const void *xnr_minus = &_Minus;
 const void *xnr_value = &_Value;
-*/
