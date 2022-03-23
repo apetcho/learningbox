@@ -13,8 +13,24 @@
 static xnr_token_t token;   // current input symbol
 static double number;       // current numerical value
 
-//
-static xnr_token_t _xnr_scan(const char *buf){}
+/** return toke = next input sysmbol */
+static xnr_token_t _xnr_scan(const char *buf){
+    static const char *bufPtr;
+    if(buf){ bufPtr = buf; }
+    while(isspace(*bufPtr & 0xff)){ ++bufPtr; }
+
+    if(isdigit(*bufPtr & 0xff) || *bufPtr == '.'){
+        errno = 0;
+        token = XNR_NUMBER;
+        number = strtod(bufPtr, (char**)&bufPtr);
+        if(errno == ERANGE){
+            xnr_error("bad value: %s", strerror(errno));
+        }
+    }else{
+        token = *bufPtr ? *bufPtr++: 0;
+    }
+    return token;
+}
 
 // factor: + factor | - factor | XNR_NUMBER | (sum)
 
