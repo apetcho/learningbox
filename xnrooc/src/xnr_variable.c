@@ -28,3 +28,7 @@ static void* _xnr_make_variable(va_list arg){
 
     return node;
 }
+
+static double _do_varibale(const void *tree){
+    return XNR_VALUE(tree);
+}
