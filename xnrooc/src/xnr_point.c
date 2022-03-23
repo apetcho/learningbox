@@ -13,7 +13,7 @@ static void* _xnr_point_ctor(void *_self, va_list *args){
 
 static void _xnr_point_draw(const void *_self){
     const xnr_point_t *self = _self;
-    printf("\".\" @(%d, %d)\n", self->x, self->y);
+    printf("<point x=%d, y=%d>\n", self->x, self->y);
 }
 
 static const xnr_class _Point = {
