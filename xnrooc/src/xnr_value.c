@@ -44,6 +44,8 @@ typedef struct xnr_value{
     double value;
 }xnr_value_t;
 
+#define XNR_VALUE(tree) (((xnr_value_t *)tree)->value)
+
 /***/
 static void* _make_value(va_list args){
     xnr_value_t *node = malloc(sizeof(xnr_value_t));
