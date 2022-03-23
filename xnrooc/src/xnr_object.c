@@ -2,39 +2,82 @@
 #include<stdlib.h>
 #include<assert.h>
 #include<stdio.h>
+#include<string.h>
 
 #include "xnr_object.h"
 
+// -- object --
+//! @todo
+static void* _xnr_object_ctor(void *_self, va_list *argp){}
 
-//
-void* xnr_new(const void *_klass, ...){
-    const xnr_class *klass = _klass;
-    void *ptr = calloc(1, klass->size);
-    assert(ptr);
-    *(const xnr_class **)ptr = klass;
+//! @todo
+static void* _xnr_object_dtor(void *_self){}
 
-    if(klass->ctor){
-        va_list args;
-        va_start(args, _klass);
-        ptr = klass->ctor(ptr, &args);
-        va_end(args);
+//! @todo
+static int _xnr_object_differ(const void *_self, const void *b){}
+
+//! @todo
+static int _xnr_object_puto(const void *_self, FILE *fp){}
+
+//! @todo
+const void *xnr_classof(const void *_self){}
+
+//! @todo
+size_t xnr_sizeof(const void *_self){}
+
+// -- xnr_class --
+//! @todo
+static void* _xnr_class_ctor(void *_self, va_list *argp){}
+
+//! @todo
+static void* _xnr_class_dtor(void *_self){}
+
+//! @todo
+const void* xnr_super(const void *_self){}
+
+// -- initialization --
+static const xnr_class_t object[] = {
+    {
+        {object+1},
+        "Object", object, sizeof(xnr_object_t),
+        _xnr_object_ctor, _xnr_object_dtor,
+        _xnr_object_differ, _xnr_object_puto
+    },
+    {
+        {object+1},
+        "Class", object, sizeof(xnr_class_t),
+        _xnr_class_ctor, _xnr_class_dtor,
+        _xnr_object_differ, _xnr_object_puto
     }
+};
 
-    return ptr;
+const void *xnr_object = object;
+const void *xnr_class = object + 1;
+
+// -- object management and selectors ---
+
+void* xnr_new(const void *_klass, ...){
+    const xnr_class_t *klass = _klass;
+    xnr_object_t *object;
+    va_list ap;
+
+    assert(klass && klass->size);
+    object = calloc(1, klass->size);
+    assert(object);
+    object->klass = klass;
+    va_start(ap, _klass);
+    object = xnr_ctor(object, &ap);
+    va_end(ap);
+
+    return object;
 }
 
 //
 void xnr_delete(void *self){
-    const xnr_class **cp = self;
+    const xnr_class_t **cp = self;
     if(self && *cp && (*cp)->dtor){
         self = (*cp)->dtor(self);
     }
     free(self);
 }
 
-//
-void xnr_draw(const void *self){
-    const xnr_class *const *cp = self;
-    assert(self && *cp && (*cp)->draw);
-    (*cp)->draw(self);
-}
