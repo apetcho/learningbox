@@ -165,15 +165,20 @@ static jmp_buf onError;
 int main(void){
     volatile int errors = 0;
     char buf[BUFSIZ];
+
+    _init_names();
+    xnr_init_const();
+    xnr_init_math();
+
     if(setjmp(onError)){ ++errors; }
 
     // mainloop
-    while(fgets(buf, sizeof (buf), stdin)){
+    while(fgets(buf, sizeof(buf), stdin)){
         if(_xnr_scan(buf)){
-            void *tree = _xnr_sum();
-            if(token){xnr_error("trash after sum");}
-            xnr_process(tree);
-            xnr_delete(tree);
+            void *e = _statement();
+            if(token){xnr_error("trash after sum"); }
+            xnr_process(e);
+            xnr_delete(e);
         }
     }
 
