@@ -50,7 +50,13 @@ typedef struct xnr_value_{
     double value;
 }xnr_value_t;
 
-static void* _make_value(va_list arg){}
+static void* _make_value(va_list arg){
+    xnr_value_t *node = malloc(sizeof(*node));
+    assert(node);
+    node->value = va_arg(arg, double);
+    return node;
+}
+
 static void _do_value(const void *tree, int rank, int par){}
 
 // unary op
