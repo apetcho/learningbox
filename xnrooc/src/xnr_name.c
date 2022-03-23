@@ -20,7 +20,22 @@ static int _xnr_cmp(const void *_key, const void *_elt){
     return strcmp(*key, (*elt)->name);
 }
 
-static xnr_name_t **_xnr_search(const char **name){}
+//
+static xnr_name_t **_xnr_search(const char **name){
+    static const xnr_name_t **names; // dynamic tables
+    static size_t used;
+    static size_t max;
+
+    if(used >= max){
+        names = names ?
+            realloc(names, (max *= 2)*sizeof(*names))
+            : malloc((max = XNR_NAMES)*sizeof(*names));
+
+        assert(names);
+    }
+
+    return xnr_bsearch(name, names, &used, sizeof(*names), _xnr_cmp);
+}
 
 
 void xnr_install(const void *np){}
