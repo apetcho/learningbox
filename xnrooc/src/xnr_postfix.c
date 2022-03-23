@@ -76,7 +76,11 @@ static void _do_unary_op(const void *tree){
     _xnr_exec(((xnr_unary_op_t*)tree)->arg);
     printf(" %s ", (*(xnr_type_t**)tree)->name);
 }
-static void _free_unary_op(void *tree){}
+
+static void _free_unary_op(void *tree){
+    xnr_delete(((xnr_unary_op_t*)tree)->arg);
+    free(tree);
+}
 
 
 // binary op
