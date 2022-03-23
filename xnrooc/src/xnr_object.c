@@ -74,10 +74,8 @@ void* xnr_new(const void *_klass, ...){
 
 //
 void xnr_delete(void *self){
-    const xnr_class_t **cp = self;
-    if(self && *cp && (*cp)->dtor){
-        self = (*cp)->dtor(self);
+    if(self){
+        free(xnr_dtor(self));
     }
-    free(self);
 }
 

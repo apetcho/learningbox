@@ -36,6 +36,7 @@ void xnr_delete(void *item);
 const void* xnr_classof(const void *self);
 size_t xnr_sizeof(const void *self);
 void* xnr_ctor(void *self, va_list *argp);
+void* xnr_dtor(void *self);
 int xnr_differ(const void *self, const void *b);
 int xnr_puto(const void *self, FILE *fp);
 const void* xnr_super(const void *self);
