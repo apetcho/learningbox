@@ -102,7 +102,17 @@ static void* _make_binary_op(va_list args){
     return node;
 }
 
-static void _do_binary_op(const void *tree, int rank, int par){}
+static void _do_binary_op(const void *tree, int rank, int par){
+    const xnr_type_t *type = *(xnr_type_t**)tree;
+    par = type->rank < rank || (par && type->rank == rank);
+
+    if(par){putchar('('); }
+    _xnr_exec(((xnr_binary_op_t*)tree)->left, type->rank, 0);
+    printf(" %s ", type->name);
+    _xnr_exec(((xnr_binary_op_t*)tree)->right, type->rank, type->rpar);
+    if(par){putchar(')');}
+}
+
 static void _free_binary_op(void *tree){}
 
 // Ty
