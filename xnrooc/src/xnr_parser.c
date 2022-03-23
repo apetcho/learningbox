@@ -23,6 +23,7 @@ static void _init_names(void){}
 static xnr_token_t token;   // current input symbol
 static double number;       // current numerical value
 
+//!@todo
 /** return toke = next input sysmbol */
 static xnr_token_t _xnr_scan(const char *buf){
     static const char *bufPtr;
@@ -31,12 +32,24 @@ static xnr_token_t _xnr_scan(const char *buf){
 
     if(isdigit(*bufPtr & 0xff) || *bufPtr == '.'){
         errno = 0;
-        token = XNR_NUMBER;
+        token = XNRTOK_NUMBER;
         number = strtod(bufPtr, (char**)&bufPtr);
         if(errno == ERANGE){
             xnr_error("bad value: %s", strerror(errno));
         }
-    }else{
+    }else if(isalpha(*bufPtr & 0xff) || *bufPtr == '_'){
+        char buf[BUFSIZ];
+        int len = strspn(bufPtr, XNR_ALNUM);
+
+        if(len >= BUFSIZ){
+            xnr_error("name too long: %-.10s...", bufPtr);
+        }
+        strncpy(buf, bufPtr, len);
+        buf[len] = '\0';
+        bufPtr += len;
+        token = xnr_screen(buf);
+    }
+    else{
         token = *bufPtr ? *bufPtr++: 0;
     }
     return token;
