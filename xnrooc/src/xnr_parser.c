@@ -60,7 +60,25 @@ static void* _xnr_factor(void){
 }
 
 // product : factor { * | / factor } ...
-static void* _xnr_product(void){}
+static void* _xnr_product(void){
+    void *result = _xnr_factor();
+    const void *type;
+    for(;;){
+        switch((int)token){
+        case '*':
+            type = xnr_mult;
+            break;
+        case '/':
+            type = xnr_div;
+            break;
+        default:
+            return result;
+        }
+
+        _xnr_scan(0);
+        result = xnr_new(type, result, _xnr_factor());
+    }
+}
 
 // sum : product { + | - product } ...
 static void* _xnr_sum(void){}
