@@ -45,6 +45,8 @@ static void* _xnr_factor(void){
     case '-':
         _xnr_scan(0);
         return xnr_new(xnr_minus, _xnr_factor());
+    default:
+        xnr_error("bad factor: '%c' 0x%x", token, token);
     case XNR_NUMBER:
         result = xnr_new(xnr_value, number);
         break;
@@ -52,8 +54,6 @@ static void* _xnr_factor(void){
         _xnr_scan(0);
         result = _xnr_sum();
         if(token != ')'){ xnr_error("expecting )");}
-    default:
-        xnr_error("bad factor: '%c' 0x%x", token, token);
     }
     _xnr_scan(0);
     return result;
