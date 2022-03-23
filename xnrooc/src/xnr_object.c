@@ -79,3 +79,9 @@ void xnr_delete(void *self){
     }
 }
 
+void* xnr_ctor(void *self, va_list *argp){
+    const xnr_class_t *klass = xnr_classof(self);
+
+    assert(klass->ctor);
+    return klass->ctor(self, argp);
+}
