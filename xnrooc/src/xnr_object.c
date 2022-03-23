@@ -85,3 +85,9 @@ void* xnr_ctor(void *self, va_list *argp){
     assert(klass->ctor);
     return klass->ctor(self, argp);
 }
+
+void* xnr_super_ctor(const void *_klass, void *self, va_list *argp){
+    const xnr_class_t *superclass = xnr_super(_klass);
+    assert(self && superclass->ctor);
+    return superclass->ctor(self, argp);
+}
