@@ -13,7 +13,16 @@
 #include "xnr_name.h"       // for setting reserved word
 
 /** @todo */
-static void _init_names(void){}
+static void _init_names(void){
+    static const xnr_name_t names[] = {
+        {0, "let", XNRTOK_LET},
+        {0}
+    };
+    const xnr_name_t *np;
+    for(np=names; np->name; ++np){
+        xnr_install(np);
+    }
+}
 
 #define XNR_ALNUM   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"    \
                     "abcdefghijklmnopqrstuvwxyz"    \
@@ -23,7 +32,7 @@ static void _init_names(void){}
 static xnr_token_t token;   // current input symbol
 static double number;       // current numerical value
 
-//!@todo
+
 /** return toke = next input sysmbol */
 static xnr_token_t _xnr_scan(const char *buf){
     static const char *bufPtr;
@@ -141,9 +150,9 @@ static void* _xnr_sum(void){
     }
 }
 
-/** @todo stmt: let var = sum
- *              sum
-*/
+/** stmt: let var = sum
+**              sum
+**/
 static void *_statement(void){
     void *result;
     switch(token){
