@@ -16,5 +16,15 @@ typedef struct xnr_variable_{
 #define XNR_VALUE(tree) (((xnr_variable_t*)tree)->value)
 
 static void* _xnr_make_variable(va_list arg){
+    xnr_variable_t *node = calloc(1, sizeof(*node));
+    const char *name = va_arg(arg, const char*);
+    size_t len = strlen(name);
     
+    assert(node);
+    node->_.name = malloc(len+1);
+    assert(node->_.name);
+    strcpy((void*)node->_.name, name);
+    node->_.token = XNRTOK_VAR;
+
+    return node;
 }
