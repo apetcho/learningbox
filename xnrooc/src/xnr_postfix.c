@@ -14,7 +14,17 @@ typedef struct xnr_type{
     void (*delete)(void *tree);
 }xnr_type_t;
 
-void* xnr_new(const void *type, ...){}
+void* xnr_new(const void *type, ...){
+    va_list args;
+    void *result;
+    assert(type && ((xnr_type_t*)type)->new);
+    va_start(args, type);
+    result = ((xnr_type_t *)type)->new(args);
+    *(const xnr_type_t **)result = type;
+    va_end(args);
+    return result;
+}
+
 static void _xnr_exec(const void *tree){}
 void xnr_process(const void *tree){}
 void xnr_delete(void *tree){}
