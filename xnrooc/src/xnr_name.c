@@ -37,8 +37,15 @@ static xnr_name_t **_xnr_search(const char **name){
     return xnr_bsearch(name, names, &used, sizeof(*names), _xnr_cmp);
 }
 
-
-void xnr_install(const void *np){}
+//
+void xnr_install(const void *np){
+    const char *name = ((xnr_name_t*)np)->name;
+    xnr_name_t **pp = _xnr_search(&name);
+    if(*pp != (void*)name){
+        xnr_error("cannot install name twice: %s", name);
+    }
+    *pp = (xnr_name_t*)np;
+}
 
 void *xnr_symbol;
 
