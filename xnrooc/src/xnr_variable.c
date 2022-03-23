@@ -32,3 +32,5 @@ static void* _xnr_make_variable(va_list arg){
 static double _do_varibale(const void *tree){
     return XNR_VALUE(tree);
 }
+
+static void _free_variable(void *tree){}
