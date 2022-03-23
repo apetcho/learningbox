@@ -30,7 +30,12 @@ static void _xnr_exec(const void *tree){
     (*(xnr_type_t**)tree)->exec(tree);
 }
 
-void xnr_process(const void *tree){}
+void xnr_process(const void *tree){
+    putchar('\t');
+    _xnr_exec(tree);
+    putchar('\t');
+}
+
 void xnr_delete(void *tree){}
 
 // Number
