@@ -104,7 +104,11 @@ static void _do_binary_op(const void *tree){
     printf(" %s ", (*(xnr_type_t**)tree)->name);
 }
 
-static void _free_binary_op(void *tree){}
+static void _free_binary_op(void *tree){
+    xnr_delete(((xnr_binary_op_t*)tree)->left);
+    xnr_delete(((xnr_binary_op_t*)tree)->right);
+    free(tree);
+}
 
 // types
 static xnr_type_t _Add = {"+", _make_binary_op, _do_binary_op, _free_binary_op};
