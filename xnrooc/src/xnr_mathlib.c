@@ -30,3 +30,8 @@ static double _do_math(const void *tree){
     }
     return result;
 }
+
+static void _free_math(void *tree){
+    xnr_delete(XNR_GETRIGHT(tree));
+    free(tree);
+}
