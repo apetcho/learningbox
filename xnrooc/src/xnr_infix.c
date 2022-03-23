@@ -94,7 +94,14 @@ typedef struct xnr_binary_op{
 } xnr_binary_op_t;
 
 
-static void* _make_binary_op(va_list arg){}
+static void* _make_binary_op(va_list args){
+    xnr_binary_op_t *node = malloc(sizeof(*node));
+    assert(node);
+    node->left = va_arg(args, void *);
+    node->right = va_arg(args, void *);
+    return node;
+}
+
 static void _do_binary_op(const void *tree, int rank, int par){}
 static void _free_binary_op(void *tree){}
 
