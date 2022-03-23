@@ -65,7 +65,7 @@ typedef struct xnr_unary_op{
     void *arg;
 } xnr_unary_op_t;
 
-#define XNR_ARG(tree) (((xnr_unary_t *)tree)->arg)
+#define XNR_ARG(tree) (((xnr_unary_op_t *)tree)->arg)
 
 /***/
 static void* _make_unary_op(va_list args){
@@ -77,7 +77,7 @@ static void* _make_unary_op(va_list args){
 
 /***/
 static double _do_minus(const void *tree){
-    return - xnr_exec(((xnr_unary_op_t*)tree)->arg);
+    return - xnr_exec(XNR_ARG(tree));
 }
 
 
@@ -87,7 +87,7 @@ static void _free_unary_op(void *tree){
 }
 
 
-static void* _make_binary_op(va_list args){
+void* make_binary_op(va_list args){
     xnr_binary_op_t *node = malloc(sizeof(*node));
     assert(node);
     node->left = va_arg(args, void *);
@@ -137,6 +137,7 @@ static void _free_binary_op(void *tree){
 }
 
 /** types */
+/*
 static xnr_type_t _Add = {_make_binary_op, _do_add, _free_binary_op};
 static xnr_type_t _Sub = {_make_binary_op, _do_sub, _free_binary_op};
 static xnr_type_t _Mult = {_make_binary_op, _do_mult, _free_binary_op};
@@ -150,3 +151,4 @@ const void *xnr_div = &_Div;
 const void *xnr_mult = &_Mult;
 const void *xnr_minus = &_Minus;
 const void *xnr_value = &_Value;
+*/
