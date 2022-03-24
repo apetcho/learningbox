@@ -174,7 +174,7 @@ int xnr_differ(const void *self, const void *other){
 }
 
 int xnr_super_differ(const void *klass, const void *self, const void *other){
-    xnr_class_t *superclass = xnr_super(klass);
+    const xnr_class_t *superclass = xnr_super(klass);
     assert(superclass->differ);
     return superclass->differ(self, other);
 }
@@ -186,7 +186,7 @@ int xnr_puto(const void *self, FILE *fp){
 }
 
 int xnr_super_puto(const void *klass, const void *self, FILE *fp){
-    xnr_class_t *superclass = xnr_super(klass);
+    const xnr_class_t *superclass = xnr_super(klass);
     assert(superclass->puto);
     return superclass->puto(self, fp);
 }
