@@ -2,11 +2,11 @@
 #include<stdarg.h>
 
 #include "xnr_circle.h"
-#include "xnr_object.h"
 
-static void *_xnr_circle_ctor(void *_self, va_list *args){
-    xnr_circle_t *self = ((const xnr_class*)xnr_point)->ctor(_self, args);
-    self->rad = va_arg(*args, int);
+
+static void *_xnr_circle_ctor(void *_self, va_list *argp){
+    xnr_circle_t *self = xnr_super_ctor(xnr_circle, _self, argp);
+    self->rad = va_arg(*argp, int);
     return self;
 }
 
@@ -20,7 +20,7 @@ static void _xnr_circle_draw(const void *_self){
 
 
 //
-static const xnr_class _Circle = {
+static const xnr_class_t _Circle = {
     sizeof(xnr_circle_t),
     _xnr_circle_ctor,
     0,
