@@ -12,8 +12,8 @@ static void* _xnr_object_ctor(void *self, va_list *argp){
     return self;
 }
 
-//! @todo
-static void* _xnr_object_dtor(void *_self){}
+
+static void* _xnr_object_dtor(void *self){ return self; }
 
 //! @todo
 static int _xnr_object_differ(const void *_self, const void *b){}
