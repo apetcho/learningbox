@@ -26,8 +26,12 @@ static int _xnr_object_puto(const void *self, FILE *fp){
     return fprintf(fp, "%s at %p\n", klass->name, self);
 }
 
-//! @todo
-const void *xnr_classof(const void *_self){}
+//
+const void *xnr_classof(const void *_self){
+    const xnr_object_t *self = _self;
+    assert(self && self->klass);
+    return self->klass;
+}
 
 //! @todo
 size_t xnr_sizeof(const void *_self){}
