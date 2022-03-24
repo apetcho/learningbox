@@ -1,9 +1,10 @@
 #include "xnr_point.h"
-#include "xnr_object.h"
 
 //
 int main(int argc, char **argv){
     void *pt;
+    xnr_init_point();
+    
     while(* ++argv){
         switch(**argv){
         case 'p':
@@ -13,7 +14,7 @@ int main(int argc, char **argv){
             continue;
         }
         xnr_draw(pt);
-        xnr_point_move(pt, 10, 20);
+        xnr_move(pt, 10, 20);
         xnr_draw(pt);
         xnr_delete(pt);
     }
