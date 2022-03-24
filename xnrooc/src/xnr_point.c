@@ -30,8 +30,12 @@ void xnr_super_draw(const void *klass, const void *self){
     superclass->draw(self);
 }
 
-//!@todo
-void xnr_move(void *_self, int dx, int dy){}
+//
+void xnr_move(void *_self, int dx, int dy){
+    xnr_point_t *self = _self;
+    self->x += dx;
+    self->y += dy;
+}
 
 //!@todo
 static void* _xnr_point_class_ctor(void *_self, va_list *argp){}
