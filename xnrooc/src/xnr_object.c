@@ -109,3 +109,9 @@ int xnr_differ(const void *self, const void *other){
     assert(klass->differ);
     return klass->differ(self, other);
 }
+
+int xnr_super_differ(const void *klass, const void *self, const void *other){
+    xnr_class_t *superclass = xnr_super(klass);
+    assert(superclass->differ);
+    return superclass->differ(self, other);
+}
