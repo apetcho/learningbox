@@ -121,3 +121,9 @@ int xnr_puto(const void *self, FILE *fp){
     assert(klass->puto);
     return klass->puto(self, fp);
 }
+
+int xnr_super_puto(const void *klass, const void *self, FILE *fp){
+    xnr_class_t *superclass = xnr_super(klass);
+    assert(superclass->puto);
+    return superclass->puto(self, fp);
+}
