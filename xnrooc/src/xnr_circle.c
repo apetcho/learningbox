@@ -18,13 +18,17 @@ static void _xnr_circle_draw(const void *_self){
     );
 }
 
+// -- initialization  --
+const void *xnr_circle;
 
-//
-static const xnr_class_t _Circle = {
-    sizeof(xnr_circle_t),
-    _xnr_circle_ctor,
-    0,
-    _xnr_circle_draw
-};
+void xnr_init_circle(void){
+    if(!xnr_circle){
+        xnr_circle = xnr_new(
+            xnr_point_class, "Circle",
+            xnr_point, sizeof(xnr_circle_t),
+            xnr_ctor, _xnr_circle_ctor,
+            xnr_draw, _xnr_circle_draw, 0
+        );
+    }
+}
 
-const void *xnr_circle = &_Circle;
