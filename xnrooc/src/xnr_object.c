@@ -20,8 +20,11 @@ static int _xnr_object_differ(const void *self, const void *other){
     return self != other;
 }
 
-//! @todo
-static int _xnr_object_puto(const void *_self, FILE *fp){}
+//
+static int _xnr_object_puto(const void *self, FILE *fp){
+    const xnr_class_t *klass = xnr_classof(self);
+    return fprintf(fp, "%s at %p\n", klass->name, self);
+}
 
 //! @todo
 const void *xnr_classof(const void *_self){}
