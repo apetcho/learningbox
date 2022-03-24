@@ -40,8 +40,49 @@ size_t xnr_sizeof(const void *self){
 }
 
 // -- xnr_class --
-//! @todo
-static void* _xnr_class_ctor(void *_self, va_list *argp){}
+//
+static void* _xnr_class_ctor(void *_self, va_list *argp){
+    xnr_class_t *self = _self;
+    const size_t offset = offsetof(xnr_class_t, ctor);
+
+    self->name = va_arg(*argp, char*);
+    self->super = va_arg(*argp, xnr_class_t*);
+    self->size = va_arg(*argp, size_t);
+
+    assert(self->super);
+    memcpy(
+        (char*)self+offset,
+        (char*)self->super+offset,
+        xnr_sizeof(self->super)-offset
+    );
+
+    {
+        typedef void (*voidf)();
+        voidf selector;
+#ifdef va_copy
+        va_list ap;
+        va_copy(ap, *argp);
+#else
+        va_list ap = *argp;
+#endif
+        while((selector = va_arg(ap, voidf))){
+            voidf method = va_arg(ap, voidf);
+            if(selector == (voidf)xnr_ctor){
+                *(voidf *)&self->ctor = method;
+            }else if(selector == (voidf)xnr_dtor){
+                *(voidf*)&self->dtor = method;
+            }else if(selector == (voidf)xnr_differ){
+                *(voidf*)&self->differ = method;
+            }else if(selector == (voidf)xnr_puto){
+                *(voidf*)&self->puto = method;
+            }
+        }
+#ifdef va_copy
+        va_end(ap);
+#endif
+        return self;
+    }
+}
 
 //! @todo
 static void* _xnr_class_dtor(void *_self){}
