@@ -1,9 +1,10 @@
 #include "xnr_point.h"
-#include "xnr_object.h"
 
 //
 int main(int argc, char **argv){
     void *pt;
+    xnr_init_point();
+    
     while(* ++argv){
         switch(**argv){
         case 'p':
