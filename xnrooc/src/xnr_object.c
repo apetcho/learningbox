@@ -15,8 +15,10 @@ static void* _xnr_object_ctor(void *self, va_list *argp){
 
 static void* _xnr_object_dtor(void *self){ return self; }
 
-//! @todo
-static int _xnr_object_differ(const void *_self, const void *b){}
+//
+static int _xnr_object_differ(const void *self, const void *other){
+    return self != other;
+}
 
 //! @todo
 static int _xnr_object_puto(const void *_self, FILE *fp){}
