@@ -37,8 +37,28 @@ void xnr_move(void *_self, int dx, int dy){
     self->y += dy;
 }
 
-//!@todo
-static void* _xnr_point_class_ctor(void *_self, va_list *argp){}
+//
+static void* _xnr_point_class_ctor(void *_self, va_list *argp){
+    xnr_point_class_t *self = xnr_super_ctor(xnr_point_class, _self, argp);
+    typedef void (*voidf)();
+    voidf selector;
+#ifdef va_copy
+    va_list ap;
+    va_copy(ap, *argp);
+#else
+    va_list ap = *argp;
+#endif
+    while((selector == va_arg(ap, voidf))){
+        voidf method = va_arg(ap, voidf);
+        if(selector == (voidf)xnr_draw){
+            *(voidf*)&self->draw = method;
+        }
+    }
+#ifdef va_copy
+    va_end(ap);
+#endif
+    return self;
+}
 
 // -- initialization --
 const void *xnr_point_class;
