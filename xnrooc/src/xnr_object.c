@@ -103,3 +103,9 @@ void* xnr_super_dtor(const void *klass, void *self){
     assert(self && superclass->dtor);
     return superclass->dtor(self);
 }
+
+int xnr_differ(const void *self, const void *other){
+    const xnr_class_t *klass = xnr_classof(self);
+    assert(klass->differ);
+    return klass->differ(self, other);
+}
