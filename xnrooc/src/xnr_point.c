@@ -2,7 +2,7 @@
 
 #include "xnr_point.h"
 
-//!@todo
+//
 static void* _xnr_point_ctor(void *_self, va_list *argp){
     xnr_point_t *self = xnr_super_ctor(xnr_point, _self, argp);
     self->x = va_arg(*argp, int);
@@ -10,14 +10,18 @@ static void* _xnr_point_ctor(void *_self, va_list *argp){
     return self;
 }
 
-//!@todo
+//
 static void _xnr_point_draw(const void *_self){
     const xnr_point_t *self = _self;
     printf("<point x=%d, y=%d>\n", self->x, self->y);
 }
 
-//!@todo
-void xnr_draw(const void *_self){}
+//
+void xnr_draw(const void *_self){
+    const xnr_point_class_t *klass = xnr_classof(_self);
+    assert(klass->draw);
+    klass->draw(_self);
+}
 
 //!@todo
 void xnr_super_draw(const void *klass, const void *self){}
