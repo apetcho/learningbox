@@ -33,8 +33,11 @@ const void *xnr_classof(const void *_self){
     return self->klass;
 }
 
-//! @todo
-size_t xnr_sizeof(const void *_self){}
+//
+size_t xnr_sizeof(const void *self){
+    const xnr_class_t *klass = xnr_classof(self);
+    return klass->size;
+}
 
 // -- xnr_class --
 //! @todo
