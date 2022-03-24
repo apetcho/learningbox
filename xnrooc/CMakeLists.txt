@@ -10,7 +10,7 @@ add_executable(xnrany
 
 add_executable(xnrpoint
     src/testPoint.c src/xnr_object.c src/xnr_point.c 
-    src/xnr_point.h src/xnr_object.h
+    src/xnr_point.h
 )
 
 add_executable(xnrcircle
