@@ -84,8 +84,12 @@ static void* _xnr_class_ctor(void *_self, va_list *argp){
     }
 }
 
-//! @todo
-static void* _xnr_class_dtor(void *_self){}
+//
+static void* _xnr_class_dtor(void *_self){
+    xnr_class_t *self = _self;
+    fprintf(stderr, "%s: cannot destroy class\n", self->name);
+    return 0;
+}
 
 //! @todo
 const void* xnr_super(const void *_self){}
