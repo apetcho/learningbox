@@ -7,8 +7,10 @@
 #include "xnr_object.h"
 
 // -- object --
-//! @todo
-static void* _xnr_object_ctor(void *_self, va_list *argp){}
+
+static void* _xnr_object_ctor(void *self, va_list *argp){
+    return self;
+}
 
 //! @todo
 static void* _xnr_object_dtor(void *_self){}
