@@ -91,8 +91,12 @@ static void* _xnr_class_dtor(void *_self){
     return 0;
 }
 
-//! @todo
-const void* xnr_super(const void *_self){}
+//
+const void* xnr_super(const void *_self){
+    const xnr_class_t *self = _self;
+    assert(self && self->super);
+    return self->super;
+}
 
 // -- initialization --
 static const xnr_class_t object[] = {
