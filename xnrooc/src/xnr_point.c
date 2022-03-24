@@ -23,8 +23,12 @@ void xnr_draw(const void *_self){
     klass->draw(_self);
 }
 
-//!@todo
-void xnr_super_draw(const void *klass, const void *self){}
+//
+void xnr_super_draw(const void *klass, const void *self){
+    const xnr_point_class_t *superclass = xnr_super(klass);
+    assert(self && superclass->draw);
+    superclass->draw(self);
+}
 
 //!@todo
 void xnr_move(void *_self, int dx, int dy){}
