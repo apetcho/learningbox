@@ -1,9 +1,10 @@
 #include "xnr_circle.h"
-#include "xnr_object.h"
 
 
 int main(int argc, char **argv){
     void *xnrobj;
+
+    xnr_init_circle();
 
     while(* ++argv){
         switch(**argv){
@@ -17,7 +18,7 @@ int main(int argc, char **argv){
             continue;
         }
         xnr_draw(xnrobj);
-        xnr_point_move(xnrobj, 10, 20);
+        xnr_move(xnrobj, 10, 20);
         xnr_draw(xnrobj);
         xnr_delete(xnrobj);
     }
