@@ -115,3 +115,9 @@ int xnr_super_differ(const void *klass, const void *self, const void *other){
     assert(superclass->differ);
     return superclass->differ(self, other);
 }
+
+int xnr_puto(const void *self, FILE *fp){
+    const xnr_class_t *klass = xnr_classof(self);
+    assert(klass->puto);
+    return klass->puto(self, fp);
+}
