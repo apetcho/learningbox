@@ -64,5 +64,21 @@ static void* _xnr_point_class_ctor(void *_self, va_list *argp){
 const void *xnr_point_class;
 const void *xnt_point;
 
-//!@todo
-void xnr_init_point(void){}
+//
+void xnr_init_point(void){
+    if(!xnr_point_class){
+        xnr_point_class = xnr_new(
+            xnr_class, "PointClass",
+            xnr_class, sizeof(xnr_point_class_t),
+            xnr_ctor, _xnr_point_class_ctor, 0
+        );
+    }
+    if(!xnr_point){
+        xnr_point = xnr_new(
+            xnr_point_class, "Point",
+            xnr_object, sizeof(xnr_point_t),
+            xnr_ctor, _xnr_point_class_ctor,
+            xnr_draw, _xnr_point_draw, 0
+        );
+    }
+}
