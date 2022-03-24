@@ -48,7 +48,7 @@ static void* _xnr_point_class_ctor(void *_self, va_list *argp){
 #else
     va_list ap = *argp;
 #endif
-    while((selector == va_arg(ap, voidf))){
+    while((selector = va_arg(ap, voidf))){
         voidf method = va_arg(ap, voidf);
         if(selector == (voidf)xnr_draw){
             *(voidf*)&self->draw = method;
@@ -62,8 +62,7 @@ static void* _xnr_point_class_ctor(void *_self, va_list *argp){
 
 // -- initialization --
 const void *xnr_point_class;
-const void *xnt_point;
-
+const void *xnr_point;
 //
 void xnr_init_point(void){
     if(!xnr_point_class){
