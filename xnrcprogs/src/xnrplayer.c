@@ -127,7 +127,11 @@ void xnr_copy_player(Player_t *to, Player_t *from){
     return;
 }
 
-//void xnr_copy_player(Player_t *, Player_t*);
+/** Compare the names of two players */
+int xnr_compare_name(Player_t *player1, Player_t *player2){
+    return strcmp(player1->name, player2->name);
+}
+
 //int xnr_compare_name(Player_t *, Player_t*);
 //int xnr_compare_rank(Player_t *, Player_t*);
 //void xnr_sort_players(Player_t *, int);
