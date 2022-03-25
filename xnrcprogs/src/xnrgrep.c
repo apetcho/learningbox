@@ -158,9 +158,19 @@ int xnr_look_in(const char *infile, const char *pat, unsigned flags){
                 print_line(flags, infile, lineno, line[0]);
             }
         }else if(flags & VFLAG){
-            print_line(flags, infile, line, line[0]);
+            print_line(flags, infile, lineno, line[0]);
         }
     }
     fclose(in);
     return matches;
+}
+
+// ---
+void print_line(unsigned mask, const char *fname, int lnno, const char *text){
+    if(mask & CFLAG){ return; }
+    if(mask & NFLAG){
+        printf("%s:", *fname ? fname : "stdin");
+    }
+    if(mask & LFLAG){ printf(" %d :", lnno); }
+    printf("%s", text);
 }
