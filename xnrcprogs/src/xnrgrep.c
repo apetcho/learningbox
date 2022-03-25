@@ -17,7 +17,7 @@
 #include "xnroptions.h"
 
 int xnrOptIndex;        /* current index into argv[] */
-int xnrOptArg;          /* global option argument pointer */
+char *xnrOptArg;          /* global option argument pointer */
 
 // Declarations for the pattern program
 #define CFLAG   0x001   /* only count the number of matching lines */
@@ -53,7 +53,7 @@ int main(int argc, char **argv){
     char *search_string;
 
     if(argc < 2){
-        fprintf(stderr, errmsg);
+        fprintf(stderr, "%s\n", errmsg);
         exit(EXIT_FAILURE);
     }
 
@@ -61,7 +61,7 @@ int main(int argc, char **argv){
     if(argv[xnrOptIndex]){
         search_string = argv[xnrOptIndex];
     }else{
-        fprintf(stderr, errmsg);
+        fprintf(stderr, "%s\n", errmsg);
         exit(EXIT_FAILURE);
     }
 
@@ -114,7 +114,7 @@ unsigned xnr_set_flags(int argc, char **argv, const char *opts){
             break;
         case '?':
         default:
-            fprintf(stderr, errmsg);
+            fprintf(stderr, "%s\n", errmsg);
             exit(EXIT_FAILURE);
         }
     }
@@ -145,11 +145,19 @@ int xnr_look_in(const char *infile, const char *pat, unsigned flags){
         lineno++;
         if(flags & IFLAG){
             /* ignore case */
-            char *p;
-            strcpy(line[1], line[0]);
-            for(p = line[1]; *p; *p++){
-                if(isupper(*p)){*p = tolower(*p); }
+            //char *p;
+            char tmp[BUFSIZ];
+            //strcpy(line[1], line[0]);
+            strcpy(tmp, line[0]);
+            for(int i=0; i < strlen(tmp); ++i){
+                tmp[i] = tolower(tmp[i]);
             }
+            strcpy(line[1], tmp);
+
+            //for(char *p = line[1]; *p; *p++){
+                //if(isupper(*p)){*p = tolower(*p); }
+            //    *p = tolower(*p);
+            //}
             line_to_use = line[1];
         }
         if(strstr(line_to_use, pat)){

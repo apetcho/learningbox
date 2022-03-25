@@ -28,7 +28,7 @@ int xnr_options(int argc, char **argv, const char *legal){
         }
     }
     letter = *posn++;
-    if(!(legal_index = strch(legal, letter))){
+    if(!(legal_index = strchr(legal, letter))){
         if(!*posn){ xnrOptIndex++; }
         return XNR_UNKNOWN;
     }
