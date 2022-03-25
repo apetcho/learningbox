@@ -2,7 +2,7 @@
 #define _XNROPTIONS_H
 
 extern int xnrOptIndex;     /* current index into argv[] */
-extern char *xnrOptArgs;    /* global option argument pointer */
+extern char *xnrOptArg;     /* global option argument pointer */
 
 /**
  * @brief Parses options letters and options argumentes from argv list.
