@@ -14,7 +14,7 @@
 
 char *xnrOptArg;
 
-typedef struct Player {
+typedef struct /*Player*/ {
     char name[NAMELEN+1];
     int rank;
     int wins;
