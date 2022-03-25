@@ -1,7 +1,9 @@
 #ifndef _XNRPLAYER_H
 #define _XNRPLAYER_H
 /** Definitions for functions prototype which manipulate player records */
-
+#include<stddef.h>
+#include<stdio.h>
+#include<stdlib.h>
 #include<time.h>
 #include "xnroptions.h"
 

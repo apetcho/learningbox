@@ -1,7 +1,3 @@
-#include<stddef.h>
-#include<stdio.h>
-#include<stdlib.h>
-
 #include "xnrplayer.h"
 
 const char *ladderFile = "ladder";
