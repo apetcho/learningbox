@@ -62,7 +62,19 @@ int xnr_write_records(FILE *fp, Player_t *them, int num){
     return i;
 }
 
-//Player_t *xnr_find_by_name(char *, Player_t *, int);
+/** Return a pointer to the player in array 'them' whose name matches 'name' */
+Player_t *xnr_find_by_name(char *name, Player_t *them, int num){
+    Player_t *player = them;
+    int i = 0;
+    for(i=0; i < num; i++, player++){
+        if(strcmp(name, player->name) == 0){
+            return player;
+        }
+    }
+
+    return NULLPLAYER;
+}
+
 //Player_t *xnr_find_by_rank(int, Player_t *, int);
 //void xnr_push_down(Player_t *, int, int, int);
 //int xnr_print_records(Player_t *, int);
