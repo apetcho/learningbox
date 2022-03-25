@@ -1,6 +1,7 @@
 /** Program to record a result in the ladder */
 #include<stdlib.h>
 #include<stdio.h>
+#include<string.h>
 #include "xnrplayer.h"
 
 
@@ -34,5 +35,16 @@ _xnrmove_winner(Player_t *winner, Player_t *loser, Player_t *players, int num){
 
 // ---
 static char _xnrread_name(char *buf, char *whom){
-    //! @todo
+    for(;;){
+        char *cp;
+        printf("Enter name of %s: ", whom);
+        if(fgets(buf, LENBUF, stdin) == NULL){
+            continue;
+        }
+        // delete newline
+        cp = &buf[strlen(buf)-1];
+        if(*cp == '\n'){ *cp = 0;}
+        // at least one char?
+        if(*cp == '\n'){ return buf; }
+    }
 }
