@@ -27,3 +27,34 @@ int xnr_valid_records(FILE *fp){
     return i;
 
 }
+
+/** Read 'num' player records from 'fp' into the array 'them' */
+int xnr_read_records(FILE *fp, int num, Player_t *them){
+    int i = 0;
+    
+    if(num == 0){ return; }
+
+    long tmp = ftell(fp);
+    fseek(fp, 0L, SEEK_SET);
+
+    for(i=0; i < num; i++){
+        if(fscanf(fp, rdFmt, (them[i]).name,
+            &((them[i]).rank),
+            &((them[i]).wins),
+            &((them[i]).losses),
+            &((them[i]).last_game)) != 5){ break; // error of fscanf !}
+    }
+    fseek(fp, tmp, SEEK_SET);
+    return i;
+}
+
+
+//int xnr_write_records(FILE *, Player_t *, int);
+//Player_t *xnr_find_by_name(char *, Player_t *, int);
+//Player_t *xnr_find_by_rank(int, Player_t *, int);
+//void xnr_push_down(Player_t *, int, int, int);
+//int xnr_print_records(Player_t *, int);
+//void xnr_copy_player(Player_t *, Player_t*);
+//int xnr_compare_name(Player_t *, Player_t*);
+//int xnr_compare_rank(Player_t *, Player_t*);
+//void xnr_sort_players(Player_t *, int);
