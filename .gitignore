@@ -1,3 +1,11 @@
 *.cdb
 **/build
 **/.vscode
+**/bin
+**/__pycache__
+**/lib
+**/*.egg-info
+**/.eggs
+**/*.egg
+**/*.py[cod]
+
