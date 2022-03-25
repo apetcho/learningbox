@@ -120,7 +120,13 @@ int xnr_print_records(Player_t *players, int num){
     return i;
 }
 
-//int xnr_print_records(Player_t *, int);
+/** Copy the values from player 'from' to player 'to' */
+void xnr_copy_player(Player_t *to, Player_t *from){
+    if((to == NULLPLAYER) || (from == NULLPLAYER)){ return; }
+    *to = *from;
+    return;
+}
+
 //void xnr_copy_player(Player_t *, Player_t*);
 //int xnr_compare_name(Player_t *, Player_t*);
 //int xnr_compare_rank(Player_t *, Player_t*);
