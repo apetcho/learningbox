@@ -89,6 +89,19 @@ Player_t *xnr_find_by_rank(int rank, Player_t *players, int num){
     return NULLPLAYER;
 }
 
+/** Reduce by one the the ranking of all players in array 'players'
+ * whose ranks are now between 'start' and 'end' */
+void xnr_push_down(Player_t *players, int num, int start, int end){
+    int i;
+    Player_t *player;
+    for(i=end; i >= start; i--){
+        if((player = xnr_find_by_rank(i, players, num)) == NULLPLAYER){
+            fprintf(stderr, "error: could not find player ranked %d\n", i);
+            free(players);
+            exit(EXIT_FAILURE);
+        }else{ (player->rank)++; }
+    }
+}
 
 //void xnr_push_down(Player_t *, int, int, int);
 //int xnr_print_records(Player_t *, int);
