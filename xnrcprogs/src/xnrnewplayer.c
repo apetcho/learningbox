@@ -1,5 +1,8 @@
 /** Program to add a new player to the ladder.
  * The user is expected to assign a realistic ranking value to the player. */
+#include<string.h>
+#include<stdio.h>
+#include<stdlib.h>
 #include "xnrplayer.h"
 
 static const char *validOpts = "n:r:f:";
@@ -21,7 +24,54 @@ static void _print_error(const char *message){
 // ---------------------------
 //    M A I N   D R I V E R
 // ---------------------------
-int main(int argc, char **argv){}
+int main(int argc, char **argv){
+    char ch;
+    Player_t dummy;
+    Player_t *new = &dummy;
+
+    if(argc < 5){
+        _print_error(usage);
+        exit(EXIT_FAILURE);
+    }
+
+    while((ch = xnr_options(argc, argv, validOpts)) != -1){
+        switch(ch){
+        case 'f':
+            otherFile = xnrOptArg;
+            break;
+        case 'n':
+            strncpy(new->name, xnrOptArg, NAMELEN);
+            new->name[NAMELEN] = 0;
+            if(strcmp(new->name, xnrOptArg) != 0){
+                fprintf(stderr, "Warning: name truncated to %s\n", new->name);
+            }
+            break;
+        case 'r':
+            if((new->rank = atoi(xnrOptArg)) == 0){
+                _print_error(usage);
+                exit(EXIT_FAILURE);
+            }
+            break;
+        case '?':
+            _print_error(usage);
+            break;
+        }
+    }
+
+    if((new->rank == 0)){
+        _print_error("bad value for rank");
+        exit(EXIT_FAILURE);
+    }
+    if(strlen(new->name) == 0){
+        _print_error("needs a valid name for new player");
+        exit(EXIT_FAILURE);
+    }
+    new->wins = new->losses = 0;
+    time(&new->last_game); /* make now the time of the "last game" */ 
+    xnr_record(new);
+
+    return EXIT_SUCCESS;
+}
 
 // ---
 static void xnr_record(Player_t *player){
