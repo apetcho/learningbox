@@ -90,3 +90,34 @@ int main(int argc, char **argv){
 
     return success ? EXIT_SUCCESS : EXIT_FAILURE;
 }
+
+// ---
+unsigned xnr_set_flags(int argc, char **argv, const char *opts){
+    unsigned flags = 0;
+    int ch = 0;
+    while((ch = xnr_options(argc, argv, opts)) != -1){
+        switch(ch){
+        case 'c':
+            flags |= CFLAG;
+            break;
+        case 'i':
+            flags |= IFLAG;
+            break;
+        case 'l':
+            flags |= LFLAG;
+            break;
+        case 'n':
+            flags |= NFLAG;
+            break;
+        case 'v':
+            flags |= VFLAG;
+            break;
+        case '?':
+        default:
+            fprintf(stderr, errmsg);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    return flags;
+}
