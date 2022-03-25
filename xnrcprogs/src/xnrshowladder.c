@@ -2,7 +2,12 @@
 #include "xnrplayer.h"
 
 static const *validOpts = "f:";
-static const *usage = "usage:\n\txnrshowladder [-f ladder_file]\n";
+
+#ifdef PROGNAME
+#undef PROGNAME
+#endif
+#define PROGNAME    "xnrshowladder"
+static const *usage = "usage:\n\t" PROGNAME "[-f ladder_file]\n";
 static char *otherFile;
 
 static const char *progname = "xnrshowladder";
@@ -36,7 +41,7 @@ int main(int argc, char **argv){
     fname = (otherFile == 0) ? ladderFile : otherFile;
     fp = fopen(fname, "r+");
     if(fp == NULL){
-        perror(progname);
+        perror(PROGNAME);
         exit(EXIT_FAILURE);
     }
 
@@ -44,12 +49,12 @@ int main(int argc, char **argv){
     players = (Player_t*)malloc((sizeof(Player_t)*num));
 
     if(players == NULL){
-        fprintf(stderr, "%s: out of memory\n", progname);
+        fprintf(stderr, "%s: out of memory\n", PROGNAME);
         exit(EXIT_FAILURE);
     }
 
     if(xnr_read_records(fp, num, players) != num){
-        fprintf(stderr, "%s: error while reading player records\n", progname);
+        fprintf(stderr, "%s: error while reading player records\n", PROGNAME);
         free(players);
         fclose(fp);
         exit(EXIT_FAILURE);
@@ -58,7 +63,7 @@ int main(int argc, char **argv){
     xnr_sort_players(players, num);
 
     if(xnr_print_records(players, num) != num){
-        fprintf(stderr, "%s: error while printing player records\n", progname);
+        fprintf(stderr, "%s: error while printing player records\n", PROGNAME);
         free(players);
         exit(EXIT_FAILURE);
     }
