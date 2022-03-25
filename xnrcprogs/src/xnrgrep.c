@@ -121,3 +121,46 @@ unsigned xnr_set_flags(int argc, char **argv, const char *opts){
 
     return flags;
 }
+
+// ---
+int xnr_look_in(const char *infile, const char *pat, unsigned flags){
+    FILE *in;
+    // line[0] stores the input line as read,
+    // line[1] is converted to lower-case if necessary
+    char line[2][BUFSIZ];
+    int lineno = 0;
+    int matches = 0;
+
+    if(infile){
+        if((in = fopen(infile, "r")) == NULL){
+            perror("pattern");
+            return 0;
+        }
+    }else{
+        in = stdin;
+    }
+
+    while(fgets(line[0], BUFSIZ, in)){
+        char *line_to_use = line[0];
+        lineno++;
+        if(flags & IFLAG){
+            /* ignore case */
+            char *p;
+            strcpy(line[1], line[0]);
+            for(p = line[1]; *p; *p++){
+                if(isupper(*p)){*p = tolower(*p); }
+            }
+            line_to_use = line[1];
+        }
+        if(strstr(line_to_use, pat)){
+            matches++;
+            if(!(flags & VFLAG)){
+                print_line(flags, infile, lineno, line[0]);
+            }
+        }else if(flags & VFLAG){
+            print_line(flags, infile, line, line[0]);
+        }
+    }
+    fclose(in);
+    return matches;
+}
