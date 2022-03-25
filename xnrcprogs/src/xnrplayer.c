@@ -137,6 +137,7 @@ int xnr_compare_rank(Player_t *player1, Player_t *player2){
     return (player1->rank - player2->rank);
 }
 
-
-//int xnr_compare_rank(Player_t *, Player_t*);
-//void xnr_sort_players(Player_t *, int);
+/** Sort num player records in the array 'players' by rank */
+void xnr_sort_players(Player_t *players, int num){
+    qsort(players, num, sizeof(Player_t), xnr_compare_rank);
+}
