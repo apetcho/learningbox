@@ -132,6 +132,11 @@ int xnr_compare_name(Player_t *player1, Player_t *player2){
     return strcmp(player1->name, player2->name);
 }
 
-//int xnr_compare_name(Player_t *, Player_t*);
+/** Compare the ranks of two players */
+int xnr_compare_rank(Player_t *player1, Player_t *player2){
+    return (player1->rank - player2->rank);
+}
+
+
 //int xnr_compare_rank(Player_t *, Player_t*);
 //void xnr_sort_players(Player_t *, int);
