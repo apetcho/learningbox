@@ -102,7 +102,10 @@ class XNRCTools:
 
         
 
-    def _build_bin(self, arg):
+    def build_executable(self):
+        pass
+
+    def build_library(self):
         pass
 
 
