@@ -17,10 +17,105 @@ static char const *validOpts = "f:";
 static char *usage = "usage:\n\t" PROGNAME " [-f file]\n";
 static char *otherFile;
 
+static void _print_error(const char *message){
+    fprintf(stderr, "%s: %s\n", PROGNAME, message);
+}
+
 // ----------------------------
 //     M A I N   D R I V E R
 // ----------------------------
-int main(int argc, char **argv){}
+int main(int argc, char **argv){
+    Player_t *winner;
+    Player_t *loser;
+    Player_t *players;
+    int num;
+    FILE *fp;
+    const char *fname;
+    char buf[BUFSIZ];
+    char ch;
+
+    if(argc == 3){
+        while((ch = xnr_options(argc, argv, validOpts)) != -1){
+            switch(ch){
+            case 'f':
+                otherFile = xnrOptArg;
+                break;
+            case '?':
+                _print_error(usage);
+                break;
+            }
+        }
+    }else if(argc > 1){
+        _print_error(usage);
+        exit(EXIT_FAILURE);
+    }
+
+    fname = (otherFile == 0) ? ladderFile : otherFile;
+    fp = fopen(fname, "r+");
+    if(fp == NULL){
+        perror(PROGNAME);
+        exit(EXIT_FAILURE);
+    }
+    num = xnr_valid_records(fp);
+    players = (Player_t *)malloc((sizeof(Player_t)*num));
+    if(players == NULL){
+        _print_error("out of memory");
+        exit(EXIT_FAILURE);
+    }
+
+    if(xnr_read_records(fp, num, players) != num){
+        _print_error("error while reading player records\n");
+        fclose(fp);
+        free(players);
+        exit(EXIT_FAILURE);
+    }
+    fclose(fp);
+
+    if((winner==xnr_find_by_name(
+        _xnrread_name(buf, "winner"), players, num))==NULLPLAYER){
+        //
+        char tmp[80];
+        sprintf(tmp, "no such player %s", buf);
+        _print_error(tmp);
+        free(players);
+        exit(EXIT_FAILURE);
+    }
+
+    if((loser==xnr_find_by_name(
+        _xnrread_name(buf, "loser"), players, num))==NULLPLAYER){
+        //
+        char tmp[80];
+        sprintf(tmp, "no such player %s", buf);
+        _print_error(tmp);
+        free(players);
+        exit(EXIT_FAILURE);
+    }
+    winner->wins++;
+    loser->losses++;
+    winner->last_game = loser->last_game = time(0);
+
+    if(loser->rank < winner->rank){
+        if((winner->rank - loser->rank) <= CHALLENGE_RANGE){
+            _xnrmove_winner(winner, loser, players, num);
+        }
+    }
+
+    if((fp = freopen(fname, "w+", fp)) == NULL){
+        perror(PROGNAME);
+        free(players);
+        exit(EXIT_FAILURE);
+    }
+
+    if(xnr_write_records(fp, players, num) != num){
+        _print_error("error while writing player records");
+        free(players);
+        exit(EXIT_FAILURE);
+    }
+    fclose(fp);
+    free(players);
+
+    return EXIT_SUCCESS;
+}
 
 // ---
 static void
