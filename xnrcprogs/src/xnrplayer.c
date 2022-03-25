@@ -103,7 +103,23 @@ void xnr_push_down(Player_t *players, int num, int start, int end){
     }
 }
 
-//void xnr_push_down(Player_t *, int, int, int);
+/** Pretty print num player records from the array 'players' */
+int xnr_print_records(Player_t *players, int num){
+    int i = 0;
+    printf("%s", headerLine);
+    char tmpbuf[LENBUF];
+    for(i=0; i < num; i++){
+        int ret = sprintf(
+            tmpbuf, prtFmt, (players[i]).name, (players[i]).rank,
+            (players[i]).wins, (players[i]).losses,
+            asctime(localtime(&(players[i]).last_game))
+        );
+        if(printf("%s", tmpbuf) < 0){ break; /* error on printf! */}
+    }
+
+    return i;
+}
+
 //int xnr_print_records(Player_t *, int);
 //void xnr_copy_player(Player_t *, Player_t*);
 //int xnr_compare_name(Player_t *, Player_t*);
