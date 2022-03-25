@@ -75,7 +75,21 @@ Player_t *xnr_find_by_name(char *name, Player_t *them, int num){
     return NULLPLAYER;
 }
 
-//Player_t *xnr_find_by_rank(int, Player_t *, int);
+/** Return a pointer to the player in array 'them' whose rank matches 'rank' */
+Player_t *xnr_find_by_rank(int rank, Player_t *players, int num){
+    Player_t *player = players;
+    int i = 0;
+
+    for(i=0; i < num; i++, player++){
+        if(rank == player->rank){
+            return player;
+        }
+    }
+
+    return NULLPLAYER;
+}
+
+
 //void xnr_push_down(Player_t *, int, int, int);
 //int xnr_print_records(Player_t *, int);
 //void xnr_copy_player(Player_t *, Player_t*);
