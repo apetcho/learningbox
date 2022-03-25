@@ -1,7 +1,6 @@
 #ifndef _XNRPLAYER_H
 #define _XNRPLAYER_H
 /** Definitions for functions prototype which manipulate player records */
-
 #include<stddef.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -15,7 +14,7 @@
 
 char *xnrOptArg;
 
-typedef struct {
+typedef struct Player {
     char name[NAMELEN+1];
     int rank;
     int wins;
