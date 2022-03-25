@@ -11,6 +11,9 @@ static const int DEFAULT_CAPACITY = 10;
 static const double GROWTH_RATE = 1.5;
 static const char* CUSTOMER_FILE = "BankCustomers.txt";
 
+// fname-lname-phone-id.txt
+#define TRANS_FORMAT    "%s-%s-%s-%d.txt"
+
 // ---------------
 //  Transaction
 // ---------------
