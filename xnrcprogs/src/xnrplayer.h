@@ -25,9 +25,9 @@ typedef struct {
 
 #define NULLPLAYER (Player_t *)0
 
-extern const char *ladder_file;
-extern const char *writeFmt;    /* used when writing records */
-extern const char *readFmt;     /* used when reading records */
+extern const char *ladderFile;
+extern const char *wrFmt;       /* used when writing records */
+extern const char *rdFmt;       /* used when reading records */
 
 /** Function prototypes */
 int xnr_valid_records(FILE *);
