@@ -78,3 +78,15 @@ void vector_push_back(XVector_t *vec, void *item){
     --vec->size;
     memcpy(item, (char*)vec->data + (vec->itemsize*vec->size), vec->itemsize);
 }
+
+/**
+ * @brief Return pointer to the element at the specified index
+ * 
+ * @param vec 
+ * @param index 
+ * @return void* 
+ */
+void* vector_get_item(XVector_t*vec, size_t index){
+    assert(index >= 0 && index < vec->size);
+    return (char *)vec->data + index * vec->itemsize;
+}
