@@ -26,7 +26,7 @@ typedef struct Transaction_ Transaction_t;
 struct Transaction_{
     BankEvent_t type;
     time_t when;
-    char* (*to_string)(const Transaction_t *self);
+    size_t (*to_string)(const Transaction_t *self, char *outstr);
 };
 
 Transaction_t *create_transaction(BankEvent_t type);

@@ -60,7 +60,9 @@ void delete_transaction(Transaction_t *self){
 void print_transaction(const Transaction_t *self){
     signal(OP_UNKNOWN, bank_event_handler);
     if(self){
-        printf("%s\n", transaction_string(self));
+        char *buf;
+        transaction_string(self, buf);
+        printf("%s\n", buf);
     }else{
         fprintf(stderr, "Cannot print non-exist transtaction\n");
         raise(OP_UNKNOWN);
@@ -68,8 +70,40 @@ void print_transaction(const Transaction_t *self){
     return;
 }
 
+// ---
+static size_t transaction_string(const Transaction_t *self, char *outstr){
+    char buf[80];
+    size_t len;
+    BankEvent_t type = self->type;
+    switch(type){
+    case OP_WITHDRAW:
+        sprintf(buf, "%s @ %s",
+            WITHDRAW_STRING, asctime(localtime(&self->when)));
+        len = strlen(buf);
+        buf[len-1] = '\0';
+        break;
+    case OP_DEPOSIT:
+        sprintf(buf, "%s @ %s",
+            DEPOSIT_STRING, asctime(localtime(&self->when)));
+        len = strlen(buf);
+        buf[len-1] = '\0';
+        break;
+    case OP_CONSULT:
+        sprintf(buf, "%s @ %s",
+            CONSULT_STRING, asctime(localtime(&self->when)));
+        len = strlen(buf);
+        buf[len-1] = '\0';
+        break;
+    default:
+        sprintf(buf, "");
+        len = 0;
+        buf[0] = '\0';
+    }
+    return len;
+}
+
 //! @todo
-static char* transaction_string(const Transaction_t *self){}
+// ---
 void copy_transaction(Transaction_t *to, const Transaction_t *from){}
 
 // --------------------
