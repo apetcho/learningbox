@@ -213,8 +213,11 @@ void delete_user(UserInfo_t* info){
     }
 }
 
-//! @todo
-void copy_user(UserInfo_t *to, const UserInfo_t *from){}
+// ---
+void copy_user(UserInfo_t *to, const UserInfo_t *from){
+    if(to){ delete_user(to); }
+    to = create_user(from->fname, from->lname, from->email, from->email);
+}
 
 // --------------
 //  Account Info
@@ -229,6 +232,7 @@ struct Account_{
     char* (*to_string)(const Account_t *self);
 };
 
+//! @todo
 static char* read_password(Account_t *self){}
 static int load_account_transactions(Account_t *account){}
 static void save_account_transactions(const Account_t *account){}
