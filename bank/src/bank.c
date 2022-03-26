@@ -29,8 +29,32 @@ void bank_exception(BankEvent_t event){}
 //  Transaction
 // ---------------
 typedef struct Transaction_ Transaction_t;
+struct Transaction_{
+    BankEvent_t type;
+    time_t when;
+    size_t (*to_string)(const Transaction_t *self, char *outstr);
+};
 
-Transaction_t *create_transaction(BankEvent_t type){
+
+// -----------------------------------------------------------------
+enum BankEvent_{
+    OP_UNKNOWN = -1,
+    OP_SUCCESS = 0,
+    OP_CREATE_ACCOUNT,
+    OP_CLOSE_ACCOUNT,
+    OP_VALIDATE_ACCOUNT,
+    OP_WITHDRAW,
+    OP_CONSULT,
+    OP_DEPOSIT,
+    OP_TRANSFER,
+    OP_FAIL = 100,
+    OP_MEMORY = 101
+};
+
+
+// -----------------------------------------------------------------
+
+static Transaction_t *malloc_transaction(BankEvent_t type){
     signal(OP_MEMORY, bank_event_handler);
     Transaction_t *trans;
     trans = (Transaction_t *)malloc(sizeof(*trans));
@@ -42,7 +66,7 @@ Transaction_t *create_transaction(BankEvent_t type){
 }
 
 // ----
-void delete_transaction(Transaction_t *self){
+static void free_transaction(Transaction_t *self){
     signal(OP_UNKNOWN, bank_event_handler);
     if(self){
         free(self);
@@ -57,7 +81,7 @@ void delete_transaction(Transaction_t *self){
 }
 
 // ---
-void print_transaction(const Transaction_t *self){
+static void print_transaction(const Transaction_t *self){
     signal(OP_UNKNOWN, bank_event_handler);
     if(self){
         char *buf;
@@ -112,7 +136,7 @@ static size_t transaction_string(const Transaction_t *self, char *outstr){
 
 
 // ---
-void copy_transaction(Transaction_t *to, const Transaction_t *from){
+static void copy_transaction(Transaction_t *to, const Transaction_t *from){
     if(to){
         delete_transaction(to);
     }
@@ -121,26 +145,6 @@ void copy_transaction(Transaction_t *to, const Transaction_t *from){
     return;
 }
 
-// --------------------
-//   Transaction List
-// --------------------
-//! @todo
-typedef struct TransactionList_ TransactionList_t;
-struct TransactionList_{
-    int size;
-    int capacity;
-    Transaction_t *list;
-    void (*print)(const TransactionList_t *list);
-};
-TransactionList_t *create_transaction_list(){}
-void delete_transaction_list(TransactionList_t *slist){}
-void print_transaction_list(const TransactionList_t *list){}
-static void add_transaction_to_list(
-    TransactionList_t *list, const Transaction_t *trans){}
-static void discard_transaction_from_list(
-    TransactionList_t *list, Transaction_t *trans){}
-static void copy_transaction_list(
-    TransactionList_t *to, const TransactionList_t *form){}
 
 // -----------
 // User Info
@@ -183,7 +187,7 @@ static size_t user_string(const UserInfo_t *user, char *outstr){
 }
 
 // ---
-UserInfo_t* create_user(
+static UserInfo_t* malloc_user(
     const char *fnm, const char *lnm, const char *eml, const char *fon){
     signal(OP_MEMORY, bank_event_handler);
     UserInfo_t *user;
@@ -201,7 +205,7 @@ UserInfo_t* create_user(
 }
 
 // ---
-void delete_user(UserInfo_t* info){
+void free_user(UserInfo_t* info){
     signal(OP_UNKNOWN, bank_event_handler);
     if(info){
         free(info);
@@ -217,7 +221,7 @@ void delete_user(UserInfo_t* info){
 }
 
 // ---
-void copy_user(UserInfo_t *to, const UserInfo_t *from){
+static void copy_user(UserInfo_t *to, const UserInfo_t *from){
     if(to){ delete_user(to); }
     to = create_user(from->fname, from->lname, from->email, from->email);
 }
@@ -232,7 +236,7 @@ struct Account_{
     int id;
     char *filename;
     char *sline;
-    TransactionList_t *transactions;
+    Transaction_t *transactions;
     char* (*to_string)(const Account_t *self);
 };
 
@@ -240,29 +244,12 @@ struct Account_{
 static char* read_password(Account_t *self){}
 static int load_account_transactions(Account_t *account){}
 static void save_account_transactions(const Account_t *account){}
+static void add_account_transaction(
+    Account_t *account, const Transaction_t *trans){}
 static char* account_string(const Account_t *self){}
-Account_t *create_account();
-void delete_account(Account_t *);
-void copy_account(Account_t *to, const Account_t *from){}
-
-// --------------
-//  Account List
-// --------------
-typedef struct AccountList_ AccountList_t;
-struct AccountList_{
-    int size;
-    int capacity;
-    Account_t *list;
-    void (*print)(const Account_t*);
-};
-
-static void add_account_to_list(
-    AccountList_t *aclist, const Account_t *account){}
-static void delete_account_from_list(
-    AccountList_t *aclist, const Account_t *account){}
-static AccountList_t* create_accountList();
-void delete_account_list(AccountList_t *list){}
-void copy_account_list(AccountList_t *to, const AccountList_t *from){}
+static Account_t *create_account();
+static void delete_account(Account_t *);
+static void copy_account(Account_t *to, const Account_t *from){}
 
 
 // -------------
@@ -276,7 +263,7 @@ struct Bank_{
     char name[BANK_NAMELEN+1];
     char cfile[BANK_NAMELEN+1+BANKLEN+1];
     char sfile[BANK_NAMELEN+1+BANKLEN+1];
-    AccountList_t *customers;
+    Account_t *accounts;
     char **secrets;
 };
 
@@ -287,20 +274,24 @@ static void parse_secret(Account_t *account, char *data){}
 static void load_secrets(Bank_t *bank){}
 static void save_secrets(const Bank_t *bank){}
 
-static void load_customers(Bank_t *bank){}
-static int save_customers(const Bank_t *bank){}
+static void load_accounts(Bank_t *bank){}
+static int save_accounts(const Bank_t *bank){}
 
-void set_new_account(Bank_t *bank, const Account_t *account){}
-void close_account(Bank_t *bank, Account_t *account){}
+void add_bank_account(Bank_t *bank, const Account_t *account){}
+void close_bank_account(Bank_t *bank, Account_t *account){}
 
 void user_login(Bank_t *bank, const Account_t *account, const char *password){}
 
-double make_withdraw(Bank_t *bank, const Account_t *account, double amnt){}
-double make_deposit(Bank_t *bank, const Account_t *account, double amnt){}
+void make_withdraw(Bank_t *bank, Account_t *account, double amnt){}
+void make_deposit(Bank_t *bank, Account_t *account, double amnt){}
 void make_transfer(
     Bank_t *bank, const Account_t *sendAcc, double amnt, Account_t *recvAcc){}
 void check_account_detail(Bank_t *bank, const Account_t *account){}
 
+//! @todo ----
+double check_account_balance(const Account_t *account){}
+Transaction_t* get_account_transactions(const Account_t *account){}
+UserInfo_t* get_account_user_info(const Account_t *account){}
 // -------------------
 // internal structure
 // -------------------
