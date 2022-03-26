@@ -44,7 +44,7 @@ void vector_free(XVector_t *vec){
 }
 
 /**
- * @brief Add element to back of vector
+ * @brief Add item to back of vector
  * 
  * 
  * @param vec   Vecotr collection 
@@ -65,4 +65,16 @@ int vector_push_back(XVector_t *vec, const void *item){
     // add the item now
     memcpy((char*)vec->data + (vec->itemsize*vec->size), item, vec->itemsize);
     return vec->size++;
+}
+
+/**
+ * @brief Return item from back of vector and remove it from the vector.
+ * 
+ * @param vec   Vector collection
+ * @param item  Item returned from the back of vec
+ */
+void vector_push_back(XVector_t *vec, void *item){
+    assert(vec->size > 0);
+    --vec->size;
+    memcpy(item, (char*)vec->data + (vec->itemsize*vec->size), vec->itemsize);
 }
