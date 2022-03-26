@@ -150,7 +150,6 @@ struct UserInfo_{
     size_t (*to_string)(const UserInfo_t *user, char* outstr);
 };
 
-//! @todo
 
 static size_t user_string(const UserInfo_t *user, char *outstr){
     signal(OP_MEMORY, bank_event_handler);
@@ -164,17 +163,40 @@ static size_t user_string(const UserInfo_t *user, char *outstr){
         len = strlen(buf);
         buf[len-1] = '\0';
         outstr = malloc(len+1);
-        if(outstr == NULL){ perror("user_string()"); }
+        if(outstr == NULL){
+            perror("user_string()");
+            raise(OP_MEMORY);
+        }
         strncpy(outstr, buf, len);
     }else{
         outstr = malloc(1);
-        if(outstr == NULL){ perror("usrér_string()"); }
+        if(outstr == NULL){
+            perror("usrér_string()");
+            raise(OP_MEMORY);
+        }
         strcpy(outstr, "");
     }
     return len;
 }
 
-UserInfo_t* create_user(){}
+//! @todo
+UserInfo_t* create_user(
+    const char *fnm, const char *lnm, const char *eml, const char *fon){
+    signal(OP_MEMORY, bank_event_handler);
+    UserInfo_t *user;
+    user = (UserInfo_t*)malloc(sizeof(*user));
+    if(user == NULL){
+        perror("create_user()");
+        raise(OP_MEMORY);
+    }
+    strncpy(user->fname, fnm, BANKLEN);
+    strncpy(user->lname, lnm, BANKLEN);
+    strncpy(user->email, eml, BANKLEN);
+    strncpy(user->phone, fon, BANKLEN);
+    user->to_string = user_string;
+    return user;
+}
+
 void delete_user(UserInfo_t* info){}
 void copy_user(UserInfo_t *to, const UserInfo_t *from){}
 
