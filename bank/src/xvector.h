@@ -29,7 +29,7 @@ int vector_set_cpacity(XVector_t *vec, size_t capacity);
 #ifdef MAKE_CUSTOM_XVECTOR
 #undef MAKE_CUSTOM_XVECTOR
 #endif
-#define MAKE_CUSTOM_XVECTOR(T)                                          \
+#define CUSTOM_XVECTOR(T)                                               \
     XVector_t* vector_malloc_ ## T (                                    \
         ItemAllocator alloc,                                            \
         ItemDeallocator dealloc, size_t capacity){                      \
@@ -42,7 +42,7 @@ int vector_set_cpacity(XVector_t *vec, size_t capacity);
     T* vector_pop_back_ ## T (XVector_t *vec){                          \
         assert(vector_get_itemsize(vec) == sizeof(T));                  \
         T *item;                                                        \
-        vector_pop_back(vec, item);                                     \
+        vector_pop_back(vec, (void*)item);                              \
         return item;                                                    \
     }                                                                   \
     T* vector_get_item_ ## T(XVector_t *vec, size_t index){             \
@@ -57,7 +57,7 @@ int vector_set_cpacity(XVector_t *vec, size_t capacity);
         item = (T*)vector_get_begin(vec, index);                        \
         return item;                                                    \
     }                                                                   \
-    T *vector_get_end_ ## T(){                                          \
+    T *vector_get_end_ ## T(XVector_t *vec){                            \
         assert(vector_get_itemsize(vec) == sizeof(T));                  \
         T *item;                                                        \
         item = (T*)vector_get_end(vec, index);                          \

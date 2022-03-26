@@ -4,8 +4,12 @@
 #include<string.h>
 #include<ctype.h>
 #include<time.h>
-
+#include "xvector.h"
 #include "bank.h"
+
+#define BANKLEN         16
+#define BANK_NAMELEN    32
+
 
 static const int SECRET_LEN = 128;
 static const int PASSWORD_MAXLEN = 32;
@@ -35,7 +39,6 @@ struct Transaction_{
     size_t (*to_string)(const Transaction *self, char *outstr);
 };
 
-
 // -----------------------------------------------------------------
 enum BankEvent_{
     OP_UNKNOWN = -1,
@@ -51,9 +54,7 @@ enum BankEvent_{
     OP_MEMORY = 101
 };
 
-
 // -----------------------------------------------------------------
-
 static Transaction *malloc_transaction(BankEvent type){
     signal(OP_MEMORY, bank_event_handler);
     Transaction *trans;
@@ -134,7 +135,6 @@ static size_t transaction_string(const Transaction *self, char *outstr){
     return len;
 }
 
-
 // ---
 static void copy_transaction(Transaction *to, const Transaction *from){
     if(to){
@@ -144,7 +144,6 @@ static void copy_transaction(Transaction *to, const Transaction *from){
     to->when = from->when;
     return;
 }
-
 
 // -----------
 // User Info
@@ -156,7 +155,6 @@ struct UserInfo_{
     char phone[BANKLEN+1];
     size_t (*to_string)(const UserInfo *user, char* outstr);
 };
-
 
 static size_t user_string(const UserInfo *user, char *outstr){
     signal(OP_MEMORY, bank_event_handler);
@@ -226,11 +224,10 @@ static void copy_user(UserInfo *to, const UserInfo *from){
     to = create_user(from->fname, from->lname, from->email, from->email);
 }
 
-
 // --------------
 //  Account Info
 // --------------
-//MAKE_CUSTOM_XVECTOR(Transaction)
+CUSTOM_XVECTOR(Transaction)
 
 struct Account_{
     UserInfo *user;
@@ -239,7 +236,7 @@ struct Account_{
     int id;
     char *filename;
     char *sline;
-    Transaction *transactions;
+    XVector_t *transactions;
     char* (*to_string)(const Account *self);
 };
 
@@ -260,18 +257,20 @@ static void copy_account(Account *to, const Account *from){}
 // -------------
 // customerfile
 // for each customer: transactionfile
-typedef struct Bank_ Bank;
+CUSTOM_XVECTOR(Account)
 
 struct Bank_{
     char name[BANK_NAMELEN+1];
     char cfile[BANK_NAMELEN+1+BANKLEN+1];
     char sfile[BANK_NAMELEN+1+BANKLEN+1];
-    Account *accounts;
+    XVector_t *accounts;
     char **secrets;
 };
 
 Bank* load_bank_data(){}
 void save_bank_data(const Bank *bank){}
+const Account* get_all_accounts(const Bank *bank){}
+void print_all_accounts(const Bank *bank){}
 
 static void parse_secret(Account *account, char *data){}
 static void load_secrets(Bank *bank){}
