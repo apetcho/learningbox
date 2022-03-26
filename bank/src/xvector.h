@@ -5,12 +5,15 @@
 typedef struct XVector_ XVector_t;
 typedef void* (*ItemAllocator)(size_t);
 typedef void (*ItemDeallocator)(void *);
+typedef void (*ItemCopyFn)(void *to, const void *from);
 
 // ctor & dtor operations
 XVector_t* vector_malloc(
     ItemAllocator alloc,
     ItemDeallocator dealloc,
-    size_t capacity, size_t itemsize);
+    ItemCopyFn copyfn,
+    size_t capacity, size_t itemsize
+);
 void vector_free(XVector_t *vec);
 // access operations
 int vector_push_back(XVector_t *vec, const void *var);
@@ -32,8 +35,10 @@ int vector_set_capacity(XVector_t *vec, size_t capacity);
 #define CUSTOM_XVECTOR(T)                                               \
     XVector_t* vector_malloc_ ## T (                                    \
         ItemAllocator alloc,                                            \
-        ItemDeallocator dealloc, size_t capacity){                      \
-        return vector_malloc(alloc, dealloc, capacity, sizeof(T));      \
+        ItemDeallocator dealloc,                                        \
+        ItemCopyFn copyfn, size_t capacity){                            \
+        return vector_malloc(                                           \
+            alloc, dealloc, copyfn, capacity, sizeof(T));               \
     }                                                                   \
     int vector_push_back_ ## T (XVector_t *vec, const T *item){         \
         assert(vector_get_itemsize(vec) == sizeof(T));                  \
