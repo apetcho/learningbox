@@ -276,7 +276,7 @@ static Account *malloc_account(const UserInfo *user, const char* password){
     account->to_string = account_string;
 }
 
-//! @todo
+//
 static void delete_account(Account *account){
     if(account){
         if(account->user){
@@ -303,9 +303,12 @@ static void delete_account(Account *account){
     account = NULL;
 }
 
+// ---
+static void copy_account(Account *to, const Account *from){
+    to = malloc_account(from->user, from->password);
+}
 
-static void copy_account(Account *to, const Account *from){}
-
+//! @todo
 static char* read_password(FILE *stream){}
 static int load_account_transactions(Account *account){}
 static void save_account_transactions(const Account *account){}
