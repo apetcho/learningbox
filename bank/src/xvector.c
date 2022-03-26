@@ -110,3 +110,8 @@ void* vector_get_begin(XVector_t *vec){
 void* vector_get_end(XVector_t *vec){
     return (char*)vec->data + (vec->size * vec->itemsize);
 }
+
+// ---
+size_t vector_get_itemsize(const XVector_t *vec){
+    return vec->itemsize;
+}
