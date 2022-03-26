@@ -10,6 +10,8 @@
 #define BANKLEN         16
 #define BANK_NAMELEN    32
 
+static int USERID = 0;
+static const int DEFAULT_ID = -1;
 
 static const int SECRET_LEN = 128;
 static const int PASSWORD_MAXLEN = 32;
@@ -205,10 +207,10 @@ void free_user(UserInfo* info){
     signal(OP_UNKNOWN, bank_event_handler);
     if(info){
         free(info);
-        info->email[0] = '\0';
-        info->fname[0] = '\0';
-        info->lname[0] = '\0';
-        info->phone[0] = '\0';
+        memset(info->email, '\0', BANKLEN);
+        memset(info->fname, '\0', BANKLEN);
+        memset(info->lname, '\0', BANKLEN);
+        memset(info->phone, '\0', BANKLEN);
         info->to_string = 0;
     }else{
         perror("delete_user(): cannot delete non-existing user");
@@ -232,22 +234,87 @@ struct Account_{
     char password[BANKLEN+1];
     double balance;
     int id;
-    char *filename;
+    char *transfile;
     char *sline;
     XVector_t *transactions;
     char* (*to_string)(const Account *self);
 };
 
+// ----
+static Account *malloc_account(const UserInfo *user, const char* password){
+    signal(OP_MEMORY, bank_event_handler);
+    size_t asize = sizeof(Account);
+    Account *account = (Account *)malloc(sizeof(*account));
+    if(account == NULL){
+        perror("malloc_account(): cannot delete non-existing user");
+        raise(OP_MEMORY);
+    }
+    account->transactions = NULL;
+    copy_user(account->user, user);
+    strncpy(account->password, password, BANKLEN);
+    ++USERID;
+    account->id = USERID;
+    char buf[BUFSIZ];
+    sprintf(
+        buf, "%06d:%s:%s:%s:%s", account->id, account->user->fname,
+        account->user->lname, account->user->email, password
+    );
+    size_t len = strlen(buf);
+    account->sline = malloc(len+1);
+    strncpy(account->sline, buf, len);
+    account->sline[len] = '\0';
+    memset(buf, '\0', len);
+    sprintf(
+        buf, "%s%s%d%s", account->user->fname, account->user->lname,
+        account->id, CFILE_SUFFIX
+    );
+    len = strlen(buf);
+    account->transfile = malloc(len+1);
+    strncpy(account->transfile, buf, len);
+    account->transfile[len] = '\0';
+    account->balance = 0.0;
+    account->to_string = account_string;
+}
+
+//
+static void delete_account(Account *account){
+    if(account){
+        if(account->user){
+            free_user(account->user);
+            account->user = NULL;    
+        }
+        if(account->password){
+            free(account->password);
+            account->password = NULL;    
+        }
+        if(account->sline){
+            free(account->sline);
+            account->sline = NULL;
+        }
+        if(account->transfile){
+            free(account->transfile);
+            account->transfile = NULL;
+        }
+
+        vector_free(account->transactions);
+        account->transactions = NULL;
+        account->to_string = NULL;
+    }
+    account = NULL;
+}
+
+// ---
+static void copy_account(Account *to, const Account *from){
+    to = malloc_account(from->user, from->password);
+}
+
 //! @todo
-static char* read_password(Account *self){}
+static char* read_password(FILE *stream){}
 static int load_account_transactions(Account *account){}
 static void save_account_transactions(const Account *account){}
 static void add_account_transaction(
     Account *account, const Transaction *trans){}
 static char* account_string(const Account *self){}
-static Account *create_account();
-static void delete_account(Account *);
-static void copy_account(Account *to, const Account *from){}
 
 
 // -------------

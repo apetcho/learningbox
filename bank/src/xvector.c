@@ -14,18 +14,10 @@ struct XVector_{
     size_t capacity;
     size_t size;
     size_t itemsize;
-    //ItemAllocator allocate;
-    //ItemDeallocator deallocate;
-    //ItemCopyFn copyfn;
 };
 
 /** Initialize a vector with a specified capacity and itemsize */
-XVector_t* vector_malloc(
-    //ItemAllocator allocate,
-    //ItemDeallocator deallocate,
-    //ItemCopyFn copyfn,
-    size_t capacity, size_t itemsize
-){
+XVector_t* vector_malloc(size_t capacity, size_t itemsize){
     XVector_t *vec = (XVector_t*)malloc(sizeof(*vec));
     if(vec){
         assert(capacity > 0);
@@ -33,9 +25,6 @@ XVector_t* vector_malloc(
         vec->capacity = (vec->data == NULL)? 0: capacity;
         vec->size = 0;
         vec->itemsize = itemsize;
-        //vec->allocate = allocate;
-        //vec->deallocate = deallocate;
-        //vec->copyfn = copyfn;
     }
     return vec;
 }
