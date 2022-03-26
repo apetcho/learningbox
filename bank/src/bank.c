@@ -13,8 +13,6 @@
 
 static const int SECRET_LEN = 128;
 static const int PASSWORD_MAXLEN = 32;
-static const int DEFAULT_CAPACITY = 10;
-static const double GROWTH_RATE = 1.5;
 static const char* WITHDRAW_STRING = "Withdraw";
 static const char* DEPOSIT_STRING = "Deposit";
 static const char* CONSULT_STRING = "Consult";
