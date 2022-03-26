@@ -28,7 +28,7 @@ XVector_t* vector_malloc(
 ){
     XVector_t *vec = (XVector_t*)malloc(sizeof(*vec));
     if(vec){
-        size_t cap = (capacity <= 1) ? DEFAULT_CAPACITY : capacity;
+        size_t cap = (capacity < 1) ? DEFAULT_CAPACITY : capacity;
         vec->data = allocate(cap * itemsize);
         vec->capacity = (vec->data == 0)? 0: cap;
         vec->size = 0;
@@ -47,6 +47,7 @@ void vector_free(XVector_t *vec){
         vec->deallocate(vec->data[i]);
     }
     free(vec);
+    vec = NULL;
 }
 
 /**
@@ -160,28 +161,61 @@ int vector_set_size(XVector_t *vec, size_t size){
         for(size_t i = 0; i < vec->size; i++){ /* copy all item already stored*/
             vec->copyfn(data[i], vec->data[i]);
         }
-        for(size_t i=0; i < vec->size; i++){
-            vec->deallocate(vec->data[i]);
-        }
+        vector_free(vec);
         
         vec->capacity = size; /* new capacity */
         vec->data = data;
     }else if(size < vec->size && size > 0){
-        void *data = vec->allocate(size*vec->itemsize);
+        void *data = vec->allocate(vec->capacity*vec->itemsize);
         if(data == NULL){ return -1; }
         for(size_t i = 0; i < size; i++){ /* copy only the first 'size' items*/
             vec->copyfn(data[i], vec->data[i]);
         }
-        for(size_t i=0; i < vec->size; i++){
-            vec->deallocate(vec->data[i]);
-        }
-        
-        //vec->capacity = size;
+        vector_free(vec);
         vec->data = data;
+
     }else{ /* negative size was given. This is an error */
         return -1;
     }
 
     vec->size = size;
+    return 0;
+}
+
+// ---
+/**
+ * @brief Shrink or grow allocated memory reserve for array.
+ * 
+ * A size of 0 deletes the array.
+ * 
+ * @param vec 
+ * @param capaity 
+ * @return int 0 if successful, otherwise -1
+ */
+int vector_set_capacity(XVector_t *vec, size_t capacity){
+    if(capacity != vec->capacity){
+        void *data = vec->allocate(capacity*vec->itemsize);
+        if(data == NULL && capacity > 0){ return -1; }
+        size_t size = (capacity < vec->size) ? capacity : vec->size;
+        for(size_t i=0; i < size; i++){
+            vec->copyfn(data[i], vec->data[i]);
+        }
+        for(size_t i=0; i < vec->size; i++){
+            vec->deallocate(vec->data[i]);
+        }
+        vec->data = data;
+        vec->size = size;
+        vec->capacity = capacity;
+    }
+    if(capacity == 0){
+        vector_free(vec);
+        ItemAllocator allocfn = vec->allocate;
+        ItemDeallocator delfn = vec->deallocate;
+        ItemCopyFn copyfn = vec->copyfn;
+        size_t itemsize = vec->itemsize;
+        vec = vector_malloc(allocfn, delfn, copyfn, 1, itemsize);
+        if(vec == NULL){ return -1; }
+    }
+
     return 0;
 }
