@@ -86,7 +86,7 @@ void vector_push_back(XVector_t *vec, void *item){
  * @param index 
  * @return void* 
  */
-void* vector_get_item(const XVector_t *vec, size_t index){
+void* vector_get_item(XVector_t *vec, size_t index){
     assert(index >= 0 && index < vec->size);
     return (char *)vec->data + index * vec->itemsize;
 }
@@ -99,4 +99,14 @@ void* vector_get_item(const XVector_t *vec, size_t index){
  */
 void* vector_get_begin(XVector_t *vec){
     return vec->data;
+}
+
+/**
+ * @brief Return pointer to one-past-end of array
+ * 
+ * @param vec 
+ * @return void* 
+ */
+void* vector_get_end(XVector_t *vec){
+    return (char*)vec->data + (vec->size * vec->itemsize);
 }
