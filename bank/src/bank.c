@@ -207,10 +207,10 @@ void free_user(UserInfo* info){
     signal(OP_UNKNOWN, bank_event_handler);
     if(info){
         free(info);
-        info->email[0] = '\0';
-        info->fname[0] = '\0';
-        info->lname[0] = '\0';
-        info->phone[0] = '\0';
+        memset(info->email, '\0', BANKLEN);
+        memset(info->fname, '\0', BANKLEN);
+        memset(info->lname, '\0', BANKLEN);
+        memset(info->phone, '\0', BANKLEN);
         info->to_string = 0;
     }else{
         perror("delete_user(): cannot delete non-existing user");
