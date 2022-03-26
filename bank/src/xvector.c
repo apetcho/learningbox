@@ -36,3 +36,9 @@ XVector_t* vector_malloc(
 
     return vec;
 }
+
+/* Realse memory owned by xvector */
+void vector_free(XVector_t *vec){
+    vec->deallocate(vec->data);
+    free(vec);
+}
