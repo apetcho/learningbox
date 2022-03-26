@@ -6,6 +6,7 @@
 #define BANK_NAMELEN    32
 
 typedef enum BankEvent_{
+    OP_UNKNOWN = -1,
     OP_SUCCESS = 0,
     OP_CREATE_ACCOUNT,
     OP_CLOSE_ACCOUNT,

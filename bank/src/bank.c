@@ -28,8 +28,8 @@ void bank_exception(BankEvent_t event){}
 // ---------------
 //  Transaction
 // ---------------
-//! @todo
 typedef struct Transaction_ Transaction_t;
+
 Transaction_t *create_transaction(BankEvent_t type){
     signal(OP_MEMORY, bank_event_handler);
     Transaction_t *trans;
@@ -41,7 +41,17 @@ Transaction_t *create_transaction(BankEvent_t type){
     return trans;
 }
 
-void delete_transaction(Transaction_t *self){}
+//! @todo
+// ----
+void delete_transaction(Transaction_t *self){
+    if(self){
+        free(self);
+        self->type = OP_UNKNOWN;
+        self->when = (time_t)0;
+        self->to_string = 0;
+    }
+    return;
+}
 void print_transaction(const Transaction_t *self){}
 static char* transaction_string(const Transaction_t *self){}
 void copy_transaction(Transaction_t *to, const Transaction_t *from){}
