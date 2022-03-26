@@ -37,8 +37,32 @@ XVector_t* vector_malloc(
     return vec;
 }
 
-/* Realse memory owned by xvector */
+/** Realse memory owned by xvector */
 void vector_free(XVector_t *vec){
     vec->deallocate(vec->data);
     free(vec);
+}
+
+/**
+ * @brief Add element to back of vector
+ * 
+ * 
+ * @param vec   Vecotr collection 
+ * @param item  Item to add to the vector collection
+ * @return int  Index of the new element if successful, otherwise -1
+ */
+int vector_push_back(XVector_t *vec, const void *item){
+    if(vec->size == vec->capacity){// not enough memory, re-adjust memory size
+        size_t nsolts = (size_t)(vec->capacity * GROWTH_RATE + 1.0);
+        size_t newsize = (vec->capacity == 0)? DEFAULT_CAPACITY : nsolts;
+        void *data = realloc(vec->data, newsize*vec->itemsize);
+        if(data == NULL){
+            return -1;
+        }
+        vec->capacity = newsize;
+        vec->data = data;
+    }
+    // add the item now
+    memcpy((char*)vec->data + (vec->itemsize*vec->size), item, vec->itemsize);
+    return vec->size++;
 }
