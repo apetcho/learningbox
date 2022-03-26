@@ -2,7 +2,11 @@
 #define _MY_BANK_H
 #include<time.h>
 
+#define BANKLEN         16
+#define BANK_NAMELEN    32
+
 typedef enum BankEvent_{
+    OP_UNKNOWN = -1,
     OP_SUCCESS = 0,
     OP_CREATE_ACCOUNT,
     OP_CLOSE_ACCOUNT,
@@ -12,16 +16,20 @@ typedef enum BankEvent_{
     OP_DEPOSIT,
     OP_TRANSFER,
     OP_FAIL = 100,
+    OP_MEMORY = 101
 } BankEvent_t;
+
+void bank_event_handler(int );
+void bank_exception(BankEvent_t);
 
 typedef struct Transaction_ Transaction_t;
 struct Transaction_{
     BankEvent_t type;
     time_t when;
-    char* (*to_string)(const Transaction_t *self);
+    size_t (*to_string)(const Transaction_t *self, char *outstr);
 };
 
-Transaction_t *create_transaction(BankEvent_t event);
+Transaction_t *create_transaction(BankEvent_t type);
 void delete_transaction(Transaction_t *self);
 void print_transaction(const Transaction_t *self);
 
@@ -59,7 +67,7 @@ Bank_t* load_bank_data();
 void save_bank_data(const Bank_t*);
 void set_new_account(Bank_t*, const Account_t*);
 void close_account(Bank_t*, Account_t *);
-void user_login(Bank_t*, const Account_t*);
+void user_login(Bank_t *bank, const Account_t *account, const char *);
 double make_withdraw(Bank_t*, const Account_t*, double);
 double make_deposit(Bank_t*, const Account_t*, double);
 void make_transfer(Bank_t*, const Account_t*, double, Account_t*);
