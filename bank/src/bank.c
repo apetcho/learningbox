@@ -277,7 +277,33 @@ static Account *malloc_account(const UserInfo *user, const char* password){
 }
 
 //! @todo
-static void delete_account(Account *);
+static void delete_account(Account *account){
+    if(account){
+        if(account->user){
+            free_user(account->user);
+            account->user = NULL;    
+        }
+        if(account->password){
+            free(account->password);
+            account->password = NULL;    
+        }
+        if(account->sline){
+            free(account->sline);
+            account->sline = NULL;
+        }
+        if(account->transfile){
+            free(account->transfile);
+            account->transfile = NULL;
+        }
+
+        vector_free(account->transactions);
+        account->transactions = NULL;
+        account->to_string = NULL;
+    }
+    account = NULL;
+}
+
+
 static void copy_account(Account *to, const Account *from){}
 
 static char* read_password(FILE *stream){}
