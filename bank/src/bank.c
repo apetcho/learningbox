@@ -99,6 +99,8 @@ static size_t transaction_string(const Transaction_t *self, char *outstr){
         len = 0;
         buf[0] = '\0';
     }
+    outstr = malloc(len+1);
+    strncpy(outstr, buf, len);
     return len;
 }
 
@@ -139,7 +141,7 @@ struct UserInfo_{
     char lname[BANKLEN+1];
     char email[BANKLEN+1];
     char phone[BANKLEN+1];
-    char* (*to_string)(const UserInfo_t *user);
+    size_t (*to_string)(const UserInfo_t *user, char* outstr);
 };
 
 //! @todo
