@@ -30,7 +30,17 @@ void bank_exception(BankEvent_t event){}
 // ---------------
 //! @todo
 typedef struct Transaction_ Transaction_t;
-Transaction_t *create_transaction(BankEvent_t event){}
+Transaction_t *create_transaction(BankEvent_t type){
+    signal(OP_MEMORY, bank_event_handler);
+    Transaction_t *trans;
+    trans = (Transaction_t *)malloc(sizeof(*trans));
+    if(trans == NULL){ raise(OP_MEMORY);}
+    trans->type = type;
+    trans->when = time(0);
+    trans->to_string = transaction_string;
+    return trans;
+}
+
 void delete_transaction(Transaction_t *self){}
 void print_transaction(const Transaction_t *self){}
 static char* transaction_string(const Transaction_t *self){}

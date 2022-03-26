@@ -15,6 +15,7 @@ typedef enum BankEvent_{
     OP_DEPOSIT,
     OP_TRANSFER,
     OP_FAIL = 100,
+    OP_MEMORY = 101
 } BankEvent_t;
 
 void bank_event_handler(int );
@@ -27,7 +28,7 @@ struct Transaction_{
     char* (*to_string)(const Transaction_t *self);
 };
 
-Transaction_t *create_transaction(BankEvent_t event);
+Transaction_t *create_transaction(BankEvent_t type);
 void delete_transaction(Transaction_t *self);
 void print_transaction(const Transaction_t *self);
 
