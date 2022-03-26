@@ -41,18 +41,34 @@ Transaction_t *create_transaction(BankEvent_t type){
     return trans;
 }
 
-//! @todo
 // ----
 void delete_transaction(Transaction_t *self){
+    signal(OP_UNKNOWN, bank_event_handler);
     if(self){
         free(self);
         self->type = OP_UNKNOWN;
         self->when = (time_t)0;
         self->to_string = 0;
+    }else{
+        fprintf(stderr, "Cannot delete non-exist transtaction\n");
+        raise(OP_UNKNOWN);
     }
     return;
 }
-void print_transaction(const Transaction_t *self){}
+
+// ---
+void print_transaction(const Transaction_t *self){
+    signal(OP_UNKNOWN, bank_event_handler);
+    if(self){
+        printf("%s\n", transaction_string(self));
+    }else{
+        fprintf(stderr, "Cannot print non-exist transtaction\n");
+        raise(OP_UNKNOWN);
+    }
+    return;
+}
+
+//! @todo
 static char* transaction_string(const Transaction_t *self){}
 void copy_transaction(Transaction_t *to, const Transaction_t *from){}
 
