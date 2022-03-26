@@ -135,9 +135,12 @@ struct TransactionList_{
 TransactionList_t *create_transaction_list(){}
 void delete_transaction_list(TransactionList_t *slist){}
 void print_transaction_list(const TransactionList_t *list){}
-static void add_transaction(
+static void add_transaction_to_list(
     TransactionList_t *list, const Transaction_t *trans){}
-static void discard_transaction(TransactionList_t *list, Transaction_t *trans){}
+static void discard_transaction_from_list(
+    TransactionList_t *list, Transaction_t *trans){}
+static void copy_transaction_list(
+    TransactionList_t *to, const TransactionList_t *form){}
 
 // -----------
 // User Info
@@ -228,6 +231,7 @@ struct Account_{
     double balance;
     int id;
     char *filename;
+    char *sline;
     TransactionList_t *transactions;
     char* (*to_string)(const Account_t *self);
 };
@@ -252,9 +256,14 @@ struct AccountList_{
     void (*print)(const Account_t*);
 };
 
-static void add_account(AccountList_t *aclist, const Account_t *account){}
-static AccountList_t* create_account_list();
-void destroy_account_list(AccountList_t *);
+static void add_account_to_list(
+    AccountList_t *aclist, const Account_t *account){}
+static void delete_account_from_list(
+    AccountList_t *aclist, const Account_t *account){}
+static AccountList_t* create_accountList();
+void delete_account_list(AccountList_t *list){}
+void copy_account_list(AccountList_t *to, const AccountList_t *from){}
+
 
 // -------------
 //  Bank Object
@@ -301,4 +310,6 @@ typedef struct{
     double asset;
     double avg_transactions;
 }BankReport_t;
-void show_bank_report(const Bank_t *bank){}
+static BankReport_t *create_bank_report(){}
+static BankReport_t *delete_bank_report(BankReport_t *bkreport){}
+void print_bank_report(const Bank_t *bank){}
