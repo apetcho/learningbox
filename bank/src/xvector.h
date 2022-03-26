@@ -8,12 +8,7 @@ typedef void (*ItemDeallocator)(void *);
 typedef void (*ItemCopyFn)(void *to, const void *from);
 
 // ctor & dtor operations
-XVector_t* vector_malloc(
-    ItemAllocator alloc,
-    ItemDeallocator dealloc,
-    ItemCopyFn copyfn,
-    size_t capacity, size_t itemsize
-);
+XVector_t* vector_malloc(size_t capacity, size_t itemsize);
 void vector_free(XVector_t *vec);
 // access operations
 int vector_push_back(XVector_t *vec, const void *var);
@@ -33,12 +28,8 @@ int vector_set_capacity(XVector_t *vec, size_t capacity);
 #undef MAKE_CUSTOM_XVECTOR
 #endif
 #define CUSTOM_XVECTOR(T)                                               \
-    XVector_t* vector_malloc_ ## T (                                    \
-        ItemAllocator alloc,                                            \
-        ItemDeallocator dealloc,                                        \
-        ItemCopyFn copyfn, size_t capacity){                            \
-        return vector_malloc(                                           \
-            alloc, dealloc, copyfn, capacity, sizeof(T));               \
+    XVector_t* vector_malloc_ ## T (size_t capacity){                   \
+        return vector_malloc(capacity, sizeof(T));                      \
     }                                                                   \
     int vector_push_back_ ## T (XVector_t *vec, const T *item){         \
         assert(vector_get_itemsize(vec) == sizeof(T));                  \
@@ -59,13 +50,13 @@ int vector_set_capacity(XVector_t *vec, size_t capacity);
     T* vector_get_begin_ ## T(XVector_t *vec){                          \
         assert(vector_get_itemsize(vec) == sizeof(T));                  \
         T *item;                                                        \
-        item = (T*)vector_get_begin(vec, index);                        \
+        item = (T*)vector_get_begin(vec);                               \
         return item;                                                    \
     }                                                                   \
     T *vector_get_end_ ## T(XVector_t *vec){                            \
         assert(vector_get_itemsize(vec) == sizeof(T));                  \
         T *item;                                                        \
-        item = (T*)vector_get_end(vec, index);                          \
+        item = (T*)vector_get_end(vec);                                 \
         return item;                                                    \
     }
 
