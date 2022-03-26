@@ -50,7 +50,7 @@ void delete_transaction(Transaction_t *self){
         self->when = (time_t)0;
         self->to_string = 0;
     }else{
-        fprintf(stderr, "Cannot delete non-exist transtaction\n");
+        perror("delete_transaction(): cannot delete non-exist transtaction");
         raise(OP_UNKNOWN);
     }
     return;
@@ -64,7 +64,7 @@ void print_transaction(const Transaction_t *self){
         transaction_string(self, buf);
         printf("%s\n", buf);
     }else{
-        fprintf(stderr, "Cannot print non-exist transtaction\n");
+        perror("print_transaction(): cannot print non-exist transtaction");
         raise(OP_UNKNOWN);
     }
     return;
@@ -72,6 +72,7 @@ void print_transaction(const Transaction_t *self){
 
 // ---
 static size_t transaction_string(const Transaction_t *self, char *outstr){
+    signal(OP_MEMORY, bank_event_handler);
     char buf[80];
     size_t len;
     BankEvent_t type = self->type;
@@ -100,6 +101,11 @@ static size_t transaction_string(const Transaction_t *self, char *outstr){
         buf[0] = '\0';
     }
     outstr = malloc(len+1);
+    if(outstr == NULL){
+        perror("transaction_string()");
+        raise(OP_MEMORY);
+        return 0;
+    }
     strncpy(outstr, buf, len);
     return len;
 }
@@ -145,7 +151,29 @@ struct UserInfo_{
 };
 
 //! @todo
-static char* user_string(const UserInfo_t *user){}
+
+static size_t user_string(const UserInfo_t *user, char *outstr){
+    signal(OP_MEMORY, bank_event_handler);
+    const size_t maxlen = 4*(BANKLEN+1);
+    size_t len;
+    char buf[maxlen+1];
+    //!@todo register appropiate signals
+    if(user){
+        sprintf(buf, "%s %s %s %s",
+            user->fname, user->lname, user->email, user->phone);
+        len = strlen(buf);
+        buf[len-1] = '\0';
+        outstr = malloc(len+1);
+        if(outstr == NULL){ perror("user_string()"); }
+        strncpy(outstr, buf, len);
+    }else{
+        outstr = malloc(1);
+        if(outstr == NULL){ perror("usrér_string()"); }
+        strcpy(outstr, "");
+    }
+    return len;
+}
+
 UserInfo_t* create_user(){}
 void delete_user(UserInfo_t* info){}
 void copy_user(UserInfo_t *to, const UserInfo_t *from){}
