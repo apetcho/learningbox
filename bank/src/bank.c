@@ -102,9 +102,16 @@ static size_t transaction_string(const Transaction_t *self, char *outstr){
     return len;
 }
 
-//! @todo
+
 // ---
-void copy_transaction(Transaction_t *to, const Transaction_t *from){}
+void copy_transaction(Transaction_t *to, const Transaction_t *from){
+    if(to){
+        delete_transaction(to);
+    }
+    to = create_transaction(from->type);
+    to->when = from->when;
+    return;
+}
 
 // --------------------
 //   Transaction List
