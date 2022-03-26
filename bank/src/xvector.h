@@ -15,7 +15,7 @@ void vector_free(XVector_t *vec);
 // access operations
 int vector_push_back(XVector_t *vec, const void *var);
 void vector_pop_back(XVector_t *vec, void *var);
-void* vector_get_item(XVector_t *vec, size_t index);
+void* vector_get_item(const XVector_t *vec, size_t index);
 void* vector_get_begin(XVector_t *vec);
 void* vector_get_end(XVector_t *vec);
 // size operations
@@ -45,7 +45,7 @@ int vector_set_cpacity(XVector_t *vec, size_t capacity);
         vector_pop_back(vec, (void*)item);                              \
         return item;                                                    \
     }                                                                   \
-    T* vector_get_item_ ## T(XVector_t *vec, size_t index){             \
+    T* vector_get_item_ ## T(const XVector_t *vec, size_t index){       \
         assert(vector_get_itemsize(vec) == sizeof(T));                  \
         T *item;                                                        \
         item = (T*)vector_get_item(vec, index);                         \
