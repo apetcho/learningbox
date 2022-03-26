@@ -33,7 +33,7 @@ int vector_set_cpacity(XVector_t *vec, size_t capacity);
     XVector_t* vector_malloc_ ## T (                                    \
         ItemAllocator alloc,                                            \
         ItemDeallocator dealloc, size_t capacity){                      \
-        return vector_malloc(capacity, sizeof(T));                      \
+        return vector_malloc(alloc, dealloc, capacity, sizeof(T));      \
     }                                                                   \
     int vector_push_back_ ## T (XVector_t *vec, const T *item){         \
         assert(vector_get_itemsize(vec) == sizeof(T));                  \

@@ -23,16 +23,16 @@ static const char* SFILE_SUFFIX = "Secret.bin";
 // ------
 //! @todo
 void bank_event_handler(int banksignum){}
-void bank_exception(BankEvent_t event){}
+void bank_exception(BankEvent event){}
 
 // ---------------
 //  Transaction
 // ---------------
-typedef struct Transaction_ Transaction_t;
+typedef struct Transaction_ Transaction;
 struct Transaction_{
-    BankEvent_t type;
+    BankEvent type;
     time_t when;
-    size_t (*to_string)(const Transaction_t *self, char *outstr);
+    size_t (*to_string)(const Transaction *self, char *outstr);
 };
 
 
@@ -54,10 +54,10 @@ enum BankEvent_{
 
 // -----------------------------------------------------------------
 
-static Transaction_t *malloc_transaction(BankEvent_t type){
+static Transaction *malloc_transaction(BankEvent type){
     signal(OP_MEMORY, bank_event_handler);
-    Transaction_t *trans;
-    trans = (Transaction_t *)malloc(sizeof(*trans));
+    Transaction *trans;
+    trans = (Transaction *)malloc(sizeof(*trans));
     if(trans == NULL){ raise(OP_MEMORY);}
     trans->type = type;
     trans->when = time(0);
@@ -66,7 +66,7 @@ static Transaction_t *malloc_transaction(BankEvent_t type){
 }
 
 // ----
-static void free_transaction(Transaction_t *self){
+static void free_transaction(Transaction *self){
     signal(OP_UNKNOWN, bank_event_handler);
     if(self){
         free(self);
@@ -81,7 +81,7 @@ static void free_transaction(Transaction_t *self){
 }
 
 // ---
-static void print_transaction(const Transaction_t *self){
+static void print_transaction(const Transaction *self){
     signal(OP_UNKNOWN, bank_event_handler);
     if(self){
         char *buf;
@@ -95,11 +95,11 @@ static void print_transaction(const Transaction_t *self){
 }
 
 // ---
-static size_t transaction_string(const Transaction_t *self, char *outstr){
+static size_t transaction_string(const Transaction *self, char *outstr){
     signal(OP_MEMORY, bank_event_handler);
     char buf[80];
     size_t len;
-    BankEvent_t type = self->type;
+    BankEvent type = self->type;
     switch(type){
     case OP_WITHDRAW:
         sprintf(buf, "%s @ %s",
@@ -136,7 +136,7 @@ static size_t transaction_string(const Transaction_t *self, char *outstr){
 
 
 // ---
-static void copy_transaction(Transaction_t *to, const Transaction_t *from){
+static void copy_transaction(Transaction *to, const Transaction *from){
     if(to){
         delete_transaction(to);
     }
@@ -154,11 +154,11 @@ struct UserInfo_{
     char lname[BANKLEN+1];
     char email[BANKLEN+1];
     char phone[BANKLEN+1];
-    size_t (*to_string)(const UserInfo_t *user, char* outstr);
+    size_t (*to_string)(const UserInfo *user, char* outstr);
 };
 
 
-static size_t user_string(const UserInfo_t *user, char *outstr){
+static size_t user_string(const UserInfo *user, char *outstr){
     signal(OP_MEMORY, bank_event_handler);
     const size_t maxlen = 4*(BANKLEN+1);
     size_t len;
@@ -178,7 +178,7 @@ static size_t user_string(const UserInfo_t *user, char *outstr){
     }else{
         outstr = malloc(1);
         if(outstr == NULL){
-            perror("usrér_string()");
+            perror("user_string()");
             raise(OP_MEMORY);
         }
         strcpy(outstr, "");
@@ -187,11 +187,11 @@ static size_t user_string(const UserInfo_t *user, char *outstr){
 }
 
 // ---
-static UserInfo_t* malloc_user(
+static UserInfo* malloc_user(
     const char *fnm, const char *lnm, const char *eml, const char *fon){
     signal(OP_MEMORY, bank_event_handler);
-    UserInfo_t *user;
-    user = (UserInfo_t*)malloc(sizeof(*user));
+    UserInfo *user;
+    user = (UserInfo*)malloc(sizeof(*user));
     if(user == NULL){
         perror("create_user()");
         raise(OP_MEMORY);
@@ -205,7 +205,7 @@ static UserInfo_t* malloc_user(
 }
 
 // ---
-void free_user(UserInfo_t* info){
+void free_user(UserInfo* info){
     signal(OP_UNKNOWN, bank_event_handler);
     if(info){
         free(info);
@@ -221,35 +221,38 @@ void free_user(UserInfo_t* info){
 }
 
 // ---
-static void copy_user(UserInfo_t *to, const UserInfo_t *from){
+static void copy_user(UserInfo *to, const UserInfo *from){
     if(to){ delete_user(to); }
     to = create_user(from->fname, from->lname, from->email, from->email);
 }
 
+
 // --------------
 //  Account Info
 // --------------
+//MAKE_CUSTOM_XVECTOR(Transaction)
+
 struct Account_{
-    UserInfo_t *user;
+    UserInfo *user;
     char password[BANKLEN+1];
     double balance;
     int id;
     char *filename;
     char *sline;
-    Transaction_t *transactions;
-    char* (*to_string)(const Account_t *self);
+    Transaction *transactions;
+    char* (*to_string)(const Account *self);
 };
 
 //! @todo
-static char* read_password(Account_t *self){}
-static int load_account_transactions(Account_t *account){}
-static void save_account_transactions(const Account_t *account){}
+static char* read_password(Account *self){}
+static int load_account_transactions(Account *account){}
+static void save_account_transactions(const Account *account){}
 static void add_account_transaction(
-    Account_t *account, const Transaction_t *trans){}
-static char* account_string(const Account_t *self){}
-static Account_t *create_account();
-static void delete_account(Account_t *);
-static void copy_account(Account_t *to, const Account_t *from){}
+    Account *account, const Transaction *trans){}
+static char* account_string(const Account *self){}
+static Account *create_account();
+static void delete_account(Account *);
+static void copy_account(Account *to, const Account *from){}
 
 
 // -------------
@@ -257,41 +260,41 @@ static void copy_account(Account_t *to, const Account_t *from){}
 // -------------
 // customerfile
 // for each customer: transactionfile
-typedef struct Bank_ Bank_t;
+typedef struct Bank_ Bank;
 
 struct Bank_{
     char name[BANK_NAMELEN+1];
     char cfile[BANK_NAMELEN+1+BANKLEN+1];
     char sfile[BANK_NAMELEN+1+BANKLEN+1];
-    Account_t *accounts;
+    Account *accounts;
     char **secrets;
 };
 
-Bank_t* load_bank_data(){}
-void save_bank_data(const Bank_t *bank){}
+Bank* load_bank_data(){}
+void save_bank_data(const Bank *bank){}
 
-static void parse_secret(Account_t *account, char *data){}
-static void load_secrets(Bank_t *bank){}
-static void save_secrets(const Bank_t *bank){}
+static void parse_secret(Account *account, char *data){}
+static void load_secrets(Bank *bank){}
+static void save_secrets(const Bank *bank){}
 
-static void load_accounts(Bank_t *bank){}
-static int save_accounts(const Bank_t *bank){}
+static void load_accounts(Bank *bank){}
+static int save_accounts(const Bank *bank){}
 
-void add_bank_account(Bank_t *bank, const Account_t *account){}
-void close_bank_account(Bank_t *bank, Account_t *account){}
+void add_bank_account(Bank *bank, const Account *account){}
+void close_bank_account(Bank *bank, Account *account){}
 
-void user_login(Bank_t *bank, const Account_t *account, const char *password){}
+void user_login(Bank *bank, const Account *account, const char *password){}
 
-void make_withdraw(Bank_t *bank, Account_t *account, double amnt){}
-void make_deposit(Bank_t *bank, Account_t *account, double amnt){}
+void make_withdraw(Bank *bank, Account *account, double amnt){}
+void make_deposit(Bank *bank, Account *account, double amnt){}
 void make_transfer(
-    Bank_t *bank, const Account_t *sendAcc, double amnt, Account_t *recvAcc){}
-void check_account_detail(Bank_t *bank, const Account_t *account){}
+    Bank *bank, const Account *sendAcc, double amnt, Account *recvAcc){}
+void check_account_detail(Bank *bank, const Account *account){}
 
 //! @todo ----
-double check_account_balance(const Account_t *account){}
-Transaction_t* get_account_transactions(const Account_t *account){}
-UserInfo_t* get_account_user_info(const Account_t *account){}
+double check_account_balance(const Account *account){}
+Transaction* get_account_transactions(const Account *account){}
+UserInfo* get_account_user_info(const Account *account){}
 // -------------------
 // internal structure
 // -------------------
@@ -300,7 +303,7 @@ typedef struct{
     int ntransactions;
     double asset;
     double avg_transactions;
-}BankReport_t;
-static BankReport_t *create_bank_report(){}
-static BankReport_t *delete_bank_report(BankReport_t *bkreport){}
-void print_bank_report(const Bank_t *bank){}
+}BankReport;
+static BankReport *create_bank_report(){}
+static BankReport *delete_bank_report(BankReport *bkreport){}
+void print_bank_report(const Bank *bank){}
