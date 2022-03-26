@@ -43,7 +43,7 @@ void print_transaction_list(const TransactionList_t *self);
 // User Info
 // ----------
 typedef struct UserInfo_ UserInfo_t;
-UserInfo_t* create_user();
+UserInfo_t* create_user(const char*, const char*, const char *, const char *);
 void delete_user(UserInfo_t *user);
 
 // -------------

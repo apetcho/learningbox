@@ -50,7 +50,7 @@ void delete_transaction(Transaction_t *self){
         self->when = (time_t)0;
         self->to_string = 0;
     }else{
-        fprintf(stderr, "Cannot delete non-exist transtaction\n");
+        perror("delete_transaction(): cannot delete non-exist transtaction");
         raise(OP_UNKNOWN);
     }
     return;
@@ -64,7 +64,7 @@ void print_transaction(const Transaction_t *self){
         transaction_string(self, buf);
         printf("%s\n", buf);
     }else{
-        fprintf(stderr, "Cannot print non-exist transtaction\n");
+        perror("print_transaction(): cannot print non-exist transtaction");
         raise(OP_UNKNOWN);
     }
     return;
@@ -72,6 +72,7 @@ void print_transaction(const Transaction_t *self){
 
 // ---
 static size_t transaction_string(const Transaction_t *self, char *outstr){
+    signal(OP_MEMORY, bank_event_handler);
     char buf[80];
     size_t len;
     BankEvent_t type = self->type;
@@ -99,6 +100,13 @@ static size_t transaction_string(const Transaction_t *self, char *outstr){
         len = 0;
         buf[0] = '\0';
     }
+    outstr = malloc(len+1);
+    if(outstr == NULL){
+        perror("transaction_string()");
+        raise(OP_MEMORY);
+        return 0;
+    }
+    strncpy(outstr, buf, len);
     return len;
 }
 
@@ -127,9 +135,12 @@ struct TransactionList_{
 TransactionList_t *create_transaction_list(){}
 void delete_transaction_list(TransactionList_t *slist){}
 void print_transaction_list(const TransactionList_t *list){}
-static void add_transaction(
+static void add_transaction_to_list(
     TransactionList_t *list, const Transaction_t *trans){}
-static void discard_transaction(TransactionList_t *list, Transaction_t *trans){}
+static void discard_transaction_from_list(
+    TransactionList_t *list, Transaction_t *trans){}
+static void copy_transaction_list(
+    TransactionList_t *to, const TransactionList_t *form){}
 
 // -----------
 // User Info
@@ -139,14 +150,77 @@ struct UserInfo_{
     char lname[BANKLEN+1];
     char email[BANKLEN+1];
     char phone[BANKLEN+1];
-    char* (*to_string)(const UserInfo_t *user);
+    size_t (*to_string)(const UserInfo_t *user, char* outstr);
 };
 
-//! @todo
-static char* user_string(const UserInfo_t *user){}
-UserInfo_t* create_user(){}
-void delete_user(UserInfo_t* info){}
-void copy_user(UserInfo_t *to, const UserInfo_t *from){}
+
+static size_t user_string(const UserInfo_t *user, char *outstr){
+    signal(OP_MEMORY, bank_event_handler);
+    const size_t maxlen = 4*(BANKLEN+1);
+    size_t len;
+    char buf[maxlen+1];
+    //!@todo register appropiate signals
+    if(user){
+        sprintf(buf, "%s %s %s %s",
+            user->fname, user->lname, user->email, user->phone);
+        len = strlen(buf);
+        buf[len-1] = '\0';
+        outstr = malloc(len+1);
+        if(outstr == NULL){
+            perror("user_string()");
+            raise(OP_MEMORY);
+        }
+        strncpy(outstr, buf, len);
+    }else{
+        outstr = malloc(1);
+        if(outstr == NULL){
+            perror("usrér_string()");
+            raise(OP_MEMORY);
+        }
+        strcpy(outstr, "");
+    }
+    return len;
+}
+
+// ---
+UserInfo_t* create_user(
+    const char *fnm, const char *lnm, const char *eml, const char *fon){
+    signal(OP_MEMORY, bank_event_handler);
+    UserInfo_t *user;
+    user = (UserInfo_t*)malloc(sizeof(*user));
+    if(user == NULL){
+        perror("create_user()");
+        raise(OP_MEMORY);
+    }
+    strncpy(user->fname, fnm, BANKLEN);
+    strncpy(user->lname, lnm, BANKLEN);
+    strncpy(user->email, eml, BANKLEN);
+    strncpy(user->phone, fon, BANKLEN);
+    user->to_string = user_string;
+    return user;
+}
+
+// ---
+void delete_user(UserInfo_t* info){
+    signal(OP_UNKNOWN, bank_event_handler);
+    if(info){
+        free(info);
+        info->email[0] = '\0';
+        info->fname[0] = '\0';
+        info->lname[0] = '\0';
+        info->phone[0] = '\0';
+        info->to_string = 0;
+    }else{
+        perror("delete_user(): cannot delete non-existing user");
+        raise(OP_UNKNOWN);
+    }
+}
+
+// ---
+void copy_user(UserInfo_t *to, const UserInfo_t *from){
+    if(to){ delete_user(to); }
+    to = create_user(from->fname, from->lname, from->email, from->email);
+}
 
 // --------------
 //  Account Info
@@ -157,10 +231,12 @@ struct Account_{
     double balance;
     int id;
     char *filename;
+    char *sline;
     TransactionList_t *transactions;
     char* (*to_string)(const Account_t *self);
 };
 
+//! @todo
 static char* read_password(Account_t *self){}
 static int load_account_transactions(Account_t *account){}
 static void save_account_transactions(const Account_t *account){}
@@ -180,9 +256,14 @@ struct AccountList_{
     void (*print)(const Account_t*);
 };
 
-static void add_account(AccountList_t *aclist, const Account_t *account){}
-static AccountList_t* create_account_list();
-void destroy_account_list(AccountList_t *);
+static void add_account_to_list(
+    AccountList_t *aclist, const Account_t *account){}
+static void delete_account_from_list(
+    AccountList_t *aclist, const Account_t *account){}
+static AccountList_t* create_accountList();
+void delete_account_list(AccountList_t *list){}
+void copy_account_list(AccountList_t *to, const AccountList_t *from){}
+
 
 // -------------
 //  Bank Object
@@ -229,4 +310,6 @@ typedef struct{
     double asset;
     double avg_transactions;
 }BankReport_t;
-void show_bank_report(const Bank_t *bank){}
+static BankReport_t *create_bank_report(){}
+static BankReport_t *delete_bank_report(BankReport_t *bkreport){}
+void print_bank_report(const Bank_t *bank){}
