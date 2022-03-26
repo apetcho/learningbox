@@ -120,3 +120,8 @@ size_t vector_get_itemsize(const XVector_t *vec){
 size_t vector_get_size(const XVector_t *vec){
     return vec->size;
 }
+
+// ---
+size_t vector_get_capacity(const XVector_t *vec){
+    return vec->capacity;
+}
