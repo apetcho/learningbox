@@ -81,6 +81,9 @@ void testUser(){
     printf("size = %d\n", (int)vector_get_size(users));
     printf("capacity = %d\n", (int)vector_get_capacity(users));
     vector_free(users);
+
+    time_t t = time(0);
+    printf("%s\n", asctime(localtime(&t)));
 }
 // ----
 

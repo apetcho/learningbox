@@ -103,19 +103,19 @@ static size_t transaction_string(const Transaction *self, char *outstr){
     BankEvent type = self->type;
     switch(type){
     case OP_WITHDRAW:
-        sprintf(buf, "%s @ %s",
+        sprintf(buf, " %-9s | %s",
             WITHDRAW_STRING, asctime(localtime(&self->when)));
         len = strlen(buf);
         buf[len-1] = '\0';
         break;
     case OP_DEPOSIT:
-        sprintf(buf, "%s @ %s",
+        sprintf(buf, " %-9s | %s",
             DEPOSIT_STRING, asctime(localtime(&self->when)));
         len = strlen(buf);
         buf[len-1] = '\0';
         break;
     case OP_CONSULT:
-        sprintf(buf, "%s @ %s",
+        sprintf(buf, " %-9s | %s",
             CONSULT_STRING, asctime(localtime(&self->when)));
         len = strlen(buf);
         buf[len-1] = '\0';
@@ -310,8 +310,13 @@ static void copy_account(Account *to, const Account *from){
 
 //! @todo
 static char* read_password(FILE *stream){}
+
+// ---
 static int load_account_transactions(Account *account){}
+
+// ---
 static void save_account_transactions(const Account *account){}
+
 static void add_account_transaction(
     Account *account, const Transaction *trans){}
 static char* account_string(const Account *self){}
