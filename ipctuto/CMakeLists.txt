@@ -5,3 +5,4 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_executable(Getlimits src/getlimits.c)
 add_executable(GetPID src/processid.c)
+add_executable(ForkExple1 src/forkExple.c)
