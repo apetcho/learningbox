@@ -4,3 +4,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_executable(Getlimits src/getlimits.c)
+add_executable(GetPID src/processid.c)
+add_executable(ForkExple1 src/forkExple.c)
+add_executable(ForkExple2 src/forkExple2.c)
+add_executable(ChainOfProcesses src/chainOfProcesses.c)
+add_executable(ShallowTree src/shallowTree.c)
