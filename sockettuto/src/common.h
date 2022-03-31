@@ -13,4 +13,6 @@ void handle_tcp_client(int clntSocket);
 void print_socket_address(const struct sockaddr *address, FILE *stream);
 int setup_tcp_client_socket(const char *host, const char *service);
 int setup_tcp_server_socket(const char *service);
+int accept_tcp_connection(int servSock);
+
 #endif
