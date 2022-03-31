@@ -19,7 +19,7 @@ int setup_tcp_client_socket(const char *host, const char *service){
     }
 
     int sock = -1;
-    for(struct addrinfo *addr = servAddr; addr != NULL; addr->ai_next){
+    for(struct addrinfo *addr = servAddr; addr != NULL; addr=addr->ai_next){
         /** Create a reliable, stream socket using TCP */
         sock = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
         if(sock < 0){
@@ -31,4 +31,7 @@ int setup_tcp_client_socket(const char *host, const char *service){
         close(sock); // connection failed; try next address
         sock = -1;
     }
+
+    freeaddrinfo(servAddr);
+    return sock;
 }
