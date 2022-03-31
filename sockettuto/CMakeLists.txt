@@ -8,3 +8,9 @@ add_executable(TCPEchoClient4 src/tcpEchoClient4.c src/dieWithMessage.c
     src/common.h)
 add_executable(TCPEchoServer4 src/tcpEchoServer4.c src/dieWithMessage.c 
     src/tcpServerUtility.c src/common.h)
+
+add_executable(TCPEchoServer6 src/tcpEchoServer6.c src/dieWithMessage.c 
+    src/tcpServerUtility.c src/common.h)
+
+add_executable(TCPEchoClient6 src/tcpEchoClient6.c src/dieWithMessage.c 
+    src/common.h)
