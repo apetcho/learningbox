@@ -14,3 +14,6 @@ add_executable(TCPEchoServer6 src/tcpEchoServer6.c src/dieWithMessage.c
 
 add_executable(TCPEchoClient6 src/tcpEchoClient6.c src/dieWithMessage.c 
     src/common.h)
+
+add_executable(GetAddrInfo src/getAddrInfo.c src/dieWithMessage.c 
+    src/addressUtility.c src/common.h)
