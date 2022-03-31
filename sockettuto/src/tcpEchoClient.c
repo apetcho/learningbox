@@ -39,6 +39,7 @@ int main(int argc, char **argv){
         char buffer[BUFSIZ];        // I/O buffer
         /* Receive up to the buffer size (minus 1 to leave space for
          * a null terminator) bytes from the sender. */
+        numBytes = recv(sock, buffer, BUFSIZ-1, 0);
         if(numBytes < 0){
             die_with_system_message("recv() failed");
         }
