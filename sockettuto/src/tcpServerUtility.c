@@ -7,6 +7,27 @@
 // ----
 static const int MAXPENDING = 5;    // Maximum outstanding connection requests
 
+// ----
+int accept_tcp_connection(int servSock){
+    struct sockaddr_storage clntAddr;   // Client address
+    /* Set length of client address structure (in-out parameter) */
+    socklen_t clntAddrLen = sizeof(clntAddr);
+
+    /* Wait for a client to connect */
+    int clntSock = accept(servSock, (struct sockaddr*)&clntAddr, &clntAddrLen);
+    if(clntSock < 0){
+        die_with_system_message("accept() failed");
+    }
+
+    /* clntSock is connected to a client! */
+    fputs("Handling client ", stdout);
+    print_socket_address((struct sockadd*)&clntAddr, stdout);
+    fputc('\n', stdout);
+
+    return clntSock;
+}
+
+// ----
 int setup_tcp_server_socket(const char *service){
     /* Construct the server address structure */
     struct addrinfo addrCriteria;       // Criteria for address match
