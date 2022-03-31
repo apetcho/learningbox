@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.17)
+project(SocketTutorial LANGUAGES C)
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+add_executable(TCPEchoClient4 src/tcpEchoClient4.c src/dieWithMessage.c 
+    src/common.h)
+add_executable(TCPEchoServer4 src/tcpEchoServer4.c src/dieWithMessage.c 
+    src/tcpServerUtility.c src/common.h)
