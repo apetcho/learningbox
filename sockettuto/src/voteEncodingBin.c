@@ -66,7 +66,28 @@ size_t encode(const VoteInfo *info, uint8_t *outBuf, const size_t bufSize){
     }
 }
 
+/**
+ * Extract message info from given buffer.
+ * Leave input unchanged.
+ */
+bool decode(uint8_t *inBuf, const size_t mSize, VoteInfo *info){
+    VoteMsgBin *vm = (VoteMsgBin*)inBuf;
 
-bool decode(uint8_t *inBuf, const size_t mSize, VoteInfo *info){}
+    // Attend to byte order; leave input unchanged
+    uint16_t header = ntohs(vm->header);
+    if((mSize < REQUEST_SIZE) || ((header & MAGIC_MASK) != MAGIC)){
+        return false;
+    }
+    // message is big enough and includes correct magic number
+    info->isResponse = ((header & RESPONSE_FLAG) != 0);
+    info->isInquiry = ((header & INQUIRE_FLAG) != 0);
+    info->candidate = ntohs(vm->candidateID);
+    if(info->isResponse && mSize >= RESPONSE_SIZE){
+        info->count = ((uint64_t)ntohl(vm->countHigh) << COUNT_SHIFT)
+            | (uint64_t)ntohl(vm->countLow);
+    }
+
+    return true;
+}
 
 
