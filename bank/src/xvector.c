@@ -9,7 +9,7 @@
 static const int DEFAULT_CAPACITY = 2;
 static const double GROWTH_RATE = 1.5;
 
-struct XVector_{
+struct XVector_t{
     void *data;
     size_t capacity;
     size_t size;

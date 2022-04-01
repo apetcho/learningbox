@@ -2,7 +2,7 @@
 #define _XVECTOR_H
 #include<stddef.h>
 
-typedef struct XVector_ XVector_t;
+typedef struct XVector_t XVector_t;
 typedef void* (*ItemAllocator)(size_t);
 typedef void (*ItemDeallocator)(void *);
 typedef void (*ItemCopyFn)(void *to, const void *from);
@@ -27,7 +27,7 @@ int vector_set_capacity(XVector_t *vec, size_t capacity);
 #ifdef MAKE_CUSTOM_XVECTOR
 #undef MAKE_CUSTOM_XVECTOR
 #endif
-#define CUSTOM_XVECTOR(T)                                               \
+#define MAKE_CUSTOM_XVECTOR(T)                                          \
     XVector_t* vector_malloc_ ## T (size_t capacity){                   \
         return vector_malloc(capacity, sizeof(T));                      \
     }                                                                   \
