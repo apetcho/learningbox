@@ -1,8 +1,9 @@
 #ifndef _MY_BANK_APP_H
 #define _MY_BANK_APP_H
 
+#include<time.h>
 #include "xvector.h"
-#define BANK_STRLEN 40
+#define BANKACNT_STRLEN 40
 
 typedef struct Account {
     char *firstname;
@@ -11,6 +12,7 @@ typedef struct Account {
     char *phone;
     char *accountNo;
     char *password;
+    const time_t created;
     double balance;
     char *filename;
     XVector_t *history;
