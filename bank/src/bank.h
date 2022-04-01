@@ -1,39 +1,60 @@
-#ifndef _MY_BANK_H
-#define _MY_BANK_H
-#include<time.h>
+#ifndef _MY_BANK_APP_H
+#define _MY_BANK_APP_H
 
-// --------------------------
-// Types Object 
-// --------------------------
-typedef enum BankEvent_ BankEvent;
-typedef struct Transaction_ Transaction;
-typedef struct UserInfo_ UserInfo;
-typedef struct Account_ Account;
-typedef struct Bank_ Bank;
+#include "xvector.h"
+#define BANK_STRLEN 40
 
-// ---------------------------
-// Bank Object and operations
-// ---------------------------
-Bank* load_bank_data();
-void save_bank_data(const Bank*);
-const Account* get_all_accounts(const Bank *bank);
-void print_all_accounts(const Bank *bank);
+typedef struct Account {
+    char *firstname;
+    char *lastname;
+    char *email;
+    char *phone;
+    char *accountNo;
+    char *password;
+    double balance;
+    char *filename;
+    XVector_t *history;
+} Account;
 
-void add_bank_account(Bank*, const Account*);
-void close_bank_account(Bank*, Account *);
+typedef Account account;
 
-void user_login(Bank *bank, const Account *account, const char *);
+MAKE_CUSTOM_XVECTOR(account)
 
-void make_withdraw(Bank*, Account*, double);
-void make_deposit(Bank*, Account*, double);
-void make_transfer(Bank*, const Account*, double, Account*);
+typedef struct Bank_t {
+    XVector_t accountlist;
+} Bank_t;
 
-void check_account_detail(Bank*, const Account*);
-void print_bank_report(const Bank *bank);
+typedef enum BankEnum_t{
+    BK_ERR_INSUFICIENT_FUND=-3,
+    BK_ERR_LOGIN=-2,
+    BK_UNKNOWN=-1,
+    BK_SUCCESS=0,
+    BK_REGISTER=1,      // register
+    BK_LOGIN=2,         // login
+    BK_OP_INQUIRE=10,   // inquire
+    BK_OP_ADD_FUND=11,  // add
+    BK_OP_WITHDRAW=12,  // withdraw
+    BK_OP_TRANSFER=13,  // transfer
+    BK_OP_UPDATE=14,    // update
+    BK_UP_FNAME=20,     // update f
+    BK_UP_LNAME=21,     // updade l
+    BK_UP_EMAIL=22,     // update e
+    BK_UP_PHONE=23,     // update p
+    BP_UP_PASSORD=24    // update s
+}BankEnum_t;
 
-double check_account_balance(const Account *account);
-Transaction* get_account_transactions(const Account *account);
-UserInfo* get_account_user_info(const Account *account);
+Bank_t* open_bank();
+void close_banck(Bank_t *bank);
 
+Account create_account();
+BankEnum_t account_login(Account *account);
+BankEnum_t account_update(Account *account);
+
+BankEnum_t load_acount(Account *account);
+void save_account(Account *account);
+double get_account_balance();
+void add_fund(Account *account, double fund);
+BankEnum_t withdraw_fund(Account *account, double fund);
+BankEnum_t transfer_fund(Account *from, Account *to, double fund);
 
 #endif
