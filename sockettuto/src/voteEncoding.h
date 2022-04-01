@@ -7,6 +7,6 @@
 #include "voteProtocol.h"
 
 bool decode(uint8_t *inBuf, size_t mSize, VoteInfo *info);
-size_t encode(VoteInfo *info, uint8_t *outBuf, size_t bufSize);
+size_t encode(const VoteInfo *info, uint8_t *outBuf, const size_t bufSize);
 
 #endif
