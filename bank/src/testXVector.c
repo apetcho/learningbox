@@ -59,7 +59,7 @@ void testStruct(){
 
 // ----
 typedef Person_t User;
-CUSTOM_XVECTOR(User)
+MAKE_CUSTOM_XVECTOR(User)
 
 void testUser(){
     Person_t people[] = {
