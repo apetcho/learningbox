@@ -42,4 +42,49 @@ size_t encode(const VoteInfo *info, uint8_t *outBuf, const size_t bufSize){
     return (size_t)(bufPtr - outBuf);
 }
 
-bool decode(uint8_t *inBuf, size_t mSize, VoteInfo *info){}
+/**
+ * Extract message information from given buffer.
+ * Note: modifies input buffer.
+ */
+bool decode(uint8_t *inBuf, const size_t mSize, VoteInfo *info){
+    char *token;
+    token = strtok((char*)inBuf, DELIMISTR);
+    // Check for magic
+    if(token == NULL || strcmp(token, MAGIC) != 0){
+        return false;
+    }
+
+    // Get vote/inquiry indicator
+    token = strtok(NULL, DELIMISTR);
+    if(token == NULL){ return false; }
+
+    if(strcmp(token, VOTESTR) == 0){
+        info->isInquiry = false;
+    }else if(strcmp(token, INQSTR) == 0){
+        info->isInquiry = true;
+    }else{ return false; }
+
+    // Next token is either Response flag or candidate ID
+    token = strtok(NULL, DELIMISTR);
+    if(token == NULL){ return false; /* Message too short */ }
+
+    if(strcmp(token, RESPONSESTR) == 0){// Response flag present
+        info->isResponse = true;
+        token = strtok(NULL, DELIMISTR); // Get candidate ID
+        if(token == NULL){ return false; }
+    }else{ // No response flag; token is candidate ID
+        info->isResponse = false;
+    }
+    // Get candidate #
+    info->candidate = atoi(token);
+    if(info->isResponse){ // Response message should contain a count value
+        token = strtok(NULL, DELIMISTR);
+        if(token == NULL){
+            return false;
+        }
+        info->count = strtoll(token, NULL, BASE);
+    }else{
+        info->count = 0L;
+    }
+    return true;
+}
