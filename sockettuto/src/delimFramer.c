@@ -43,3 +43,22 @@ int get_next_msg(FILE *in, uint8_t *buf, size_t bufSize){
         return count;
     }
 }
+
+/**
+ * Write the given message to the outut stream, followed by the delimiter.
+ * Return number of bytes written, or -1 on failure.
+ */
+int put_msg(uint8_t buf[], size_t msgSize, FILE *out){
+    // Check for delimiter in message
+    for(int i=0; i < msgSize; i++){
+        if(buf[i] == DELIMITER){
+            return -1;
+        }
+    }
+    if(fwrite(buf, 1, msgSize, out) != msgSize){
+        return -1;
+    }
+    fputc(DELIMITER, out);
+    fflush(out);
+    return msgSize;
+}
