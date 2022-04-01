@@ -6,6 +6,9 @@
 #include<arpa/inet.h>
 #include<netdb.h>
 
+#define MAXSTRINGLENGTH BUFSIZ
+
+
 void die_with_user_message(const char *msg, const char *detail);
 void die_with_system_message(const char *msg);
 void handle_tcp_client(int clntSocket);
