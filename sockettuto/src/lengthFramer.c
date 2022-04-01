@@ -37,4 +37,23 @@ int get_next_msg(FILE *in, uint8_t *buf, size_t bufSize){
     }
 }
 
-int put_msg(uint8_t buf[], size_t msgSize, FILE *out){}
+/**
+ * Write the given message to the output stream, followed by the delimiter.
+ * 
+ * Precondition: buf[] is at least msgSize.
+ * 
+ * Returns -1 on any error. 
+ */
+int put_msg(uint8_t buf[], size_t msgSize, FILE *out){
+    if(msgSize > UINT16_MAX){
+        return -1;
+    }
+    uint16_t payloadSize = htons(msgSize);
+    if((fwrite(&payloadSize, sizeof(uint16_t), 1, out) != 1) ||
+        (fwrite(buf, sizeof(uint8_t), msgSize, out) != msgSize)){
+        //
+        return -1;
+    }
+    fflush(out);
+    return msgSize;
+}
