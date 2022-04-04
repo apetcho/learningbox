@@ -1,30 +1,11 @@
 #ifndef _MY_BANK_APP_H
 #define _MY_BANK_APP_H
 
+#include<time.h>
 #include "xvector.h"
-#define BANK_STRLEN 40
+#define BANKACNT_STRLEN 40
 
-typedef struct Account {
-    char *firstname;
-    char *lastname;
-    char *email;
-    char *phone;
-    char *accountNo;
-    char *password;
-    double balance;
-    char *filename;
-    XVector_t *history;
-} Account;
-
-typedef Account account;
-
-MAKE_CUSTOM_XVECTOR(account)
-
-typedef struct Bank_t {
-    XVector_t accountlist;
-} Bank_t;
-
-typedef enum BankEnum_t{
+typedef enum BankEvent_t{
     BK_ERR_INSUFICIENT_FUND=-3,
     BK_ERR_LOGIN=-2,
     BK_UNKNOWN=-1,
@@ -41,20 +22,49 @@ typedef enum BankEnum_t{
     BK_UP_EMAIL=22,     // update e
     BK_UP_PHONE=23,     // update p
     BP_UP_PASSORD=24    // update s
-}BankEnum_t;
+}BankEvent_t;
+
+typedef struct Transaction{
+    BankEvent_t type;
+    time_t when;
+    char *info;
+} Transaction;
+
+typedef Transaction bktransaction;
+MAKE_CUSTOM_XVECTOR(bktransaction)
+typedef XVector_t TransactionList_t;
+
+typedef struct Account {
+    char *firstname;
+    char *lastname;
+    char *email;
+    char *phone;
+    char *accountNo;
+    char *password;
+    const time_t created;
+    double balance;
+    char *filename;
+    TransactionList_t *transactions;
+} Account;
+
+
+typedef struct Bank_t {
+    const char *dbfile;
+} Bank_t;
+
 
 Bank_t* open_bank();
-void close_banck(Bank_t *bank);
+void close_bank(Bank_t *bank);
 
-Account create_account();
-BankEnum_t account_login(Account *account);
-BankEnum_t account_update(Account *account);
+Account create_account(Bank_t *bank);
+BankEvent_t account_login(Account *account);
+BankEvent_t account_update(Account *account);
 
-BankEnum_t load_acount(Account *account);
+BankEvent_t load_acount_transactions(Account *account);
 void save_account(Account *account);
 double get_account_balance();
 void add_fund(Account *account, double fund);
-BankEnum_t withdraw_fund(Account *account, double fund);
-BankEnum_t transfer_fund(Account *from, Account *to, double fund);
+BankEvent_t withdraw_fund(Account *account, double fund);
+BankEvent_t transfer_fund(Account *from, Account *to, double fund);
 
 #endif
