@@ -139,9 +139,34 @@ TrackEntry get_track_entry(const char *catalog_ptr, const int trackno){
     return entry;
 }
 
-// add entry
+/**
+ * @brief Add a new catalog entry.
+ * 
+ * @param entry 
+ * @return int 
+ */
 int add_catalog_entry(const CatalogEntry entry){
-    //! @todo
+    char key_to_add[CAT_CAT_LEN+1];
+    datum key;
+    datum data;
+    int result;
+
+    // ---
+    if(!catalog_dbm_ptr || !track_dbm_ptr){ return 0; }
+    if(strlen(entry.catalog) >= CAT_CAT_LEN){ return 0; }
+
+    // ---
+    memset(&key_to_add, '\0', sizeof(key_to_add));
+    strcpy(key_to_add, entry.catalog);
+
+    key.dptr = (void*)key_to_add;
+    key.dsize = sizeof(key_to_add);
+    data.dptr = (void*)&entry;
+    data.dsize = sizeof(entry);
+
+    result = dbm_store(catalog_dbm_ptr, key, data, DBM_REPLACE);
+    if(result == 0){ return 1; }
+    else{ return 0; }
 }
 
 int add_track_entry(const TrackEntry entry){
