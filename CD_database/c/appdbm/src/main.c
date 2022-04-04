@@ -101,8 +101,17 @@ int main(int argc, char **argv){
 }
 
 // ------------------------ LOCAL ROUTINES -----------------------------
+static void announce(void){
+    const char text[] =
+        "\n\n"
+        "---------------------------------------------------------------"
+        "    WELCOME TO THE DEMONSTRATION CD CATALOG DATABASE PROGRAM   "
+        "---------------------------------------------------------------"
+        "\n";
+    printf("%s", text);
+}
+
 static int command_mode(int argc, char **argv){}
-static void announce(void){}
 static MenuOption show_menu(const CatalogEntry *current){}
 static int get_confirm(const char *question){}
 static int enter_new_catalog_entry(CatalogEntry *entry){}
