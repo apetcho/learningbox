@@ -48,5 +48,26 @@ int main(){
     items_to_store[2].value = 3;
     strcpy(items_to_store[2].more, "baz?");
 
+    for(i=0; i < ITEMS_USED; i++){
+        sprintf(key_to_use, "%c%c%d",
+            items_to_store[i].misc[0],
+            items_to_store[i].more[0],
+            items_to_store[i].value
+        );
+
+        key_datum.dptr = (void*)key_to_use;
+        key_datum.dsize = strlen(key_to_use);
+        data_datum.dptr = (void*)&items_to_store[i];
+        data_datum.dsize = sizeof(TestData_t);
+
+        result = dbm_store(dbmPtr, key_datum, data_datum, DBM_REPLACE);
+        if(result != 0){
+            fprintf(stderr, "dbm_store failed on key %s\n", key_to_use);
+            exit(2);
+        }
+    }
+
+    
+
     return EXIT_SUCCESS;
 }
