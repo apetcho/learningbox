@@ -26,7 +26,6 @@ static DBM *track_dbm_ptr = NULL;
  * @return int 1 if successful otherwise return 0
  */
 int db_initialize(const int newdb){
-    //! @todo
     int mode = O_CREAT | O_RDWR;
     // If any existing database is open then close it
     if(catalog_dbm_ptr){ dbm_close(catalog_dbm_ptr); }
@@ -52,8 +51,14 @@ int db_initialize(const int newdb){
     return 1;
 }
 
+/**
+ * @brief Close opened database
+ */
 void db_close(void){
-    //! @todo
+    if(catalog_dbm_ptr){ dbm_close(catalog_dbm_ptr); }
+    if(track_dbm_ptr){ dbm_close(track_dbm_ptr);}
+    catalog_dbm_ptr = NULL;
+    track_dbm_ptr = NULL;
 }
 
 // data retrieval
