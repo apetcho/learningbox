@@ -373,8 +373,36 @@ static void list_tracks(const CatalogEntry *entry){
     (void)get_confirm("Press return");
 }
 
+// ---
+static void count_all_entries(void){
+    int cfound = 0;
+    int tfound = 0;
+    CatalogEntry catalog;
+    TrackEntry track;
+    int trackno = 1;
+    int ftime = 1;
+    char *searchstr = "";
 
-static void count_all_entries(void){}
+    do{
+        catalog = search_catalog_entry(searchstr, &ftime);
+        if(catalog.catalog[0]){
+            cfound++;
+            trackno = 1;
+            do{
+                track = get_track_entry(catalog.catalog, trackno);
+                if(track.catalog[0]){
+                    tfound++;
+                    trackno++;
+                }
+            }while(track.catalog[0]);
+        }
+    }while(catalog.catalog[0]);
+
+    printf("Found %d CDs, with a total of %d tracks\n", cfound, tfound);
+    (void)get_confirm("Press return");
+}
+
+
 static void display_catalog(const CatalogEntry *entry){}
 static void display_track(const TrackEntry *entry){}
 static void strip_return(char *text){}
