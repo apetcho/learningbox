@@ -200,9 +200,31 @@ int add_track_entry(const TrackEntry entry){
     else{ return 0; } // failure
 }
 
-// delete entry
+/**
+ * @brief Delete an entry from cd catalog
+ * 
+ * @param catalog_ptr 
+ * @return int 
+ */
 int delete_catalog_entry(const char *catalog_ptr){
-    //! @todo
+    char key_to_del[CAT_CAT_LEN+1];
+    datum key;
+    int result;
+
+    // ---
+    if(!catalog_dbm_ptr || !track_dbm_ptr){ return 0; }
+    if(strlen(catalog_ptr) >= CAT_CAT_LEN){ return 0; }
+
+    // ---
+    memset(&key_to_del, '\0', sizeof(key_to_del));
+    strcpy(key_to_del, catalog_ptr);
+
+    key.dptr = (void*)key_to_del;
+    key.dsize = sizeof(key_to_del);
+
+    result = dbm_delete(catalog_dbm_ptr, key);
+    if(result == 0){ return 1; }
+    else{ return 0; }
 }
 
 int delete_track_entry(const char *catalog_ptr, const int trackno){
