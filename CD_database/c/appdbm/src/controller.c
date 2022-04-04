@@ -96,9 +96,47 @@ CatalogEntry get_catalog_entry(const char *catalog_ptr){
     return entry;
 }
 
-
+/**
+ * @brief Get the track entry object
+ * 
+ * Retrieve a single track entry, when passed a pointer pointing to a catalog
+ * string and a track number. If the entry is not found then the returned
+ * data has an empty catalog field.
+ * 
+ * @param catalog_ptr 
+ * @param trackno 
+ * @return TrackEntry 
+ */
 TrackEntry get_track_entry(const char *catalog_ptr, const int trackno){
-    //! @todo
+    TrackEntry entry;
+    char entry_to_find[CAT_CAT_LEN + 10];
+    datum data;
+    datum key;
+
+    memset(&entry, '\0', sizeof(entry));
+
+    // check if the database initialized and parameters are valid
+    if(!catalog_dbm_ptr || !track_dbm_ptr){ return entry; }
+    if(!catalog_ptr){ return entry; }
+    if(strlen(catalog_ptr) >= CAT_CAT_LEN){ return entry; }
+
+    // --
+    // setup the search key, which is a composite key of catalog entry
+    // and track number
+    // --
+    memset(&entry_to_find, '\0', sizeof(entry_to_find));
+    sprintf(entry_to_find, "%s %d", catalog_ptr, trackno);
+
+    key.dptr = (void*)entry_to_find;
+    key.dsize = sizeof(entry_to_find);
+
+    memset(&data, '\0', sizeof(data));
+    data = dbm_fetch(track_dbm_ptr, key);
+    if(data.dptr){
+        memcpy(&entry, (char*)data.dptr, data.dsize);
+    }
+
+    return entry;
 }
 
 // add entry
