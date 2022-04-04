@@ -19,9 +19,37 @@
 static DBM *catalog_dbm_ptr = NULL;
 static DBM *track_dbm_ptr = NULL;
 
-
+/**
+ * @brief Initialize access to the database
+ * 
+ * @param newdb If true (!0) a new database is started
+ * @return int 1 if successful otherwise return 0
+ */
 int db_initialize(const int newdb){
     //! @todo
+    int mode = O_CREAT | O_RDWR;
+    // If any existing database is open then close it
+    if(catalog_dbm_ptr){ dbm_close(catalog_dbm_ptr); }
+    if(track_dbm_ptr){ dbm_close(track_dbm_ptr); }
+
+    if(newdb){
+        // delete the old files
+        (void)unlink(CATALOG_FILE_PAG);
+        (void)unlink(CATALOG_FILE_DIR);
+        (void)unlink(TRACK_FILE_PAG);
+        (void)unlink(TRACK_FILE_DIR);
+    }
+    /* Open some new files, creating the if needed */
+    catalog_dbm_ptr = dbm_open(CATALOG_FILE_BASE, mode, 0644);
+    track_dbm_ptr = dbm_open(TRACK_FILE_BASE, mode, 0644);
+    if(!catalog_dbm_ptr || !track_dbm_ptr){
+        fprintf(stderr, "Unable to create database\n");
+        perror("dbm_open");
+        catalog_dbm_ptr = NULL;
+        track_dbm_ptr = NULL;
+        return 0;
+    }
+    return 1;
 }
 
 void db_close(void){
