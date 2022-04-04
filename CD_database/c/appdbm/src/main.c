@@ -184,8 +184,16 @@ static MenuOption show_menu(const CatalogEntry *selected){
     return chosen;
 }
 
+// ---
+static int get_confirm(const char *question){
+    char tmpstr[TMP_STRING_LEN+1];
+    printf("%s (yes/no)\n> ", question);
+    fgets(tmpstr, TMP_STRING_LEN, stdin);
+    if(tmpstr[0] == 'Y' || tmpstr[0] == 'y'){ return 1; }
+    return 0;
+}
+
 static int command_mode(int argc, char **argv){}
-static int get_confirm(const char *question){}
 static int enter_new_catalog_entry(CatalogEntry *entry){}
 static void enter_new_track_entries(const CatalogEntry *entry){}
 static void delete_catalog_entries(const CatalogEntry *entry){}
