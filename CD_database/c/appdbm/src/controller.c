@@ -235,7 +235,6 @@ int delete_catalog_entry(const char *catalog_ptr){
  * @return int 
  */
 int delete_track_entry(const char *catalog_ptr, const int trackno){
-    //! @todo
     char key_to_del[CAT_CAT_LEN+10];
     datum key;
     int result;
@@ -259,4 +258,45 @@ int delete_track_entry(const char *catalog_ptr, const int trackno){
 // search function
 CatalogEntry search_catalog_entry(const char *catalog_ptr, int *firstptr){
     //! @todo
+    static int fcall = 1;
+    CatalogEntry entry;
+    datum data;
+    static datum key;
+
+    memset(&entry, '\0', sizeof(entry));
+
+    // ---
+    if(!catalog_dbm_ptr || !track_dbm_ptr){ return entry; }
+    if(!catalog_ptr || !firstptr){ return entry; }
+    if(strlen(catalog_ptr) >= CAT_CAT_LEN){ return entry; }
+
+    // ---
+    if(fcall){
+        fcall = 0;
+        *firstptr = 1;
+    }
+
+    if(*firstptr){
+        *firstptr = 0;
+        key = dbm_firstkey(catalog_dbm_ptr);
+    }else{
+        key = dbm_nextkey(catalog_dbm_ptr);
+    }
+
+    do{
+        if(key.dptr != NULL){
+            // ---
+            data = dbm_fetch(catalog_dbm_ptr, key);
+            if(data.dptr){
+                memcpy(&entry, (char*)data.dptr, data.dsize);
+
+                if(!strstr(entry.catalog, catalog_ptr)){
+                    memset(&entry, '\0', sizeof(entry));
+                    key = dbm_nextkey(catalog_dbm_ptr);
+                }
+            }
+        }
+    }while(key.dptr && data.dptr && (entry.catalog[0] == '\0'));
+
+    return entry;
 }
