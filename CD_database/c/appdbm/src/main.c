@@ -405,18 +405,32 @@ static void count_all_entries(void){
 //
 static void display_catalog(const CatalogEntry *entry){
 #define GREEN "\x1b[32m"
-#define BLUE "\x1b[33m"
+#define YELLOW "\x1b[33m"
 #define RESET "\x1b[m"
-    printf("Catalogue:" BLUE  " %s" RESET "\n", entry->catalog);
+    printf("Catalogue:" YELLOW " %s" RESET "\n", entry->catalog);
     printf("\ttitle  :" GREEN " %s" RESET "\n", entry->title);
     printf("\ttype   :" GREEN " %s" RESET "\n", entry->title);
     printf("\tartist :" GREEN " %s" RESET "\n", entry->artist);
 
 #undef GREEN
-#undef BLUE
+#undef YELLOW
 #undef RESET
 }
 
-static void display_track(const TrackEntry *entry){}
+// ---
+static void display_track(const TrackEntry *entry){
+#define BLUE    "\x1b[34m"
+#define GREEN   "\x1b[32m"
+#define RESET   "\x1b[m"
+    printf(
+        GREEN "%d:" RESET BLUE "%s" BLUE "\n", entry->trackno, entry->tracktxt
+    );
+
+#undef BLUE
+#undef GREEN
+#undef RESET
+}
+
+
 static void strip_return(char *text){}
 static int command_mode(int argc, char **argv){}
