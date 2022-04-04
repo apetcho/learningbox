@@ -76,7 +76,7 @@ int main(){
         printf("Data retrived\n");
         memcpy(&item_retrieved, data_datum.dptr, data_datum.dsize);
         printf(
-            "Retrieved item - %s 5d %d\n",
+            "Retrieved item - %s %d %s\n",
             item_retrieved.misc, item_retrieved.value, item_retrieved.more
         );
     }else{
