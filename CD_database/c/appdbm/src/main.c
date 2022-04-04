@@ -431,6 +431,13 @@ static void display_track(const TrackEntry *entry){
 #undef RESET
 }
 
+//
+static void strip_return(char *text){
+    int len;
+    len = strlen(text);
+    if(text[len-1] == '\n'){
+        text[len-1] = '\0';
+    }
+}
 
-static void strip_return(char *text){}
 static int command_mode(int argc, char **argv){}
