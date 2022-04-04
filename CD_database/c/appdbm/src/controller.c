@@ -169,8 +169,35 @@ int add_catalog_entry(const CatalogEntry entry){
     else{ return 0; }
 }
 
+/**
+ * @brief Add a new track entry.
+ * 
+ * @param entry 
+ * @return int 
+ */
 int add_track_entry(const TrackEntry entry){
     //! @todo
+    char key_to_add[CAT_CAT_LEN+10];
+    datum data;
+    datum key;
+    int result;
+
+    // ---
+    if(!catalog_dbm_ptr || !track_dbm_ptr){ return 0; }
+    if(strlen(entry.catalog) >= CAT_CAT_LEN){ return 0; }
+
+    // ---
+    memset(&key_to_add, '\0', sizeof(key_to_add));
+    sprintf(key_to_add, "%s %d", entry.catalog, entry.trackno);
+
+    key.dptr = (void*)key_to_add;
+    key.dsize = sizeof(key_to_add);
+    data.dptr = (void*)&entry;
+    data.dsize = sizeof(entry);
+
+    result = dbm_store(track_dbm_ptr, key, data, DBM_REPLACE);
+    if(result == 0){ return 1; } // success
+    else{ return 0; } // failure
 }
 
 // delete entry
