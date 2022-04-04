@@ -356,8 +356,24 @@ static CatalogEntry find_catalog(void){
     return found;
 }
 
+// ----
+static void list_tracks(const CatalogEntry *entry){
+    int trackno = 1;
+    TrackEntry entfound;
 
-static void list_tracks(const CatalogEntry *entry){}
+    display_catalog(entry);
+    printf("\nTracks\n");
+    do{
+        entfound = get_track_entry(entry->catalog, trackno);
+        if(entfound.catalog[0]){
+            display_track(&entfound);
+            trackno++;
+        }
+    }while(entfound.catalog[0]);
+    (void)get_confirm("Press return");
+}
+
+
 static void count_all_entries(void){}
 static void display_catalog(const CatalogEntry *entry){}
 static void display_track(const TrackEntry *entry){}
