@@ -187,14 +187,54 @@ static MenuOption show_menu(const CatalogEntry *selected){
 // ---
 static int get_confirm(const char *question){
     char tmpstr[TMP_STRING_LEN+1];
-    printf("%s (yes/no)\n> ", question);
+    printf("%s (yes/no)\n>> ", question);
     fgets(tmpstr, TMP_STRING_LEN, stdin);
     if(tmpstr[0] == 'Y' || tmpstr[0] == 'y'){ return 1; }
     return 0;
 }
 
+// ----
+static int enter_new_catalog_entry(CatalogEntry *entry){
+    CatalogEntry n_entry;
+    char tmpstr[TMP_STRING_LEN+1];
+
+    memset(&n_entry, '\0', sizeof(n_entry));
+    puts("Enter catalog entry:");
+    printf(">> ");
+    (void)fgets(tmpstr, TMP_STRING_LEN, stdin);
+    strip_return(tmpstr);
+    strncpy(n_entry.catalog, tmpstr, CAT_CAT_LEN-1);
+
+    puts("Enter Title:");
+    printf(">> ");
+    (void)fgets(tmpstr, TMP_STRING_LEN, stdin);
+    strip_return(tmpstr);
+    strncpy(n_entry.title, tmpstr, CAT_TITLE_LEN-1);
+
+    puts("Enter Type:");
+    printf(">> ");
+    (void)fgets(tmpstr, TMP_STRING_LEN, stdin);
+    strip_return(tmpstr);
+    strncpy(n_entry.type, tmpstr, CAT_TYPE_LEN-1);
+
+    puts("Enter Artist:");
+    printf(">> ");
+    (void)fgets(tmpstr, TMP_STRING_LEN, stdin);
+    strip_return(tmpstr);
+    strncpy(n_entry.artist, tmpstr, CAT_ARTIST_LEN-1);
+
+    puts("\nNew catalog entry is:-");
+    display_catalog(&n_entry);
+    if(get_confirm("Add this entry ?")){
+        memcpy(entry, &n_entry, sizeof(n_entry));
+        return 1;
+    }
+
+    return 0;
+}
+
+
 static int command_mode(int argc, char **argv){}
-static int enter_new_catalog_entry(CatalogEntry *entry){}
 static void enter_new_track_entries(const CatalogEntry *entry){}
 static void delete_catalog_entries(const CatalogEntry *entry){}
 static void delete_track_entries(const CatalogEntry *entry){}
