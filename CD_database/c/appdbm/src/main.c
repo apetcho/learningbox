@@ -301,8 +301,20 @@ static void _delete_catalog_entry(const CatalogEntry *entry){
     }
 }
 
+// ----
+static void _delete_track_entries(const CatalogEntry *entry){
+    int trackno = 1;
+    int deleteok;
+    display_track(entry);
+    if(get_confirm("Delete tracks for this entry? ")){
+        do{
+            deleteok = delete_track_entry(entry->catalog, trackno);
+            trackno++;
+        }while(deleteok);
+    }
+}
 
-static void _delete_track_entries(const CatalogEntry *entry){}
+
 static CatalogEntry find_catalog(void){}
 static void list_tracks(const CatalogEntry *entry){}
 static void count_all_entries(void){}
