@@ -27,8 +27,26 @@ int main(){
 
     datum key_datum;
     datum data_datum;
-    DBM *dbm_ptr;
+    DBM *dbmPtr;
+
+    dbmPtr = dbm_open(TEST_DB_FILE, O_RDWR|O_CREAT, 0666);
+    if(!dbmPtr){
+        fprintf(stderr, "Failed to open database\n");
+        exit(EXIT_FAILURE);
+    }
+    memset(items_to_store, '\0', sizeof(items_to_store));
     
+    strcpy(items_to_store[0].misc, "First!");
+    items_to_store[0].value = 47;
+    strcpy(items_to_store[0].more, "foo");
+
+    strcpy(items_to_store[1].misc, "bar!");
+    items_to_store[1].value = 13;
+    strcpy(items_to_store[1].more, "unlucky?");
+
+    strcpy(items_to_store[2].misc, "Third!");
+    items_to_store[2].value = 3;
+    strcpy(items_to_store[2].more, "baz?");
 
     return EXIT_SUCCESS;
 }
