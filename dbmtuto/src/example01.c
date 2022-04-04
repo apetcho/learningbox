@@ -67,7 +67,22 @@ int main(){
         }
     }
 
-    
+    sprintf(key_to_use, "bu%d", 13);
+    key_datum.dptr = key_to_use;
+    key_datum.dsize = strlen(key_to_use);
+
+    data_datum = dbm_fetch(dbmPtr, key_datum);
+    if(data_datum.dptr){
+        printf("Data retrived\n");
+        memcpy(&item_retrieved, data_datum.dptr, data_datum.dsize);
+        printf(
+            "Retrieved item - %s 5d %d\n",
+            item_retrieved.misc, item_retrieved.value, item_retrieved.more
+        );
+    }else{
+        printf("No data found for key %s\n", key_to_use);
+    }
+    dbm_close(dbmPtr);
 
     return EXIT_SUCCESS;
 }
