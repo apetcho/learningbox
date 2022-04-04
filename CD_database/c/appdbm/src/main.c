@@ -27,8 +27,8 @@ static MenuOption show_menu(const CatalogEntry *current);
 static int get_confirm(const char *question);
 static int enter_new_catalog_entry(CatalogEntry *entry);
 static void enter_new_track_entries(const CatalogEntry *entry);
-static void delete_catalog_entries(const CatalogEntry *entry);
-static void delete_track_entries(const CatalogEntry *entry);
+static void _delete_catalog_entry(const CatalogEntry *entry);
+static void _delete_track_entries(const CatalogEntry *entry);
 static CatalogEntry find_catalog(void);
 static void list_tracks(const CatalogEntry *entry);
 static void count_all_entries(void);
@@ -283,9 +283,26 @@ static void enter_new_track_entries(const CatalogEntry *entry){
     }
 }
 
-static int command_mode(int argc, char **argv){}
-static void delete_catalog_entries(const CatalogEntry *entry){}
-static void delete_track_entries(const CatalogEntry *entry){}
+//
+static void _delete_catalog_entry(const CatalogEntry *entry){
+    int trackno = 1;
+    int deleteok;
+
+    display_catalog(entry);
+    if(get_confirm("Delete this entry and all it's tracks? ")){
+        do{
+            deleteok = delete_track_entry(entry->catalog, trackno);
+            trackno++;
+        }while(deleteok);
+
+        if(!delete_catalog_entry(entry->catalog)){
+            fprintf(stderr, "Failed to delete entry\n");
+        }
+    }
+}
+
+
+static void _delete_track_entries(const CatalogEntry *entry){}
 static CatalogEntry find_catalog(void){}
 static void list_tracks(const CatalogEntry *entry){}
 static void count_all_entries(void){}
