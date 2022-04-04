@@ -440,4 +440,27 @@ static void strip_return(char *text){
     }
 }
 
-static int command_mode(int argc, char **argv){}
+static int command_mode(int argc, char **argv){
+    int c;
+    int result = EXIT_SUCCESS;
+    char *progname = argv[0];
+
+    while((c = getopt(argc, argv, ":i")) != -1){
+        switch(c){
+        case 'i':
+            if(!db_initialize(1)){
+                result = EXIT_FAILURE;
+                fprintf(stderr, "Failed to initialize database\n");
+            }
+            break;
+        case ':':
+        case '?':
+        default:
+            fprintf(stderr, "Usage:\n\t%s [-i]\n", progname);
+            result = EXIT_FAILURE;
+            break;
+        }
+    }
+
+    return result;
+}
