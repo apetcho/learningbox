@@ -314,8 +314,49 @@ static void _delete_track_entries(const CatalogEntry *entry){
     }
 }
 
+//
+static CatalogEntry find_catalog(void){
+    CatalogEntry found;
+    char tmpstr[TMP_STRING_LEN+1];
+    int fcall = 1;
+    int anyfound = 0;
+    int stringok = 0;
+    int selected = 0;
 
-static CatalogEntry find_catalog(void){}
+    do{
+        stringok = 1;
+        printf("Enter string to search for in catalog entry:\n>> ");
+        fgets(tmpstr, TMP_STRING_LEN, stdin);
+        strip_return(tmpstr);
+        if(strlen(tmpstr) > CAT_CAT_LEN){
+            fprintf(
+                stderr, "Sorry, string too long, maximum %d characters\n",
+                CAT_CAT_LEN
+            );
+            stringok = 0;
+        }
+    }while(!stringok);
+
+    while(!selected){
+        found = search_catalog_entry(tmpstr, &fcall);
+        if(found.catalog[0] != '\0'){
+            anyfound = 1;
+            puts("");
+            display_catalog(&found);
+            if(get_confirm("This entry? ")){
+                selected = 1;
+            }
+        }else{
+            if(anyfound){puts("Sorry, no more matches found");}
+            else{ puts("Sorry, nothing found");}
+            break;
+        }
+    }
+
+    return found;
+}
+
+
 static void list_tracks(const CatalogEntry *entry){}
 static void count_all_entries(void){}
 static void display_catalog(const CatalogEntry *entry){}
