@@ -61,9 +61,39 @@ void db_close(void){
     track_dbm_ptr = NULL;
 }
 
-// data retrieval
+/**
+ * @brief Get the catalog entry object
+ * 
+ * @param catalog_ptr 
+ * @return CatalogEntry 
+ */
 CatalogEntry get_catalog_entry(const char *catalog_ptr){
-    //! @todo
+    CatalogEntry entry;
+    char entry_to_find[CAT_CAT_LEN+1];
+    datum data_datum;
+    datum key_datum;
+
+    memset(&entry, '\0', sizeof(entry));
+
+    // check whether database are initialized and paramters are valid
+    if(!catalog_dbm_ptr|| !track_dbm_ptr){ return entry; }
+    if(!catalog_ptr){ return entry; }
+    if(strlen(catalog_ptr) >= CAT_CAT_LEN){ return entry; }
+
+    // ensure the search key contains only the valid string and nulls
+    memset(&entry_to_find, '\0', sizeof(entry_to_find));
+    strcpy(entry_to_find, catalog_ptr);
+
+    key_datum.dptr = (void*)entry_to_find;
+    key_datum.dsize = sizeof(entry_to_find);
+
+    memset(&data_datum, '\0', sizeof(data_datum));
+    data_datum = dbm_fetch(catalog_dbm_ptr, key_datum);
+    if(data_datum.dptr){
+        memcpy(&entry, (char*)data_datum.dptr, data_datum.dsize);
+    }
+
+    return entry;
 }
 
 
