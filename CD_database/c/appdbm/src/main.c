@@ -234,8 +234,56 @@ static int enter_new_catalog_entry(CatalogEntry *entry){
 }
 
 
+//
+static void enter_new_track_entries(const CatalogEntry *entry){
+    TrackEntry ntrack, xtrack;
+    char tmpstr[TMP_STRING_LEN+1];
+    int trackno = 1;
+
+    if(entry->catalog[0] == '\0'){ return; }
+    printf("\nUpdating tracks for %s\n", entry->catalog);
+    puts("Press return to leave existing description unchanged,");
+    puts("a single \x1b[32md\x1b[m to delete this and remaining tracks,");
+    puts("or new track descriptions");
+
+    while(1){
+        memset(&ntrack, '\0', sizeof(ntrack));
+        xtrack = get_track_entry(entry->catalog, trackno);
+        if(xtrack.catalog[0]){
+            printf("\tTrack %d: %s\n", trackno, xtrack.tracktxt);
+            printf("\tNew text:");
+        }else{
+            printf("\tTrack %d description: ", trackno);
+        }
+        fgets(tmpstr, TMP_STRING_LEN, stdin);
+        strip_return(tmpstr);
+        if(strlen(tmpstr) == 0){
+            if(xtrack.catalog[0] == '\0'){ break; }
+            else{
+                trackno++;
+                continue;
+            }
+        }
+        if((strlen(tmpstr) == 1) && tmpstr[0] == 'd'){
+            while(delete_track_entry(entry->catalog, trackno)){
+                trackno++;
+            }
+            break;
+        }
+
+        // --
+        strncpy(ntrack.tracktxt, tmpstr, TRACT_TTEXT_LEN-1);
+        strcpy(ntrack.catalog, entry->catalog);
+        ntrack.trackno = trackno;
+        if(!add_track_entry(ntrack)){
+            fprintf(stderr, "Failed to add new track\n");
+            break;
+        }
+        trackno++;
+    }
+}
+
 static int command_mode(int argc, char **argv){}
-static void enter_new_track_entries(const CatalogEntry *entry){}
 static void delete_catalog_entries(const CatalogEntry *entry){}
 static void delete_track_entries(const CatalogEntry *entry){}
 static CatalogEntry find_catalog(void){}
