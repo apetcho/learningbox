@@ -7,9 +7,10 @@
 #define BKBUFLEN 80
 
 typedef enum BankEvent_t{
-    BK_ERR_INSUFICIENT_FUND=-3,
-    BK_ERR_LOGIN=-2,
-    BK_UNKNOWN=-1,
+    BK_ERR_INSUFICIENT_FUND=-4,
+    BK_ERR_LOGIN=-3,
+    BK_UNKNOWN=-2,
+    BK_FAILURE=-1,
     BK_SUCCESS=0,
     BK_REGISTER=1,      // register
     BK_LOGIN=2,         // login
@@ -57,10 +58,31 @@ typedef struct Bank_t {
     AccList_t *accounts;        /* Accounts opened at this bank */
 } Bank_t;
 
-
+/** Create a new empty bank object. Return a pointer to the bank object */
 Bank_t* open_bank();
+
+/**
+ * @brief Load bank data
+ * 
+ * @param bk 
+ * @return int Returns 0 if successful other return -1 
+ */
 int load_bank_data(Bank_t *bk);
+
+/**
+ * @brief Save bank data
+ * 
+ * @param bk 
+ * @return int Returns 0 if successful other return -1
+ */
 int save_bank_data(Bank_t *bk);
+
+/**
+ * @brief Close bank object.
+ * All pointers are freed and data.
+ * @param bk 
+ * @return int Returns 0 if successful other return -1
+ */
 int close_bank(Bank_t *bk);
 
 Account create_account(Bank_t *bk);

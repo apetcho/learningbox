@@ -6,8 +6,24 @@
 
 #include "mybank.h"
 
-//
-Bank_t* open_bank(){}
+#define BKFILENAME  "bkdatafile"
+
+// ---
+Bank_t* open_bank(){
+    Bank_t *bk = calloc(1, sizeof(Bank_t));
+    if(bk == NULL){
+        perror("calloc()");
+        exit(EXIT_FAILURE);
+    }
+    static const char fname[] = BKFILENAME;
+    bk->db = NULL;
+    bk->dbfile = fname;
+    bk->accounts = NULL;
+
+    return bk;
+}
+
+
 int load_bank_data(Bank_t *bk){}
 int save_bank_data(Bank_t *bk){}
 int close_bank(Bank_t *bk){}
