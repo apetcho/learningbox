@@ -31,9 +31,6 @@ typedef struct Transaction{
     time_t when;            /* Time at which the transaction was made */
     char *info;             /* Name of the transaction type */
 } Transaction;
-
-typedef Transaction bktrans;
-MAKE_CUSTOM_XVECTOR(bktrans)
 typedef XVector_t TransList_t;
 
 typedef struct Account {
@@ -48,8 +45,6 @@ typedef struct Account {
     TransList_t *transactions;  /* Account transactions list */
 } Account;
 
-typedef Account bkacc;
-MAKE_CUSTOM_XVECTOR(bkacc)
 typedef XVector_t AccList_t;
 
 typedef struct Bank_t {
