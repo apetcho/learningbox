@@ -73,7 +73,7 @@ int main(int argc, char **argv){
             enter_new_track_entries(&c_entry);
             break;
         case MO_DEL_CAT:
-            delete_catalog_entries(&c_entry);
+            _delete_catalog_entry(&c_entry);
             break;
         case MO_FIND_CAT:
             c_entry = find_catalog();
@@ -82,7 +82,7 @@ int main(int argc, char **argv){
             list_tracks(&c_entry);
             break;
         case MO_DEL_TRACKS:
-            delete_track_entries(&c_entry);
+            _delete_track_entries(&c_entry);
             break;
         case MO_COUNT_ENTRIES:
             count_all_entries();
@@ -119,7 +119,7 @@ static MenuOption show_menu(const CatalogEntry *selected){
     while(chosen == MO_INVALID){
         if(selected->catalog[0]){
             printf("\n\nCurrent entry: ");
-            printf("%s, %s, %s, %s, %s\n",
+            printf("%s, %s, %s, %s\n",
                 selected->catalog, selected->title,
                 selected->type, selected->artist
             );
@@ -305,7 +305,7 @@ static void _delete_catalog_entry(const CatalogEntry *entry){
 static void _delete_track_entries(const CatalogEntry *entry){
     int trackno = 1;
     int deleteok;
-    display_track(entry);
+    display_catalog(entry);
     if(get_confirm("Delete tracks for this entry? ")){
         do{
             deleteok = delete_track_entry(entry->catalog, trackno);
