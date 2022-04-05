@@ -1,6 +1,7 @@
 #ifndef _XVECTOR_H
 #define _XVECTOR_H
 #include<stddef.h>
+#include<assert.h>
 
 typedef struct XVector_t XVector_t;
 typedef void* (*ItemAllocator)(size_t);
@@ -24,9 +25,9 @@ int vector_set_size(XVector_t *vec, size_t size);
 int vector_set_capacity(XVector_t *vec, size_t capacity);
 
 
-#ifdef MAKE_CUSTOM_XVECTOR
-#undef MAKE_CUSTOM_XVECTOR
-#endif
+#if !defined(MAKE_CUSTOM_XVECTOR)
+//#undef MAKE_CUSTOM_XVECTOR
+//#endif
 #define MAKE_CUSTOM_XVECTOR(T)                                          \
     XVector_t* vector_malloc_ ## T (size_t capacity){                   \
         return vector_malloc(capacity, sizeof(T));                      \
@@ -59,5 +60,6 @@ int vector_set_capacity(XVector_t *vec, size_t capacity);
         item = (T*)vector_get_end(vec);                                 \
         return item;                                                    \
     }
+#endif
 
 #endif
