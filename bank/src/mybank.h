@@ -40,7 +40,7 @@ typedef struct Account {
     char *phone;                /* Account holder's phone number */
     char *accno;                /* Account holder's account number */          
     char *pword;                /* Account holder's password */
-    const time_t created;       /* Date of creation of this account */
+    time_t created;       /* Date of creation of this account */
     double balance;             /* Account's current balance */
     TransList_t *transactions;  /* Account transactions list */
 } Account;
@@ -80,7 +80,9 @@ int save_bank_data(Bank_t *bk);
  */
 int close_bank(Bank_t *bk);
 
-Account create_account(Bank_t *bk);
+Account* create_account(const char*, const char*, const char*,
+ const char*, const char*);
+int delete_acount(Account *acc);
 Account* account_login(Bank_t *bk);
 Account* account_update(Bank_t *bk);
 
