@@ -2,8 +2,9 @@
 #define _MY_BANK_APP_H
 
 #include<time.h>
+#include<ndbm.h>
 #include "xvector.h"
-#define BANKACNT_STRLEN 40
+#define BKBUFLEN 80
 
 typedef enum BankEvent_t{
     BK_ERR_INSUFICIENT_FUND=-3,
@@ -25,46 +26,51 @@ typedef enum BankEvent_t{
 }BankEvent_t;
 
 typedef struct Transaction{
-    BankEvent_t type;
-    time_t when;
-    char *info;
+    BankEvent_t type;       /* Transaction type */
+    time_t when;            /* Time at which the transaction was made */
+    char *info;             /* Name of the transaction type */
 } Transaction;
 
-typedef Transaction bktransaction;
-MAKE_CUSTOM_XVECTOR(bktransaction)
-typedef XVector_t TransactionList_t;
+typedef Transaction bktrans;
+MAKE_CUSTOM_XVECTOR(bktrans)
+typedef XVector_t TransList_t;
 
 typedef struct Account {
-    char *firstname;
-    char *lastname;
-    char *email;
-    char *phone;
-    char *accountNo;
-    char *password;
-    const time_t created;
-    double balance;
-    char *filename;
-    TransactionList_t *transactions;
+    char *fname;                /* Account holder's first name */
+    char *lname;                /* Account holder's last name */
+    char *email;                /* Account holder's email */
+    char *phone;                /* Account holder's phone number */
+    char *accno;                /* Account holder's account number */          
+    char *pword;                /* Account holder's password */
+    const time_t created;       /* Date of creation of this account */
+    double balance;             /* Account's current balance */
+    TransList_t *transactions;  /* Account transactions list */
 } Account;
 
+typedef Account bkacc;
+MAKE_CUSTOM_XVECTOR(bkacc)
+typedef XVector_t AccList_t;
 
 typedef struct Bank_t {
-    const char *dbfile;
+    DBM *db;                    /* Pointer to bank database object */
+    const char *dbfile;         /* Bank database filename */
+    AccList_t *accounts;        /* Accounts opened at this bank */
 } Bank_t;
 
 
 Bank_t* open_bank();
-void close_bank(Bank_t *bank);
+int load_bank_data(Bank_t *bk);
+int save_bank_data(Bank_t *bk);
+int close_bank(Bank_t *bk);
 
-Account create_account(Bank_t *bank);
-BankEvent_t account_login(Account *account);
-BankEvent_t account_update(Account *account);
+Account create_account(Bank_t *bk);
+Account* account_login(Bank_t *bk);
+Account* account_update(Bank_t *bk);
 
-BankEvent_t load_acount_transactions(Account *account);
-void save_account(Account *account);
-double get_account_balance();
-void add_fund(Account *account, double fund);
-BankEvent_t withdraw_fund(Account *account, double fund);
-BankEvent_t transfer_fund(Account *from, Account *to, double fund);
+void print_acount_transactions(Account *acnt);
+double get_account_balance(Account *acnt);
+int add_fund(Account *acnt, double fund);
+int withdraw_fund(Account *acnt, double fund);
+int transfer_fund(Account *from, Account *to, double fund);
 
 #endif
