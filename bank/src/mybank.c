@@ -46,9 +46,28 @@ Bank_t* open_bank(){
     return bk;
 }
 
+// --- Load 
+int load_bank_data(Bank_t *bk){
+    int ret = 0;
+    bk->db = dbm_open(bk->dbfile, O_RDWR|O_CREAT, 0644);
+    if(bk->db == NULL){ return BK_FAILURE; }
+    bk->accounts = vector_malloc_bkacc(1, sizeof(Account));
+    if(bk->accounts == NULL){ return BK_FAILURE; }
+    datum key;
+    datum data;
+    for(key=dbm_firstkey(bk->db); key.dptr; key = dbm_nextkey(bk->db)){
+        data = dbm_fetch(bk->db, key);
+        if(data.dptr){
+            vector_push_back_bkacc(bk->accounts, data.dptr);
+            ret++;
+        }
+    }
+    return ret; // return the number of account in the database
+}
 
-int load_bank_data(Bank_t *bk){return 0;}
+//!@todo
 int save_bank_data(Bank_t *bk){return 0;}
+//!@todo
 int close_bank(Bank_t *bk){return 0;}
 
 // ---
@@ -91,11 +110,22 @@ Account* create_account(
 }
 
 // ----
+//!@todo
 Account* account_login(Bank_t *bk){return 0;}
+//!@todo
 Account* account_update(Bank_t *bk){return 0;}
 
+//!@todo
 void print_acount_transactions(Account *acnt){}
+//!@todo
 double get_account_balance(Account *acnt){return 0.;}
+//!@todo
 int add_fund(Account *acnt, double fund){return 0;}
+//!@todo
 int withdraw_fund(Account *acnt, double fund){return 0;}
+//!@todo
 int transfer_fund(Account *from, Account *to, double fund){return 0;}
+//!@todo
+int delete_bank_acount(Bank_t *bk, Account *acc){ return 0; }
+//!@todo
+int add_bank_acount(Bank_t *bk, const Account *acc){ return 0; }

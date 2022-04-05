@@ -79,13 +79,14 @@ int save_bank_data(Bank_t *bk);
  * @return int Returns 0 if successful other return -1
  */
 int close_bank(Bank_t *bk);
+int delete_bank_acount(Bank_t *bk, Account *acc);
+int add_bank_acount(Bank_t *bk, const Account *acc);
 
 Account* create_account(const char*, const char*, const char*,
  const char*, const char*);
-int delete_acount(Account *acc);
+
 Account* account_login(Bank_t *bk);
 Account* account_update(Bank_t *bk);
-
 void print_acount_transactions(Account *acnt);
 double get_account_balance(Account *acnt);
 int add_fund(Account *acnt, double fund);
