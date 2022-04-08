@@ -10,8 +10,8 @@ int main(){
     atexit(quit);
     curs_set(0);
 
-    mvprintw(3, 5, "LINES: %d", LINES);
-    mvprintw(4, 5, "COLS : %d", COLS);
+    mvprintw(3, 5, "LINES             : %d", LINES);
+    mvprintw(4, 5, "COLS              : %d", COLS);
     getyx(stdscr, y, x);
     mvprintw(5, 5, "Cursor position   : [%d, %d]", y, x);
     getbegyx(stdscr, y, x);
