@@ -4,4 +4,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_executable(Exple1 src/exple01.c)
+add_executable(Exple2 src/exple02.c)
+
 target_link_libraries(Exple1 curses)
+target_link_libraries(Exple2 curses)
