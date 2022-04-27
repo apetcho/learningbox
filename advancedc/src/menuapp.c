@@ -213,5 +213,10 @@ void do_saveas_file(){
 void do_close_file(){
 }
 
-void do_print_file(){}
+// --
+void do_print_file(){
+    MOVE_CURSOR(20, 10);
+    puts("Files, print selected");
+}
+
 void do_exit_file(){}
