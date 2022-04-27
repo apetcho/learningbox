@@ -24,6 +24,7 @@ List* list_create(
     if(list == NULL){
         return NULL;
     }
+    list->len = 0;
     list->alloc = alloc;
     list->free = dealloc;
     list->print = disp;

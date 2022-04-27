@@ -14,18 +14,11 @@ typedef void (*copyNodeFn)(Node*, const Node*);
 
 typedef struct List{
     Node *head;
-    //Node *alloc(size_t len);
+    int len;
     allocateNodeFn alloc;
-
-    //void free(Node *node);
     deallocateNodeFn free;
-
-    //void print(Node node);
     printNodeFn print;
-
-    //void copy(Node *dst, const Node *src);
     copyNodeFn copy;
-    
 } List;
 
 
