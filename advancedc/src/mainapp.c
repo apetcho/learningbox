@@ -5,7 +5,7 @@
 #include "person.h"
 #include "processfile.h"
 
-#define FILENAME "../people.txt"
+#define FILENAME "../persondata.txt"
 
 int main(){
     char buf[PERSONBUFLEN];
@@ -14,13 +14,13 @@ int main(){
     FILE *fp;
     fp = fopen(FILENAME, "r");
     if(fp == NULL){ exit(EXIT_FAILURE);}
-    int first = 0;
+    //int first = 0;
     while(!feof(fp)){
         len = read_line(buf, PERSONBUFLEN, fp);
-        if(first == 0){
-            first = 1;
-            continue;
-        }
+        // if(first == 0){
+        //     first = 1;
+        //     continue;
+        // }
         //printf("[%03d] %s\n", len, buf);
         person = parse_line(buf, ",");
         person_print(*person);
