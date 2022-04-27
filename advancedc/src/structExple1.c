@@ -31,8 +31,8 @@ int main(){
         data[i].len = strlen(data[i].text);
     }
 
-    printf("sizeof(data) = %d\n", sizeof(data));
-    printf("Number of elements = %d\n", sizeof(data)/sizeof(data[0]));
+    printf("sizeof(data) = %lu\n", sizeof(data));
+    printf("Number of elements = %lu\n", sizeof(data)/sizeof(data[0]));
     for(int i=0; i < sizeof(data)/sizeof(data[0]); i++){
         printf(
             "data[%2d] %p %3d '%s'\n",
