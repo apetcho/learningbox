@@ -31,4 +31,29 @@ int read_line(char *line, size_t len, FILE *fp){
     return (int)strlen(line);
 }
 
-Person_t parse_line(const char *line, const char *delim){}
+/**
+ * @brief Parse a line of character string to extract person object field.
+ * 
+ * @param line 
+ * @param delim 
+ * @return Person_t 
+ */
+Person_t* parse_line(const char *line, const char *delim){
+    enum {FNAME=0, LNAME, EMAIL};
+    Person_t *person = person_alloc();
+    char *token;
+    char *text = strdup(line);
+    int i = 0;
+    while((token = strsep(&text, delim)) != NULL){
+        if(i == FNAME){
+            strncpy(person->fname, token, sizeof(person->fname));
+        }else if(i == LNAME){
+            strncpy(person->lname, token, sizeof(person->lname));
+        }else if(i == EMAIL){
+            strncpy(person->email, token, sizeof(person->email));
+        }
+        ++i;
+    }
+
+    return person;
+}
