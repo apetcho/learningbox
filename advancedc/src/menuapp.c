@@ -196,14 +196,22 @@ void do_open_file(){
     printf("NAME: '%s'\n", filename);
 }
 
-//
-void do_close_file(){
+
+// --
+void do_save_file(){
     MOVE_CURSOR(20, 10);
     printf("Files, save selected\n");
 }
 
+// --
+void do_saveas_file(){
+    MOVE_CURSOR(20, 10);
+    puts("File, save as selected");
+}
 
-void do_save_file(){}
-void do_saveas_file(){}
+//
+void do_close_file(){
+}
+
 void do_print_file(){}
 void do_exit_file(){}
