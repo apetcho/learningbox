@@ -5,19 +5,21 @@
 // ---
 int main(){
     int nCounter = 33;
-    int *pnCounter = (int*)NULL;
-    char szSaying[] = {
+    int idummy;
+    int *pnCounter = &idummy; // = (int*)NULL;
+    char szSaying[] = 
         "Firestone's Law of Forecasting:\n"
         "Chicken Little only has to be right one.\n\n"
-    };
-    char *pszSaying = (char*)NULL;
+    ;
+    char cdummy; 
+    char *pszSaying = &cdummy; // = (char*)NULL;
     printf(
         "nCounter | pnCounter | *(pnCounter) | pszSaying | "
         "szSaying[0] | szSaying[0-20]\n"
     );
     printf(
         "%8d | %8p |  %8d  | %8p |   %c     | %20.20s\n",
-        nCounter, pnCounter, *(pnCounter), pszSaying, *(pszSaying), szSaying
+        nCounter, pnCounter, *pnCounter, pszSaying, *pszSaying, szSaying
     );
 
     printf("pnCounter = &nCounter; \n");
@@ -35,7 +37,7 @@ int main(){
         nCounter, pnCounter, *(pnCounter), pszSaying, *(pszSaying), szSaying
     );
     printf("pszSaying = &szSaying;\n");
-    pszSaying = &szSaying;
+    pszSaying = &szSaying[0];
     printf(
         "%8d |  %8p |  %8d  | %8p |   %c     | %20.20s\n",
         nCounter, pnCounter, *(pnCounter), pszSaying, *(pszSaying), szSaying
