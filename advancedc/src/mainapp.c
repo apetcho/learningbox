@@ -24,12 +24,10 @@ Node* allocate(size_t size){
 }
 
 // dealloc
-static void deallocate(Node *node){
-    Person_t *person = node->data;
+static void deallocate(void *data){
+    Person_t *person = (Person_t*)data;
     person_free(person);
-    node->data = NULL;
-    free(node);
-    node = NULL;
+    data = NULL;
 }
 
 // display
