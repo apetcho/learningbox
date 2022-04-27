@@ -52,6 +52,20 @@ static void copydata(void *dst, const void *src){
 }
 
 // compare
+static int compare(const void *a, const void *b){
+    const Person_t *x = (const Person_t*)a;
+    const Person_t *y = (const Person_t*)b;
+
+    if(strcmp(x->fname, y->fname) < 0){ return -1;}
+    if((strcmp(x->fname, y->fname) == 0) && (strcmp(x->lname, y->lname) < 0)){
+        return -1;
+    }
+    if((strcmp(y->fname, y->fname)==0) && (strcmp(x->lname, y->lname)==0)){
+        return 0;
+    }
+    return 1;
+}
+
 // to_string
 
 // ------------------------------
