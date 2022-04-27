@@ -63,7 +63,7 @@ void list_destroy(List* list){
  * @return List* 
  */
 List* list_append(List *list, const void *data){
-    if(data == NULL){ return list; }
+    if(data == NULL){ return list; } // data == NULL
     Node *node = list->alloc(list->itemsize);
     if(node == NULL){
         fprintf(stderr, "WARNING: %s\n", strerror(errno));
@@ -91,8 +91,9 @@ List* list_append(List *list, const void *data){
  * @return List* 
  */
 List* list_prepend(List *list, const void *data){
+    if(data == NULL){ return list; } // data == NULL
     Node *node = list->alloc(list->itemsize);
-    if(node == NULL){
+    if(node == NULL){// Allocation problem
         fprintf(stderr, "WARNING: %s\n", strerror(errno));
         return list;
     }
@@ -107,7 +108,7 @@ List* list_prepend(List *list, const void *data){
 /**
  * @brief Insert data after a given node in list
  * 
- * If the node is NULL, just return the original list unmodified.
+ * If the node is NULL, prepend data to the list.
  * If a memory allocation failed, issue a warning and return the the original
  * list unmodified.
  * If the node is not in list, just append data
@@ -118,17 +119,23 @@ List* list_prepend(List *list, const void *data){
  * @return List* 
  */
 List* list_insert_after(List *list, const void *data, Node *node){
-    if(node == NULL){ return list; }
+    if(data == NULL){ return list; }
     Node *cursor;
     Node *target = NULL;
     Node *item = list->alloc(list->itemsize);
-    if(item == NULL){
+    if(item == NULL){ // Allocation error, just return list
         fprintf(stderr, "WARNING: %s\n", strerror(errno));
+        return list;
+    }
+    if(node == NULL){ // The node is NULL, just prepend
+        item->next = list->head;
+        list->head = item;
+        list->len++;
         return list;
     }
     list->copy(item->data, data);
     cursor = list->head;
-    if(cursor == NULL){ // The list is empty, just insert
+    if(cursor == NULL){ // The list is empty, just append
         cursor = item;
         list->len++;
         return list;
@@ -161,14 +168,19 @@ List* list_insert_after(List *list, const void *data, Node *node){
  * @return List* 
  */
 List* list_insert_before(List *list, const void *data, Node *node){
-    if(node == NULL){ return list; }
+    if(data == NULL){ return list; }
+    if(node == NULL){ return list; } // 
     Node *prev;
     Node *cursor;
     Node *item;
     item = list->alloc(list->itemsize);
+    if(item == NULL){
+        fprintf(stderr, "WARNING: %s\n", strerror(errno));
+        return list;
+    }
     list->copy(item->data, data);
     cursor = list->head;
-    if(cursor == NULL){
+    if(cursor == NULL){ // 
         cursor = item;
         list->len++;
         return list;
@@ -203,6 +215,7 @@ List* list_insert_before(List *list, const void *data, Node *node){
  * @return Node* 
  */
 Node* list_find(const List *list, const void *data){
+    if(data == NULL){ return NULL; }
     Node *cursor;
     cursor = list->head;
     while(cursor != NULL){
@@ -224,6 +237,7 @@ Node* list_find(const List *list, const void *data){
  * @return List* 
  */
 List* list_remove(List *list, const void *data){
+    if(data == NULL){ return list; } // data == NULL, remove nothing
     Node *cursor;
     Node *temp;
     cursor = list->head;
