@@ -49,4 +49,9 @@ void person_free(Person_t* person){
     }
 }
 
-void person_print(Person_t person){}
+void person_print(Person_t person){
+    printf("Person(fname=%s, ", person.fname);
+    printf("lname=%s, ", person.lname);
+    printf("email=%s)", person.email);
+    return;
+}
