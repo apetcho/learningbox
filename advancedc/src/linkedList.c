@@ -61,7 +61,9 @@ void list_destroy(List* list){
  * @return List* 
  */
 List* list_append(List *list, const void *data){
+    if(data == NULL){ return list; }
     Node *node = list->alloc(list->itemsize);
+    if(node == NULL){ return list; }
     list->copy(node->data, data);
     node->next = NULL;
     Node *cursor;
