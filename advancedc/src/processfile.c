@@ -4,7 +4,14 @@
 #include<stdio.h>
 #include "processfile.h"
 
-//
+/**
+ * @brief Read a line of character strings from a file.
+ * 
+ * @param line 
+ * @param len 
+ * @param fp 
+ * @return int 
+ */
 int read_line(char *line, size_t len, FILE *fp){
     memset(line, 0, len);
     char buf[len+1];
@@ -20,6 +27,8 @@ int read_line(char *line, size_t len, FILE *fp){
         ++i;
     }
     *(line+i) = '\0';
+
+    return (int)strlen(line);
 }
 
 Person_t parse_line(const char *line, const char *delim){}
