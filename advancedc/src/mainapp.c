@@ -4,10 +4,38 @@
 
 #include "person.h"
 #include "processfile.h"
+#include "linkedList.h"
+
+#define MYBUFLEN    128
 
 #define FILENAME "../persondata.txt"
 
-int main(){
+/* private prototypes */
+// alloc
+Node* allocate(size_t size){
+    Node *node = calloc(1, sizeof(Node));
+    if(node == NULL){ return NULL; }
+    node->data = (void*)person_alloc();
+    if(node->data == NULL){ return NULL; }
+    (void)size;
+    node->next = NULL;
+
+    return node;
+}
+
+// dealloc
+static void deallocate(Node *node){
+    
+}
+// display
+// copy
+// compare
+// to_string
+
+// ------------------------------
+//      M A I N   D R I V E R 
+// ------------------------------
+int main(int argc, char **argv){
     char buf[PERSONBUFLEN];
     int len = 0;
     Person_t *person;
