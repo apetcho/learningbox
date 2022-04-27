@@ -16,7 +16,7 @@
  */
 List* list_create(
     size_t size, allocateNodeFn alloc, deallocateNodeFn dealloc,
-    printNodeFn disp, copyNodeFn copy)
+    printNodeFn disp, copyNodeFn copy, compareNodeFn cmp)
 {
     List *list = malloc(sizeof(List));
     if(list == NULL){
@@ -28,6 +28,7 @@ List* list_create(
     list->free = dealloc;
     list->print = disp;
     list->copy = copy;
+    list->compare = cmp;
     return list;
 }
 
@@ -50,11 +51,28 @@ void list_destroy(List* list){
     list = NULL;
 }
 
+/**
+ * @brief Append data to list
+ * 
+ * @param list 
+ * @param data 
+ */
+List* list_append(List *list, const void *data){
+    Node *node = list->alloc(list->itemsize);
+    list->copy(node->data, data);
+    node->next = NULL;
+    Node *cursor;
+    cursor = list->head;
+    while(cursor != NULL){
+        cursor = cursor->next;
+    }
+    cursor = node;
+    return list;
+}
 
-void list_append(List *list, void *data){}
-void list_prepend(List *list, void *data){}
-void list_insert_after(List *list, void *data, Node *node){}
-void list_insert_before(List *list, void *data, Node *node){}
-void list_find(const List *list, void *data){}
-void list_remove(List *list, void *data){}
+List* list_prepend(List *list, void *data){}
+List* list_insert_after(List *list, void *data, Node *node){}
+List* list_insert_before(List *list, void *data, Node *node){}
+Node* list_find(const List *list, void *data){}
+List* list_remove(List *list, void *data){}
 void list_print(const List *list){}

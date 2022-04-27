@@ -10,7 +10,8 @@ typedef struct Node{
 typedef Node* (*allocateNodeFn)(size_t);
 typedef void (*deallocateNodeFn)(Node*);
 typedef void (*printNodeFn)(Node);
-typedef void (*copyNodeFn)(Node*, const Node*);
+typedef void (*copyNodeFn)(void*, const void*);
+typedef int (*compareNodeFn)(const void*, const void *);
 
 typedef struct List{
     Node *head;
@@ -20,6 +21,7 @@ typedef struct List{
     deallocateNodeFn free;
     printNodeFn print;
     copyNodeFn copy;
+    compareNodeFn compare;
 } List;
 
 
@@ -29,16 +31,17 @@ List* list_create(
     allocateNodeFn alloc,
     deallocateNodeFn dealloc,
     printNodeFn disp,
-    copyNodeFn copy
+    copyNodeFn copy,
+    compareNodeFn cmp
 );
 
 void list_destroy(List* list);
-void list_append(List *list, void *data);
-void list_prepend(List *list, void *data);
-void list_insert_after(List *list, void *data, Node *node);
-void list_insert_before(List *list, void *data, Node *node);
-void list_find(const List *list, void *data);
-void list_remove(List *list, void *data);
+List* list_append(List *list, const void *data);
+List* list_prepend(List *list, const void *data);
+List* list_insert_after(List *list, const void *data, Node *node);
+List* list_insert_before(List *list, const void *data, Node *node);
+Node* list_find(const List *list, const void *data);
+List* list_remove(List *list, const void *data);
 void list_print(const List *list);
 
 #endif
