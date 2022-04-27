@@ -14,7 +14,7 @@
  */
 int read_line(char *line, size_t len, FILE *fp){
     memset(line, 0, len);
-    char buf[len+1];
+    char buf[len];
     memset(buf, 0, len);
     if(fp){
         fgets(buf, len, fp);
@@ -27,6 +27,7 @@ int read_line(char *line, size_t len, FILE *fp){
         ++i;
     }
     *(line+i) = '\0';
+    //printf("%s\n", line);
 
     return (int)strlen(line);
 }
@@ -45,12 +46,13 @@ Person_t* parse_line(const char *line, const char *delim){
     char *text = strdup(line);
     int i = 0;
     while((token = strsep(&text, delim)) != NULL){
+        if(strcmp(token, "") == 0){ continue; }
         if(i == FNAME){
-            strncpy(person->fname, token, sizeof(person->fname));
+            strncpy(person->fname, token, PERSONLEN);
         }else if(i == LNAME){
-            strncpy(person->lname, token, sizeof(person->lname));
+            strncpy(person->lname, token, PERSONLEN);
         }else if(i == EMAIL){
-            strncpy(person->email, token, sizeof(person->email));
+            strncpy(person->email, token, PERSONLEN);
         }
         ++i;
     }
