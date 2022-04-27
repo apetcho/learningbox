@@ -78,7 +78,7 @@ List* list_append(List *list, const void *data){
  * @param data 
  * @return List* 
  */
-List* list_prepend(List *list, void *data){
+List* list_prepend(List *list, const void *data){
     Node *node = list->alloc(list->itemsize);
     list->copy(node->data, data);
     node->next = list->head;
@@ -87,9 +87,42 @@ List* list_prepend(List *list, void *data){
     return list;
 }
 
+/**
+ * @brief Insert data after a given node in list
+ * 
+ * @param list 
+ * @param data 
+ * @param node 
+ * @return List* 
+ */
+List* list_insert_after(List *list, const void *data, Node *node){
+    Node *cursor;
+    Node *target = NULL;
+    cursor = list->head;
+    Node *item = list->alloc(list->itemsize);
+    list->copy(item->data, data);
+    if(cursor == NULL){
+        cursor = item;
+        return list;
+    }
 
-List* list_insert_after(List *list, void *data, Node *node){}
-List* list_insert_before(List *list, void *data, Node *node){}
-Node* list_find(const List *list, void *data){}
-List* list_remove(List *list, void *data){}
+    do{
+        target = cursor;
+        cursor = cursor->next;
+        if(list->compare(target->data, node->data) == 0){ break;}
+    }while(cursor != NULL || target != NULL);
+
+    if(target == NULL || cursor == NULL){
+        cursor = item;
+        return list;
+    }
+    item->next = cursor;
+    target->next = item;
+    return list;
+}
+
+
+List* list_insert_before(List *list, const void *data, Node *node){}
+Node* list_find(const List *list, const void *data){}
+List* list_remove(List *list, const void *data){}
 void list_print(const List *list){}
