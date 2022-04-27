@@ -49,16 +49,16 @@ void do_print_file();
 void do_exit_file();
 
 char *szFiles[] = { 
-    "--------------------------------",
-    "|"BOLD"N"NORMAL"new            |",
-    "|"BOLD"O"NORMAL"pen            |",
-    "|"BOLD"C"NORMAL"lose           |",
-    "|"BOLD"S"NORMAL"ave            |",
-    "|save "BOLD"A"NORMAL"s         |",
-    "|------------------------------|",
-    "|"BOLD"P"NORMAL"print          |",
-    "|e"BOLD"X"NORMAL"it            |",
-    "--------------------------------",
+    "-------------------",
+    "| "BOLD"N"NORMAL"new            |",
+    "| "BOLD"O"NORMAL"pen            |",
+    "| "BOLD"C"NORMAL"lose           |",
+    "| "BOLD"S"NORMAL"ave            |",
+    "| save "BOLD"A"NORMAL"s         |",
+    "|-----------------|",
+    "| "BOLD"P"NORMAL"print          |",
+    "| e"BOLD"X"NORMAL"it            |",
+    "-------------------",
     NULL
 };
 
@@ -124,7 +124,37 @@ int main(int argc, char **argv){
 
 
 //
-void pull_down(char *menu[], int ncols, void (*callbacks[])(void)){}
+void pull_down(char *menu[], int ncols, void (*callbacks[])(void)){
+    int menuItem = -1;
+    char choice;
+    for(int i=0; menu[i]; i++){
+        MOVE_CURSOR(i+1, ncols);
+        printf("%s\n", menu[i]);
+    }
+
+    while(menuItem < 0){
+        choice = (char)getchar();
+        if(choice == '\0' || choice == '\xE0'){
+            choice = (char)getchar();
+        }
+        choice = toupper(choice);
+        /* Find the correct menu item index */
+        if(isalnum(choice)){
+            for(int i=0; menu[i]; i++){
+                if(strchr(menu[i], choice)){
+                    menuItem = i;
+                    break;
+                }
+            }
+        }
+
+        if(menuItem >= 0){
+            callbacks[menuItem]();
+        }
+    }
+}
+
+
 void menubar(){}
 void do_new_file(){}
 void do_open_file(){}
