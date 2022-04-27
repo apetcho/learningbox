@@ -5,3 +5,4 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_executable(Pointers src/pointers.c)
 add_executable(NWords src/numword.c)
+add_executable(Menuapp src/menuapp.c)

@@ -83,10 +83,53 @@ void pull_down(char *menu[], int ncols, void (*callbacks[])(void));
 //  M A I N   D R I V E R 
 // ------------------------
 int main(int argc, char **argv){
-    //setlocale(LC_ALL, "en_US.utf8");
-    printf("%s\n", header);
+    char choice;
+    while(1){
+        puts(header);
+        choice = (char)getchar();
+        if(choice == '\0' || choice == '\xE0'){
+            choice = (char)getchar();
+        }
+        MOVE_CURSOR(10, 10);
+        switch(toupper(choice)){
+        case 'F':
+            pull_down(szFiles, 1, FilesFunctions);
+            break;
+        case 'E':
+            printf("%s" CLEAR_EOL, "Edit submenu called");
+            break;
+        case 'V':
+            printf("%s" CLEAR_EOL, "View submenu called");
+            break;
+        case 'P':
+            printf("%s" CLEAR_EOL, "Project submenu called");
+            break;
+        case 'R':
+            printf("%s" CLEAR_EOL, "Run submenu called");
+            break;
+        case 'D':
+            printf("%s" CLEAR_EOL, "Debug submenu called");
+            break;
+        default:
+            printf("Invalid key!");
+            puts(CLEAR_EOL);
+            break;
+        }
+        break;
+    }
 
-    printf("%s\n", szFiles[2]);
-
+    puts("");
     return EXIT_SUCCESS;
 }
+
+
+//
+void pull_down(char *menu[], int ncols, void (*callbacks[])(void)){}
+void menubar(){}
+void do_new_file(){}
+void do_open_file(){}
+void do_close_file(){}
+void do_save_file(){}
+void do_saveas_file(){}
+void do_print_file(){}
+void do_exit_file(){}
