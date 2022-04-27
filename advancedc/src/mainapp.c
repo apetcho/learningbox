@@ -37,6 +37,20 @@ static void display(const void *data){
 }
 
 // copy
+static void copydata(void *dst, const void *src){
+    Person_t *person;
+    person = person_alloc();
+    if(person == NULL){
+        dst = NULL;
+        return;
+    }
+    const Person_t *obj = (const Person_t*)src;
+    strncpy(person->fname, obj->fname, PERSONLEN);
+    strncpy(person->lname, obj->lname, PERSONLEN);
+    strncpy(person->email, obj->email, PERSONLEN);
+    dst = (void*)person;
+}
+
 // compare
 // to_string
 
