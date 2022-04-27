@@ -211,6 +211,8 @@ void do_saveas_file(){
 
 //
 void do_close_file(){
+    MOVE_CURSOR(20, 10);
+    puts("Files, close selected");
 }
 
 // --
@@ -219,4 +221,7 @@ void do_print_file(){
     puts("Files, print selected");
 }
 
-void do_exit_file(){}
+void do_exit_file(){
+    MOVE_CURSOR(20, 10);
+    puts("Files, exit selected");
+}
