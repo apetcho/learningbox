@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-import sys
-import os
-from random import randint
 from random import choice
 from typing import List, Tuple
 
