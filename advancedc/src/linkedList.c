@@ -49,6 +49,8 @@ void list_destroy(List* list){
     }
     free(list);
     list = NULL;
+    list->len = 0;
+    list->itemsize = 0;
 }
 
 /**
@@ -68,6 +70,7 @@ List* list_append(List *list, const void *data){
         cursor = cursor->next;
     }
     cursor = node;
+    list->len++;
     return list;
 }
 
@@ -83,6 +86,7 @@ List* list_prepend(List *list, const void *data){
     list->copy(node->data, data);
     node->next = list->head;
     list->head = node;
+    list->len++;
 
     return list;
 }
@@ -96,6 +100,7 @@ List* list_prepend(List *list, const void *data){
  * @return List* 
  */
 List* list_insert_after(List *list, const void *data, Node *node){
+    if(node == NULL){ return list; }
     Node *cursor;
     Node *target = NULL;
     cursor = list->head;
@@ -103,6 +108,7 @@ List* list_insert_after(List *list, const void *data, Node *node){
     list->copy(item->data, data);
     if(cursor == NULL){
         cursor = item;
+        list->len++;
         return list;
     }
 
@@ -110,19 +116,113 @@ List* list_insert_after(List *list, const void *data, Node *node){
         target = cursor;
         cursor = cursor->next;
         if(list->compare(target->data, node->data) == 0){ break;}
-    }while(cursor != NULL || target != NULL);
+    }while(cursor != NULL);
 
-    if(target == NULL || cursor == NULL){
+    if(cursor == NULL){
         cursor = item;
+        list->len++;
         return list;
     }
     item->next = cursor;
     target->next = item;
+    list->len++;
+    return list;
+}
+
+/**
+ * @brief Insert data before a given node in the list
+ * 
+ * @param list 
+ * @param data 
+ * @param node 
+ * @return List* 
+ */
+List* list_insert_before(List *list, const void *data, Node *node){
+    if(node == NULL){ return list; }
+    Node *prev;
+    Node *cursor;
+    Node *item;
+    item = list->alloc(list->itemsize);
+    list->copy(item->data, data);
+    cursor = list->head;
+    if(cursor == NULL){
+        cursor = item;
+        list->len++;
+        return list;
+    }
+    prev = cursor;
+    Node *tmp;
+    while(cursor != NULL){
+        tmp = cursor->next;
+        if(list->compare(tmp->data, node->data) == 0){ break;}
+        prev = cursor;
+        cursor = tmp;
+    }
+    if(cursor == NULL){
+        item->next = NULL;
+        prev->next = item;
+        list->len++;
+        return list;
+    }
+    item->next = cursor;
+    prev->next = item;
+    list->len++;
     return list;
 }
 
 
-List* list_insert_before(List *list, const void *data, Node *node){}
-Node* list_find(const List *list, const void *data){}
-List* list_remove(List *list, const void *data){}
-void list_print(const List *list){}
+/**
+ * @brief Search for data in list
+ * 
+ * Return a pointer to the node containing the data or NULL if not found.
+ * @param list 
+ * @param data 
+ * @return Node* 
+ */
+Node* list_find(const List *list, const void *data){
+    Node *cursor;
+    cursor = list->head;
+    while(cursor != NULL){
+        if(list->compare(cursor->data, data) == 0){
+            break;
+        }
+        cursor = cursor->next;
+    }
+
+    return cursor;
+}
+
+
+/**
+ * @brief delete the first node containing data
+ * 
+ * @param list 
+ * @param data 
+ * @return List* 
+ */
+List* list_remove(List *list, const void *data){
+    Node *cursor;
+    Node *temp;
+    cursor = list->head;
+    while(cursor != NULL){
+        if(list->compare(cursor->data, data) == 0){
+            temp = cursor;
+            cursor = cursor->next;
+            list->free(temp);
+            list->len -= 1;
+            temp = NULL;
+            break;
+        }
+        cursor = cursor->next;
+    }
+    return list;
+}
+
+/**
+ * @brief Print data in list
+ * 
+ * @param list 
+ */
+void list_print(const List *list){
+    if(list->len == 0){ printf("[ ]");}
+}
