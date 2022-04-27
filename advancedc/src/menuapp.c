@@ -163,12 +163,40 @@ void do_new_file(){
     MOVE_CURSOR(20, 10);
     puts("Files, new");
     MOVE_CURSOR(21, 10);
-    puts("Any key to continue");
-    char c;
-    scanf("%c", &c);
 }
 
-void do_open_file(){}
+/**
+ * @brief Presents to the user a simple get a filename dialog box,
+ * enabling character string to be enter. Basic editing supported.
+ */
+void do_open_file(){
+    int ncols = 15;
+    int nrows = 15;
+    int icols = 2;
+    int irows = 4;
+    char filename[80];
+    char *szOpen[] = {
+        " ----------------------------------------------------",
+        "|                                                    |",
+        "| Enter the name of the file to open:                |",
+        "|                                                    |",
+        "|....................................................|",
+        "|                                                    |",
+        " ----------------------------------------------------",
+        NULL
+    };
+
+    for(int i=0; szOpen[i]; i++){
+        MOVE_CURSOR(i+nrows, ncols);
+        printf("%s\n", szOpen[i]);
+    }
+    MOVE_CURSOR(irows+nrows, icols+ncols);
+    scanf("%s", filename);
+    MOVE_CURSOR(irows+nrows+1, icols+ncols);
+    printf("NAME: '%s'\n", filename);
+}
+
+
 void do_close_file(){}
 void do_save_file(){}
 void do_saveas_file(){}
