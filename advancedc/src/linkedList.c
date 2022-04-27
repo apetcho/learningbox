@@ -56,6 +56,8 @@ void list_destroy(List* list){
 /**
  * @brief Append data to list
  * 
+ * If memory allocation of the input data failed, issue a warning and return
+ * the unmodified list.
  * @param list 
  * @param data
  * @return List* 
@@ -63,7 +65,10 @@ void list_destroy(List* list){
 List* list_append(List *list, const void *data){
     if(data == NULL){ return list; }
     Node *node = list->alloc(list->itemsize);
-    if(node == NULL){ return list; }
+    if(node == NULL){
+        fprintf(stderr, "WARNING: %s\n", strerror(errno));
+        return list;
+    }
     list->copy(node->data, data);
     node->next = NULL;
     Node *cursor;
@@ -85,6 +90,10 @@ List* list_append(List *list, const void *data){
  */
 List* list_prepend(List *list, const void *data){
     Node *node = list->alloc(list->itemsize);
+    if(node == NULL){
+        fprintf(stderr, "WARNING: %s\n", strerror(errno));
+        return list;
+    }
     list->copy(node->data, data);
     node->next = list->head;
     list->head = node;
