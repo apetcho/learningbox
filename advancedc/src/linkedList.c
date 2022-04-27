@@ -107,6 +107,11 @@ List* list_prepend(List *list, const void *data){
 /**
  * @brief Insert data after a given node in list
  * 
+ * If the node is NULL, just return the original list unmodified.
+ * If a memory allocation failed, issue a warning and return the the original
+ * list unmodified.
+ * If the node is not in list, just append data
+ * 
  * @param list 
  * @param data 
  * @param node 
@@ -116,10 +121,14 @@ List* list_insert_after(List *list, const void *data, Node *node){
     if(node == NULL){ return list; }
     Node *cursor;
     Node *target = NULL;
-    cursor = list->head;
     Node *item = list->alloc(list->itemsize);
+    if(item == NULL){
+        fprintf(stderr, "WARNING: %s\n", strerror(errno));
+        return list;
+    }
     list->copy(item->data, data);
-    if(cursor == NULL){
+    cursor = list->head;
+    if(cursor == NULL){ // The list is empty, just insert
         cursor = item;
         list->len++;
         return list;
@@ -131,11 +140,12 @@ List* list_insert_after(List *list, const void *data, Node *node){
         if(list->compare(target->data, node->data) == 0){ break;}
     }while(cursor != NULL);
 
-    if(cursor == NULL){
+    if(cursor == NULL){ // The node is not in the list, just append
         cursor = item;
         list->len++;
         return list;
     }
+    /* The node is found, insert the data at the proper position */
     item->next = cursor;
     target->next = item;
     list->len++;
