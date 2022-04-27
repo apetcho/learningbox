@@ -84,6 +84,8 @@ List* list_append(List *list, const void *data){
 /**
  * @brief Prepend data to list
  * 
+ * If memory allocation of the input data failed, issue a warning and return
+ * the unmodified list.
  * @param list 
  * @param data 
  * @return List* 
