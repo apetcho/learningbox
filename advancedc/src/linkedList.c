@@ -16,7 +16,7 @@
  */
 List* list_create(
     size_t size, allocateNodeFn alloc, deallocateNodeFn dealloc,
-    printNodeFn disp, copyNodeFn copy, compareNodeFn cmp)
+    printNodeFn disp, copyNodeFn copy, compareNodeFn cmp, toStringFn strFn)
 {
     List *list = malloc(sizeof(List));
     if(list == NULL){
@@ -29,6 +29,7 @@ List* list_create(
     list->print = disp;
     list->copy = copy;
     list->compare = cmp;
+    list->to_string = strFn;
     return list;
 }
 

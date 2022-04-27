@@ -12,6 +12,7 @@ typedef void (*deallocateNodeFn)(Node*);
 typedef void (*printNodeFn)(const void*);
 typedef void (*copyNodeFn)(void*, const void*);
 typedef int (*compareNodeFn)(const void*, const void *);
+typedef const char* (*toStringFn)(const void*);
 
 typedef struct List{
     Node *head;
@@ -22,6 +23,7 @@ typedef struct List{
     printNodeFn print;
     copyNodeFn copy;
     compareNodeFn compare;
+    toStringFn to_string;
 } List;
 
 
@@ -32,7 +34,8 @@ List* list_create(
     deallocateNodeFn dealloc,
     printNodeFn disp,
     copyNodeFn copy,
-    compareNodeFn cmp
+    compareNodeFn cmp,
+    toStringFn toString
 );
 
 void list_destroy(List* list);
