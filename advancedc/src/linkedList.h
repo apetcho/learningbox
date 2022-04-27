@@ -9,7 +9,7 @@ typedef struct Node{
 
 typedef Node* (*allocateNodeFn)(size_t);
 typedef void (*deallocateNodeFn)(Node*);
-typedef void (*printNodeFn)(Node);
+typedef void (*printNodeFn)(const void*);
 typedef void (*copyNodeFn)(void*, const void*);
 typedef int (*compareNodeFn)(const void*, const void *);
 

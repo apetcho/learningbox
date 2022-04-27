@@ -224,5 +224,24 @@ List* list_remove(List *list, const void *data){
  * @param list 
  */
 void list_print(const List *list){
-    if(list->len == 0){ printf("[ ]");}
+    if(list->len == 0){
+        printf("[ ]");
+        return;
+    }
+    Node *cursor;
+    cursor = list->head;
+    if(list->len == 1){
+        printf("[ ");
+        list->print(cursor->data);
+        printf(" ]");
+        return;
+    }
+    printf("[ ");
+    while(cursor != NULL){
+        list->print(cursor->data);
+        if(cursor->next != NULL){printf(", ");}
+        cursor = cursor->next;
+    }
+    printf(" ]");
+
 }
