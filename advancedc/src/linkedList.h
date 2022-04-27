@@ -7,18 +7,27 @@ typedef struct Node{
     struct Node *next;
 }Node;
 
-typedef struct {
-    Node *head;
-    Node *alloc(size_t len);
-    void free(Node *node);
-    void print(Node node);
-    void copy(Node *dst, const Node *src);
-} List;
-
 typedef Node* (*allocateNodeFn)(size_t);
 typedef void (*deallocateNodeFn)(Node*);
 typedef void (*printNodeFn)(Node);
 typedef void (*copyNodeFn)(Node*, const Node*);
+
+typedef struct List{
+    Node *head;
+    //Node *alloc(size_t len);
+    allocateNodeFn alloc;
+
+    //void free(Node *node);
+    deallocateNodeFn free;
+
+    //void print(Node node);
+    printNodeFn print;
+
+    //void copy(Node *dst, const Node *src);
+    copyNodeFn copy;
+    
+} List;
+
 
 // ----- List routines ----
 List* list_create(
