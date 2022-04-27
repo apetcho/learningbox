@@ -50,13 +50,13 @@ void do_exit_file();
 
 char *szFiles[] = { 
     "-------------------",
-    "| "BOLD"N"NORMAL"new            |",
+    "| "BOLD"N"NORMAL"ew             |",
     "| "BOLD"O"NORMAL"pen            |",
     "| "BOLD"C"NORMAL"lose           |",
     "| "BOLD"S"NORMAL"ave            |",
     "| save "BOLD"A"NORMAL"s         |",
     "|-----------------|",
-    "| "BOLD"P"NORMAL"print          |",
+    "| "BOLD"P"NORMAL"rint           |",
     "| e"BOLD"X"NORMAL"it            |",
     "-------------------",
     NULL
@@ -154,9 +154,20 @@ void pull_down(char *menu[], int ncols, void (*callbacks[])(void)){
     }
 }
 
+//
+void menubar(){
+}
 
-void menubar(){}
-void do_new_file(){}
+//
+void do_new_file(){
+    MOVE_CURSOR(20, 10);
+    puts("Files, new");
+    MOVE_CURSOR(21, 10);
+    puts("Any key to continue");
+    char c;
+    scanf("%c", &c);
+}
+
 void do_open_file(){}
 void do_close_file(){}
 void do_save_file(){}
