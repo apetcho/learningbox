@@ -31,6 +31,11 @@ static void deallocate(void *data){
 }
 
 // display
+static void display(const void *data){
+    Person_t *person = (Person_t*)data;
+    person_print(*person);
+}
+
 // copy
 // compare
 // to_string
