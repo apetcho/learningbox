@@ -28,9 +28,25 @@ Person_t* person_alloc(){
     person_error(person->lname, "person_alloc()");
     person->email = (char*)malloc(sizeof(char)*PERSONLEN);
     person_error(person->email, "person_alloc()");
-    
+
     return person;
 }
 
-void person_free(Person_t* person){}
+/**
+ * @brief Release memory allocated to person object.
+ * 
+ * @param person 
+ */
+void person_free(Person_t* person){
+    if(person){
+        if(person->fname){ free(person->fname);}
+        person->fname = NULL;
+        if(person->lname){ free(person->lname);}
+        person->lname = NULL;
+        if(person->email){ free(person->email);}
+        person->email = NULL;
+        free(person);
+    }
+}
+
 void person_print(Person_t person){}
