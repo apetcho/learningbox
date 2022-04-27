@@ -46,5 +46,6 @@ List* list_insert_before(List *list, const void *data, Node *node);
 Node* list_find(const List *list, const void *data);
 List* list_remove(List *list, const void *data);
 void list_print(const List *list);
+const char* list_toString(const List* list);
 
 #endif

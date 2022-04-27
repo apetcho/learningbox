@@ -281,5 +281,46 @@ void list_print(const List *list){
         cursor = cursor->next;
     }
     printf(" ]");
+}
 
+#define STRINGLEN   4096
+static listString[STRINGLEN+1];
+
+/**
+ * @brief Return string representation of list.
+ * 
+ * @param list 
+ * @return const char* 
+ */
+const char* list_toString(const List* list){
+    memset(list, 0, sizeof(listString));
+    listString[0] = '[';
+    Node *cursor;
+    cursor = list->head;
+    if(cursor == NULL){ return ""; }
+    while(cursor != NULL){
+        if(
+            strlen(list->to_string(cursor->data)) + 2 >
+             sizeof(listString)-strlen(listString)
+        ){
+            fprintf(
+                stderr,
+                "WARNING: The list is truncarted because of buffer overflow\n"
+            );
+            break;
+        }
+        (void)strncat(
+            listString,
+            list->to_string(cursor->data),
+            sizeof(listString) - strlen(listString) - 1
+        );
+        (void)strncat(
+            listString, ",",
+            sizeof(listString) - strlen(listString) - 1
+        );
+        cursor = cursor->next;
+    }
+    size_t xlen = strlen(listString);
+    listString[xlen-2] = ']';
+    return listString;
 }
