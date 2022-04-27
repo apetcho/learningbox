@@ -25,8 +25,13 @@ Node* allocate(size_t size){
 
 // dealloc
 static void deallocate(Node *node){
-    
+    Person_t *person = node->data;
+    person_free(person);
+    node->data = NULL;
+    free(node);
+    node = NULL;
 }
+
 // display
 // copy
 // compare
