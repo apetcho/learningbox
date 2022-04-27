@@ -15,16 +15,15 @@
  * @return List*  Newly created routine or NULL if allocation failed
  */
 List* list_create(
-    allocateNodeFn alloc,
-    deallocateNodeFn dealloc,
-    printNodeFn disp,
-    copyNodeFn copy
-){
+    size_t size, allocateNodeFn alloc, deallocateNodeFn dealloc,
+    printNodeFn disp, copyNodeFn copy)
+{
     List *list = malloc(sizeof(List));
     if(list == NULL){
         return NULL;
     }
     list->len = 0;
+    list->itemsize = size;
     list->alloc = alloc;
     list->free = dealloc;
     list->print = disp;

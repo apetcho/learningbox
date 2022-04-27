@@ -15,6 +15,7 @@ typedef void (*copyNodeFn)(Node*, const Node*);
 typedef struct List{
     Node *head;
     int len;
+    size_t itemsize;
     allocateNodeFn alloc;
     deallocateNodeFn free;
     printNodeFn print;
@@ -24,6 +25,7 @@ typedef struct List{
 
 // ----- List routines ----
 List* list_create(
+    size_t size,
     allocateNodeFn alloc,
     deallocateNodeFn dealloc,
     printNodeFn disp,
