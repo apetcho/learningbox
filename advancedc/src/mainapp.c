@@ -67,6 +67,18 @@ static int compare(const void *a, const void *b){
 }
 
 // to_string
+static char personbuf[MYBUFLEN+1];
+static const char* to_string(const void *data){
+    const Person_t *person = (const Person_t*)data;
+    memset(personbuf, '\0', sizeof(personbuf));
+    snprintf(
+        personbuf, MYBUFLEN,
+        "Person(fname=%s, lname=%s, email=%s)",
+        person->fname, person->lname, person->email
+    );
+
+    return personbuf;
+}
 
 // ------------------------------
 //      M A I N   D R I V E R 
