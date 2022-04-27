@@ -55,7 +55,8 @@ void list_destroy(List* list){
  * @brief Append data to list
  * 
  * @param list 
- * @param data 
+ * @param data
+ * @return List* 
  */
 List* list_append(List *list, const void *data){
     Node *node = list->alloc(list->itemsize);
@@ -70,7 +71,23 @@ List* list_append(List *list, const void *data){
     return list;
 }
 
-List* list_prepend(List *list, void *data){}
+/**
+ * @brief Prepend data to list
+ * 
+ * @param list 
+ * @param data 
+ * @return List* 
+ */
+List* list_prepend(List *list, void *data){
+    Node *node = list->alloc(list->itemsize);
+    list->copy(node->data, data);
+    node->next = list->head;
+    list->head = node;
+
+    return list;
+}
+
+
 List* list_insert_after(List *list, void *data, Node *node){}
 List* list_insert_before(List *list, void *data, Node *node){}
 Node* list_find(const List *list, void *data){}
