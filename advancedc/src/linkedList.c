@@ -12,7 +12,7 @@
  * @param dealloc Node memory deallocation routine
  * @param disp    Node display routine
  * @param copy    Node copying routine
- * @return List*  Newly created routine
+ * @return List*  Newly created routine or NULL if allocation failed
  */
 List* list_create(
     allocateNodeFn alloc,
@@ -32,7 +32,26 @@ List* list_create(
     return list;
 }
 
-void list_destroy(List* list){}
+/**
+ * @brief Release all allocated memory owned by the list
+ * 
+ * @param list 
+ */
+void list_destroy(List* list){
+    if(list == NULL){ return; }
+    Node *cursor;
+    Node *temp;
+    cursor = list->head;
+    while(cursor != NULL){
+        temp = cursor;
+        cursor = cursor->next;
+        list->free(temp);
+    }
+    free(list);
+    list = NULL;
+}
+
+
 void list_append(List *list, void *data){}
 void list_prepend(List *list, void *data){}
 void list_insert_after(List *list, void *data, Node *node){}
