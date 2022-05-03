@@ -78,7 +78,16 @@ SharedData* simple_new_shared_data(int n){
     return shared;
 }
 
-pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){}
+pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){
+    int retval;
+    pthread_t thread;
+    retval = pthread_create(&thread, NULL, fn, (void*)shared);
+    if(retval != 0){
+        ipcmicro_perror("pthread_create failed");
+    }
+    return thread;
+}
+
 void simple_join_thread(pthread_t thread){}
 
 void simple_child(SharedData *shared){}
