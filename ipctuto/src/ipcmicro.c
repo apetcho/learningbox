@@ -22,12 +22,14 @@ void* ipcmicro_malloc(size_t size){
 
 // ------ QUEUE DATA STRUCTURE --------
 QueueData* simple_new_queue(int len){
-    QueueData* queue = ipcmicro_malloc(sizeof(QueueData));
+    QueueData* queue = (QueueData*)ipcmicro_malloc(sizeof(QueueData));
     queue->len = len;
     queue->array = (int*)ipcmicro_malloc((sizeof(QueueData)*len));
     queue->nextIn = 0;
     queue->nextOut = 0;
     queue->mutex = simple_new_mutex();
+    queue->nonempty = simple_new_cond();
+    queue->nonfull = simple_new_cond();
     return queue;
 }
 
