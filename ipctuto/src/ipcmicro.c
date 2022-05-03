@@ -71,13 +71,20 @@ void simple_unlock(Mutex *mutex){
     pthread_mutex_unlock(mutex->mutex);
 }
 
+SharedData* simple_new_shared_data(int n){
+    SharedData *shared = ipcmicro_malloc(sizeof(SharedData));
+    shared->counter = 0;
+    shared->mutex = simple_new_mutex();
+    return shared;
+}
+
 pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){}
 void simple_join_thread(pthread_t thread){}
 
 void simple_child(SharedData *shared){}
 void* simple_callback(SharedData *arg){}
 
-SharedData* simple_new_shared_data(int n){}
+
 #endif
 
 // -----------------------------
