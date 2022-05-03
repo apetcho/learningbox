@@ -159,6 +159,18 @@ void simple_cond_signal(Cond *cond){
 
 // ----------- End Of Conditional Variable Utils ------
 
+// ----------- SEMAPHORE UTILS ------------
+Semaphore* simple_new_semaphore(int value){
+    Semaphore *sem = ipcmicro_malloc(sizeof(Semaphore));
+    if((sem_init(sem, 0, value)) != 0){
+        ipcmicro_perror("sem_init() failed");
+    }
+
+    return sem;
+}
+
+// ------ END OF SEMAPHORE UTILS ----------
+
 // ----------- PRODUCER / CONSUMER --------
 void* simple_producer(void *arg){
     SharedData *shared = (SharedData*)arg;
