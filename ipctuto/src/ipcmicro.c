@@ -143,6 +143,11 @@ Cond* simple_new_cond(){
     return cond;
 }
 
+void simple_cond_wait(Cond *cond, Mutex *mutex){
+    if((pthread_cond_wait(cond, mutex))!=0){
+        ipcmicro_perror("pthread_cond_wait() failed");
+    }
+}
 
 
 // ----------- End Of Conditional Variable Utils ------
