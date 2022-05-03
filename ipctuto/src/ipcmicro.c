@@ -17,6 +17,7 @@ void* ipcmicro_malloc(size_t size){
 }
 
 #ifdef SIMPLE_SHARED
+#define NUM_CHILDREN 5
 
 SimpleShared* simpleShared_new(int n){
     SimpleShared *shared = ipcmicro_malloc(sizeof(SimpleShared));
@@ -43,4 +44,31 @@ void simpleShared_join_thread(pthread_t thread){
     }
 }
 
+void* sscallback(void *arg){
+    SimpleShared *shared = (SimpleShared*)arg;
+    simpleShared_child(shared);
+    pthread_exit(NULL);
+}
+
 #endif
+
+
+// -----------------------------
+// -------- MAIN DRIVER --------
+// -----------------------------
+int main(int argc, char **argv){
+#ifdef SIMPLE_SHARED
+    pthread_t children[NUM_CHILDREN];
+    SimpleShared *shared = simpleShared_new(100000);
+    for(int i=0; i < NUM_CHILDREN; i++){
+        children[i] = simpleShared_new_thread(sscallback, shared);
+    }
+
+    for(int i=0; i < NUM_CHILDREN; i++){
+        simpleShared_join_thread(children[i]);
+    }
+
+#endif
+
+    return 0;
+}
