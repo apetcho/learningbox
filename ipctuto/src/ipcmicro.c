@@ -95,7 +95,13 @@ void simple_join_thread(pthread_t thread){
     }
 }
 
-void simple_child(SharedData *shared){}
+void simple_child(SharedData *shared){
+    simple_lock(shared->mutex);
+    printf("counter = %d\n", shared->counter);
+    shared->counter++;
+    simple_unlock(shared->mutex);
+}
+
 void* simple_callback(SharedData *arg){}
 
 
