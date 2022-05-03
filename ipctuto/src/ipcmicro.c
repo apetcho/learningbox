@@ -59,14 +59,12 @@ void simple_queue_push(QueueData *queue, int item){
 }
 
 int simple_queue_pop(QueueData *queue){
-    simple_mutex_lock(queue->mutex);
-    while(simple_queue_empty(queue)){
-        simple_cond_wait(queue->nonempty, queue->mutex);
-    }
+    simple_semaphore_wait(queue->mutex);
+    simple_semaphore_wait(queue->items);
     int item = queue->array[queue->nextOut];
     queue->nextOut = simple_queue_incr(queue, queue->nextOut);
-    simple_mutex_unlock(queue->mutex);
-    simple_cond_signal(queue->nonfull);
+    simple_semaphore_signal(queue->mutex);
+    simple_semaphore_signal(queue->spaces);
     return item;
 }
 
