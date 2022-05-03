@@ -50,14 +50,12 @@ int simple_queue_full(QueueData *queue){
 }
 
 void simple_queue_push(QueueData *queue, int item){
-    simple_mutex_lock(queue->mutex);
-    while(simple_queue_full(queue)){
-        simple_cond_wait(queue->nonfull, queue->mutex);
-    }
+    simple_semaphore_wait(queue->spaces);
+    simple_semaphore_wait(queue->mutex);
     queue->array[queue->nextIn] = item;
     queue->nextIn = simple_queue_incr(queue, queue->nextIn);
-    simple_mutex_unlock(queue->mutex);
-    simple_cond_signal(queue->nonempty);
+    simple_semaphore_signal(queue->mutex);
+    simple_semaphore_signal(queue->items);
 }
 
 int simple_queue_pop(QueueData *queue){
