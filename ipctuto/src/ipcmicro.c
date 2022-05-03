@@ -110,17 +110,17 @@ void simple_queue_test(){
 // --------- SHARE DATA ALLOCATION --------------
 SharedData* simple_new_shared_data(){
     SharedData *shared = ipcmicro_malloc(sizeof(SharedData));
-    shared->queue = simple_new_queue(QUEUE_LENGTH);
+    shared->queue = simple_new_queue(128);
     return shared;
 }
 
 // --------- END OF SHARE DATA ALLOCATION --------
 
 // --------- THREAD UTILS ---------
-pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){
+pthread_t simple_new_thread(ThreadCallback_t callback, SharedData *shared){
     int retval;
     pthread_t thread;
-    retval = pthread_create(&thread, NULL, fn, (void*)shared);
+    retval = pthread_create(&thread, NULL, callback, (void*)shared);
     if(retval != 0){
         ipcmicro_perror("pthread_create failed");
     }
@@ -175,7 +175,7 @@ void* simple_consumer(void *arg){
     for(int i=0; i < QUEUE_LENGTH; i++){
         item = simple_queue_pop(shared->queue);
         printf(
-            "\x1b[35mConsuming\x1b[m item \x1b[34m%d\x1b[m from queue\n", item
+            "\x1b[35mConsuming\x1b[m item \x1b[33m%d\x1b[m from queue\n", item
         );
     }
 
@@ -225,18 +225,18 @@ int main(int argc, char **argv){
         simple_join_thread(child[i]);
     }
 #endif
-    if(data->queue->array){
-        free(data->queue->array);
-        data->queue->array = NULL;
-    }
-    if(data->queue){
-        data->queue->mutex = NULL;
-        free(data->queue);
-    }
-    if(data){
-        free(data);
-        data = NULL;
-    }
+    // if(data->queue->array){
+    //     free(data->queue->array);
+    //     data->queue->array = NULL;
+    // }
+    // if(data->queue){
+    //     data->queue->mutex = NULL;
+    //     free(data->queue);
+    // }
+    // if(data){
+    //     free(data);
+    //     data = NULL;
+    // }
 
     return 0;
 }
