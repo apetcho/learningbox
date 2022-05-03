@@ -102,7 +102,11 @@ void simple_child(SharedData *shared){
     simple_unlock(shared->mutex);
 }
 
-void* simple_callback(SharedData *arg){}
+void* simple_callback(SharedData *arg){
+    SharedData* shared = (SharedData*)arg;
+    simple_child(shared);
+    pthread_exit(NULL);
+}
 
 
 #endif
