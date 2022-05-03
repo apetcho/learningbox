@@ -3,13 +3,20 @@
 #include<pthread.h>
 #include<stdio.h>
 
+#undef SIMPLE_SHARED
+#define SIMPLE_MUTEX
+
+#ifdef SIMPLE_MUTEX
+    #define STRUCT_MUTEX
+#endif
+
+
 
 void ipcmicro_perror(char *message);
 void* ipcmicro_malloc(size_t size);
 typedef void* (ThreadCallback_t)(void *);
 struct SharedData;
 typedef struct SharedData SharedData;
-#define STRUCT_MUTEX
 #ifdef STRUCT_MUTEX
     struct Mutex;
     typedef struct Mutex Mutex;
@@ -28,11 +35,6 @@ void simple_child(SharedData *shared);
 void* simple_callback(SharedData *arg);
 
 SharedData* simple_new_shared_data(int n);
-
-
-
-#undef SIMPLE_SHARED
-#define SIMPLE_MUTEX
 
 
 #ifdef SIMPLE_MUTEX

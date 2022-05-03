@@ -2,6 +2,9 @@
 #include<stdlib.h>
 #include"ipcmicro.h"
 
+#define NUM_CHILDREN 5
+
+
 //
 void ipcmicro_perror(char *message){
     perror(message);
@@ -17,7 +20,6 @@ void* ipcmicro_malloc(size_t size){
 }
 
 #ifdef SIMPLE_SHARED
-#define NUM_CHILDREN 5
 
 SimpleShared* simpleShared_new(int n){
     SimpleShared *shared = ipcmicro_malloc(sizeof(SimpleShared));
@@ -52,6 +54,26 @@ void* sscallback(void *arg){
 
 #endif
 
+#ifdef SIMPLE_MUTEX
+
+Mutex* simple_new_mutex(){
+    size_t size = sizeof(Mutex);
+    Mutex *mutex = (Mutex*)ipcmicro_malloc(size);
+    pthread_mutex_init(mutex->mutex, NULL);
+    return mutex;
+}
+
+void simple_lock(Mutex *mutex){}
+void simple_unlock(Mutex *mutex){}
+
+pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){}
+void simple_join_thread(pthread_t thread){}
+
+void simple_child(SharedData *shared){}
+void* simple_callback(SharedData *arg){}
+
+SharedData* simple_new_shared_data(int n){}
+#endif
 
 // -----------------------------
 // -------- MAIN DRIVER --------
