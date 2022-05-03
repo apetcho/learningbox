@@ -154,6 +154,13 @@ Mutex* simple_new_mutex(){
     return mutex;
 }
 
+void simple_mutex_lock(Mutex *mutex){
+    int n = pthread_mutex_lock(mutex);
+    if(n != 0){
+        ipcmicro_perror("pthread_mutex_lock() failed");
+    }
+}
+
 
 // ------ END OF MUTEX UTILS -----
 
