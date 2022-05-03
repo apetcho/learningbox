@@ -46,7 +46,7 @@ int simple_queue_full(QueueData *queue){
 void simple_queue_push(QueueData *queue, int item){
     simple_mutex_lock(queue->mutex);
     if(simple_queue_full(queue)){
-        simple_mutex_unlock(queue);
+        simple_mutex_unlock(queue->mutex);
         ipcmicro_perror("Queue is full");
     }
     queue->array[queue->nextIn] = item;
@@ -192,14 +192,26 @@ int main(int argc, char **argv){
     simple_queue_test();
 #else
     pthread_t child[NUM_CHILDREN];
-    SharedData *shared = simple_new_shared_data();
-    child[0] = simple_new_thread(simple_producer, shared);
-    child[1] = simple_new_thread(simple_consumer, shared);
+    SharedData *data = simple_new_shared_data();
+    child[0] = simple_new_thread(simple_producer, data);
+    child[1] = simple_new_thread(simple_consumer, data);
 
     for(int i=0; i < NUM_CHILDREN; i++){
         simple_join_thread(child[i]);
     }
 #endif
+    if(data->queue->array){
+        free(data->queue->array);
+        data->queue->array = NULL;
+    }
+    if(data->queue){
+        data->queue->mutex = NULL;
+        free(data->queue);
+    }
+    if(data){
+        free(data);
+        data = NULL;
+    }
 
     return 0;
 }
