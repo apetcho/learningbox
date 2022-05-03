@@ -149,6 +149,11 @@ void simple_cond_wait(Cond *cond, Mutex *mutex){
     }
 }
 
+void simple_cond_signal(Cond *cond){
+    if((pthread_cond_signal(cond)) != 0){
+        ipcmicro_perror("pthread_cond_signal() failed");
+    }
+}
 
 // ----------- End Of Conditional Variable Utils ------
 
