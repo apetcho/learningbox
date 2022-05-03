@@ -12,7 +12,7 @@
 
 /* private prototypes */
 // alloc
-Node* allocate(size_t size){
+static Node* allocate(size_t size){
     Node *node = calloc(1, sizeof(Node));
     if(node == NULL){ return NULL; }
     node->data = (void*)person_alloc();
@@ -41,14 +41,14 @@ static void copydata(void *dst, const void *src){
     Person_t *person;
     person = person_alloc();
     if(person == NULL){
+        puts("[WARNING] copydata():: Allocation issue");
         dst = NULL;
         return;
     }
     const Person_t *obj = (const Person_t*)src;
-    strncpy(person->fname, obj->fname, PERSONLEN);
-    strncpy(person->lname, obj->lname, PERSONLEN);
-    strncpy(person->email, obj->email, PERSONLEN);
-    dst = (void*)person;
+    strncpy(((Person_t*)dst)->fname, obj->fname, strlen(obj->fname));
+    strncpy(((Person_t*)dst)->lname, obj->lname, strlen(obj->lname));
+    strncpy(((Person_t*)dst)->email, obj->email, strlen(obj->email));
 }
 
 // compare
@@ -90,19 +90,33 @@ int main(int argc, char **argv){
     FILE *fp;
     fp = fopen(FILENAME, "r");
     if(fp == NULL){ exit(EXIT_FAILURE);}
-    //int first = 0;
+    List *plist = list_create(
+        sizeof(Person_t),
+        (allocateNodeFn)allocate,
+        (deallocateNodeFn)deallocate,
+        (printNodeFn)display,
+        (copyNodeFn)copydata,
+        (compareNodeFn)compare,
+        (toStringFn)to_string
+    );
+    printf("len = %d\n", plist->len);
     while(!feof(fp)){
         len = read_line(buf, PERSONBUFLEN, fp);
-        // if(first == 0){
-        //     first = 1;
-        //     continue;
-        // }
-        //printf("[%03d] %s\n", len, buf);
+        if(len == 0){ continue;}
         person = parse_line(buf, ",");
-        person_print(*person);
+        //person_print(*person);
+        //printf("\n");
+
+        plist = list_append(plist, (const void*)person);
+        //display((const void*)person);
+        //list_print(plist);
         printf("\n");
     }
-
+    list_print(plist);
+    printf("len = %d\n", plist->len);
+    printf("itemsize = %zu\n", plist->itemsize);
+    list_destroy(plist);
     fclose(fp);
+    printf("\n");
     return EXIT_SUCCESS;
 }

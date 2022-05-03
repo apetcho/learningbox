@@ -23,6 +23,7 @@ List* list_create(
         return NULL;
     }
     list->len = 0;
+    list->head = NULL;
     list->itemsize = size;
     list->alloc = alloc;
     list->free = dealloc;
@@ -30,6 +31,7 @@ List* list_create(
     list->copy = copy;
     list->compare = cmp;
     list->to_string = strFn;
+    
     return list;
 }
 
@@ -47,11 +49,18 @@ void list_destroy(List* list){
         temp = cursor;
         cursor = cursor->next;
         list->free(temp);
+        free(temp);
     }
     free(list);
-    list = NULL;
     list->len = 0;
     list->itemsize = 0;
+    list->alloc = NULL;
+    list->free = NULL;
+    list->compare = NULL;
+    list->copy = NULL;
+    list->print = NULL;
+    list->to_string = NULL;
+    list = NULL;
 }
 
 /**
@@ -65,19 +74,20 @@ void list_destroy(List* list){
  */
 List* list_append(List *list, const void *data){
     if(data == NULL){ return list; } // data == NULL
-    Node *node = list->alloc(list->itemsize);
-    if(node == NULL){
-        fprintf(stderr, "WARNING: %s\n", strerror(errno));
-        return list;
-    }
-    list->copy(node->data, data);
-    node->next = NULL;
     Node *cursor;
     cursor = list->head;
     while(cursor != NULL){
         cursor = cursor->next;
     }
+    Node *node = list->alloc(list->itemsize);
+    if(node == NULL){
+        fprintf(stderr, "WARNING: %s\n", strerror(errno));
+        return list;
+    }
+    node->next = NULL;
+    list->copy(node->data, data);
     cursor = node;
+    //printf("list_append():: %s", list->to_string(cursor->data));
     list->len++;
     return list;
 }
@@ -95,7 +105,7 @@ List* list_prepend(List *list, const void *data){
     if(data == NULL){ return list; } // data == NULL
     Node *node = list->alloc(list->itemsize);
     if(node == NULL){// Allocation problem
-        fprintf(stderr, "WARNING: %s\n", strerror(errno));
+        fprintf(stderr, "WARNING: list_append(): allocation error\n");
         return list;
     }
     list->copy(node->data, data);
@@ -262,29 +272,24 @@ List* list_remove(List *list, const void *data){
  * @param list 
  */
 void list_print(const List *list){
-    if(list->len == 0){
-        printf("[ ]");
-        return;
-    }
+    // if(list->len == 0){
+    //     printf("[ ]");
+    //     return;
+    // }
     Node *cursor;
     cursor = list->head;
-    if(list->len == 1){
-        printf("[ ");
-        list->print(cursor->data);
-        printf(" ]");
-        return;
-    }
     printf("[ ");
     while(cursor != NULL){
         list->print(cursor->data);
-        if(cursor->next != NULL){printf(", ");}
+        //if(cursor->next != NULL){printf(", ");}
+        printf(", ");
         cursor = cursor->next;
     }
     printf(" ]");
 }
 
 #define STRINGLEN   4096
-static listString[STRINGLEN+1];
+static char listString[STRINGLEN+1];
 
 /**
  * @brief Return string representation of list.
@@ -293,14 +298,14 @@ static listString[STRINGLEN+1];
  * @return const char* 
  */
 const char* list_toString(const List* list){
-    memset(list, 0, sizeof(listString));
-    listString[0] = '[';
+    memset(listString, 0, sizeof(listString));
+    //listString[0] = '[';
     Node *cursor;
     cursor = list->head;
     if(cursor == NULL){ return ""; }
     while(cursor != NULL){
         if(
-            strlen(list->to_string(cursor->data)) + 2 >
+            strlen(list->to_string(cursor->data)) + 1 >
              sizeof(listString)-strlen(listString)
         ){
             fprintf(
@@ -320,7 +325,7 @@ const char* list_toString(const List* list){
         );
         cursor = cursor->next;
     }
-    size_t xlen = strlen(listString);
-    listString[xlen-2] = ']';
+    //size_t xlen = strlen(listString);
+    //listString[xlen-2] = ']';
     return listString;
 }

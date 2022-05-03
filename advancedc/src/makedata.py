@@ -32,7 +32,7 @@ def main():
         for item in data:
             print(f"{item}")
             fname, lname, email = item
-            fp.write(f"{fname}, {lname}, {email}\n")
+            fp.write(f"{fname},{lname},{email}\n")
     print(f"len(data) = {len(data)}")
     print(f"len(set(data)) = {len(set(data))}")
     

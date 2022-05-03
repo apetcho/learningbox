@@ -11,6 +11,6 @@ add_executable(StructExple2 src/structExple2.c)
 add_executable(TypedefDemo src/createdb.c)
 add_executable(
     PersonApp
-    src/mainapp.c src/processfile.c src/person.c
-    src/processfile.h src/person.h
+    src/mainapp.c src/processfile.c src/person.c src/linkedList.c
+    src/processfile.h src/person.h src/linkedList.h
 )

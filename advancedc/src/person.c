@@ -51,6 +51,7 @@ void person_free(Person_t* person){
         person->email = NULL;
         free(person);
     }
+    person = NULL;
 }
 
 void person_print(Person_t person){
@@ -61,8 +62,14 @@ void person_print(Person_t person){
     ){
         return;
     }
+    // char buf[128];
+    // sprintf(
+    //     buf, "Person(fname=%s, lname=%s, email=%s)",
+    //     person.fname, person.lname, person.email
+    // );
     printf("Person(fname=%s, ", person.fname);
     printf("lname=%s, ", person.lname);
     printf("email=%s)", person.email);
+    //printf("%s", buf);
     return;
 }
