@@ -67,7 +67,9 @@ void simple_lock(Mutex *mutex){
     pthread_mutex_lock(mutex->mutex);
 }
 
-void simple_unlock(Mutex *mutex){}
+void simple_unlock(Mutex *mutex){
+    pthread_mutex_unlock(mutex->mutex);
+}
 
 pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){}
 void simple_join_thread(pthread_t thread){}
