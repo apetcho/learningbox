@@ -105,12 +105,16 @@ void simple_queue_test(){
 // ------- END OF QUEUE DS -------
 
 
+// --------- SHARE DATA ALLOCATION --------------
 SharedData* simple_new_shared_data(){
     SharedData *shared = ipcmicro_malloc(sizeof(SharedData));
     shared->queue = simple_new_queue(QUEUE_LENGTH);
     return shared;
 }
 
+// --------- END OF SHARE DATA ALLOCATION --------
+
+// --------- THREAD UTILS ---------
 pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){
     int retval;
     pthread_t thread;
@@ -128,6 +132,9 @@ void simple_join_thread(pthread_t thread){
     }
 }
 
+// ----------- END OF THREAD UTILS --------
+
+// ----------- PRODUCER / CONSUMER --------
 void* simple_producer(void *arg){
     SharedData *shared = (SharedData*)arg;
     for(int i=0; i < QUEUE_LENGTH; i++){
@@ -143,7 +150,7 @@ void* simple_consumer(void *arg){
     for(int i=0; i < QUEUE_LENGTH; i++){
         item = simple_queue_pop(shared->queue);
         printf(
-            "\x1b[35mProducing\x1b[m item \x1b[34m%d\x1b[m from queue\n", item
+            "\x1b[35mConsuming\x1b[m item \x1b[34m%d\x1b[m from queue\n", item
         );
     }
 
@@ -176,12 +183,11 @@ void simple_mutex_unlock(Mutex *mutex){
 
 // ------ END OF MUTEX UTILS -----
 
-#undef TEST_QUEUE
 // -----------------------------
 // -------- MAIN DRIVER --------
 // -----------------------------
 int main(int argc, char **argv){
-#define TEST_QUEUE
+#undef TEST_QUEUE
 #ifdef TEST_QUEUE
     simple_queue_test();
 #else
