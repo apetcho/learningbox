@@ -7,20 +7,46 @@
 void ipcmicro_perror(char *message);
 void* ipcmicro_malloc(size_t size);
 typedef void* (ThreadCallback_t)(void *);
+struct SharedData;
+typedef struct SharedData SharedData;
+#define STRUCT_MUTEX
+#ifdef STRUCT_MUTEX
+    struct Mutex;
+    typedef struct Mutex Mutex;
+#else
+    typedef pthread_mutex_t Mutex;
+#endif
 
-#define SIMPLE_SHARED
-#undef SIMPLE_COUNTER
+Mutex* simple_new_mutex();
+void simple_lock(Mutex *mutex);
+void simple_unlock(Mutex *mutex);
+
+pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared);
+void simple_join_thread(pthread_t thread);
+
+void simple_child(SharedData *shared);
+void* simple_callback(SharedData *arg);
+
+SharedData* simple_new_shared_data(int n);
 
 
-#ifdef SIMPLE_COUNTER
-typedef struct SimpleCounter{
+
+#undef SIMPLE_SHARED
+#define SIMPLE_MUTEX
+
+
+#ifdef SIMPLE_MUTEX
+typedef struct Mutex{
     pthread_mutex_t mutex[1];
-} SimpleCounter;
+} Mutex;
 
-SimpleCounter simpleCounter_new_mutex();
-void simpleCounter_lock(SimpleCounter *mutex);
-void simpleCounter_unlock(SimpleCounter *mutex);
-#endif 
+struct SharedData{
+    int counter;
+    Mutex *mutex;
+};
+
+
+#endif // SIMPLE_MUTEX 
 
 #ifdef SIMPLE_SHARED
 
