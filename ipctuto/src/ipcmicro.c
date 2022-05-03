@@ -27,7 +27,7 @@ QueueData* simple_new_queue(int len){
     queue->array = (int*)ipcmicro_malloc((sizeof(QueueData)*len));
     queue->nextIn = 0;
     queue->nextOut = 0;
-    queue->mutex = 0;
+    queue->mutex = simple_new_mutex();
     return queue;
 }
 
@@ -44,11 +44,14 @@ int simple_queue_full(QueueData *queue){
 }
 
 void simple_queue_push(QueueData *queue, int item){
+    simple_mutex_lock(queue->mutex);
     if(simple_queue_full(queue)){
+        simple_mutex_unlock(queue);
         ipcmicro_perror("Queue is full");
     }
     queue->array[queue->nextIn] = item;
     queue->nextIn = simple_queue_incr(queue, queue->nextIn);
+    simple_mutex_unlock(queue->mutex);
 }
 
 int simple_queue_pop(QueueData *queue){
