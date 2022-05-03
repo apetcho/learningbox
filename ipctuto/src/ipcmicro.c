@@ -134,6 +134,19 @@ void simple_join_thread(pthread_t thread){
 
 // ----------- END OF THREAD UTILS --------
 
+// ----------- Conditional Variable Utils -------------
+Cond* simple_new_cond(){
+    Cond *cond = ipcmicro_malloc(sizeof(Cond));
+    if((pthread_cond_init(cond, NULL) != 0)){
+        ipcmicro_perror("pthread_cond_init() failed");
+    }
+    return cond;
+}
+
+
+
+// ----------- End Of Conditional Variable Utils ------
+
 // ----------- PRODUCER / CONSUMER --------
 void* simple_producer(void *arg){
     SharedData *shared = (SharedData*)arg;
