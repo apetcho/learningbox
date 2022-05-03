@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include"ipcmicro.h"
 
-#define NUM_CHILDREN 5
+#define NUM_CHILDREN 8
 
 
 //
@@ -21,14 +21,14 @@ void* ipcmicro_malloc(size_t size){
 
 #ifdef SIMPLE_SHARED
 
-SimpleShared* simpleShared_new(int n){
-    SimpleShared *shared = ipcmicro_malloc(sizeof(SimpleShared));
+SharedData* simple_new_shared_data(int n){
+    SharedData *shared = ipcmicro_malloc(sizeof(SharedData));
     shared->counter = 0;
     (void)n;
     return shared;
 }
 
-pthread_t simpleShared_new_thread(ThreadCallback_t fn, SimpleShared *shared){
+pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){
     int retval;
     pthread_t thread;
     retval = pthread_create(&thread, NULL, fn, (void*)shared);
@@ -39,17 +39,22 @@ pthread_t simpleShared_new_thread(ThreadCallback_t fn, SimpleShared *shared){
     return thread;
 }
 
-void simpleShared_join_thread(pthread_t thread){
+void simple_join_thread(pthread_t thread){
     int retval = pthread_join(thread, NULL);
     if(retval == -1){
         ipcmicro_perror("pthread_join failed");
     }
 }
 
-void* sscallback(void *arg){
-    SimpleShared *shared = (SimpleShared*)arg;
-    simpleShared_child(shared);
+void* simple_callback(void *arg){
+    SharedData *shared = (SharedData*)arg;
+    simple_child(shared);
     pthread_exit(NULL);
+}
+
+void simple_child(SharedData *shared){
+    printf("counter = %d\n", shared->counter);
+    shared->counter++;
 }
 
 #endif
@@ -102,7 +107,7 @@ void simple_child(SharedData *shared){
     simple_unlock(shared->mutex);
 }
 
-void* simple_callback(SharedData *arg){
+void* simple_callback(void *arg){
     SharedData* shared = (SharedData*)arg;
     simple_child(shared);
     pthread_exit(NULL);
@@ -115,18 +120,22 @@ void* simple_callback(SharedData *arg){
 // -------- MAIN DRIVER --------
 // -----------------------------
 int main(int argc, char **argv){
+
 #ifdef SIMPLE_SHARED
-    pthread_t children[NUM_CHILDREN];
-    SimpleShared *shared = simpleShared_new(100000);
-    for(int i=0; i < NUM_CHILDREN; i++){
-        children[i] = simpleShared_new_thread(sscallback, shared);
-    }
-
-    for(int i=0; i < NUM_CHILDREN; i++){
-        simpleShared_join_thread(children[i]);
-    }
-
+    puts("\n\x1b[32mWorking in SIMPLE_SHARED mode\x1b[m\n");
+#elif defined(SIMPLE_MUTEX)
+    puts("\n\x1b[32mWorking in SIMPLE_MUTEX mode\x1b[m\n");
 #endif
+
+    pthread_t children[NUM_CHILDREN];
+    SharedData *shared = simple_new_shared_data(100000);
+    for(int i=0; i < NUM_CHILDREN; i++){
+        children[i] = simple_new_thread(simple_callback, shared);
+    }
+
+    for(int i=0; i < NUM_CHILDREN; i++){
+        simple_join_thread(children[i]);
+    }
 
     return 0;
 }
