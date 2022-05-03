@@ -169,6 +169,12 @@ Semaphore* simple_new_semaphore(int value){
     return sem;
 }
 
+void simple_semaphore_wait(Semaphore *sem){
+    if((sem_wait(sem)) != 0){
+        ipcmicro_perror("sem_wait() failed");
+    }
+}
+
 // ------ END OF SEMAPHORE UTILS ----------
 
 // ----------- PRODUCER / CONSUMER --------
