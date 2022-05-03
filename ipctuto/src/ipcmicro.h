@@ -13,6 +13,8 @@ typedef struct QueueData{
     int nextIn;
     int nextOut;
     Mutex *mutex;
+    Cond *nonempty;
+    Cond *nonfull;
 } QueueData;
 
 typedef struct SharedData {
