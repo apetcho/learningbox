@@ -36,4 +36,11 @@ pthread_t simpleShared_new_thread(ThreadCallback_t fn, SimpleShared *shared){
     return thread;
 }
 
+void simpleShared_join_thread(pthread_t thread){
+    int retval = pthread_join(thread, NULL);
+    if(retval == -1){
+        ipcmicro_perror("pthread_join failed");
+    }
+}
+
 #endif
