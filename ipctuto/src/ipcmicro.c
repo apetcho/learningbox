@@ -25,4 +25,15 @@ SimpleShared* simpleShared_new(int n){
     return shared;
 }
 
+pthread_t simpleShared_new_thread(ThreadCallback_t fn, SimpleShared *shared){
+    int retval;
+    pthread_t thread;
+    retval = pthread_create(&thread, NULL, fn, (void*)shared);
+    if(retval != 0){
+        ipcmicro_perror("pthread_create failed");
+    }
+
+    return thread;
+}
+
 #endif
