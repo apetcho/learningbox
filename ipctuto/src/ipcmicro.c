@@ -88,7 +88,12 @@ pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared){
     return thread;
 }
 
-void simple_join_thread(pthread_t thread){}
+void simple_join_thread(pthread_t thread){
+    int retval = pthread_join(thread, NULL);
+    if(retval == -1){
+        ipcmicro_perror("pthread_join failed");
+    }
+}
 
 void simple_child(SharedData *shared){}
 void* simple_callback(SharedData *arg){}
