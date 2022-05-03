@@ -1,10 +1,12 @@
 #ifndef __IPCMICRO_H_
 #define __IPCMICRO_H_
 #include<pthread.h>
+#include<semaphore.h>
 #include<stdio.h>
 
 typedef pthread_mutex_t Mutex;
 typedef pthread_cond_t Cond;
+typedef sem_t Semaphore;
 typedef void* (ThreadCallback_t)(void *);
 
 typedef struct QueueData{
@@ -31,15 +33,20 @@ void* simple_producer(void *arg);
 void* simple_consumer(void *arg);
 void simple_queue_test();
 
-// 
+// --- condition variable wrappers
 Cond* simple_new_cond();
 void simple_cond_wait(Cond *cond, Mutex *mutex);
 void simple_cond_signal(Cond *cond);
 
-//
+// --- mutex wrappers
 Mutex* simple_new_mutex();
 void simple_mutex_lock(Mutex *mutex);
 void simple_mutex_unlock(Mutex *mutex);
+
+// --- semaphore wrapper
+Semaphore* simple_new_semaphore(int value);
+void  simple_semaphore_wait(Semaphore *sem);
+void simple_semaphore_signal(Semaphore *sem);
 
 SharedData* simple_new_shared_data();
 pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared);
