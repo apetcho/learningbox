@@ -12,7 +12,7 @@ typedef struct QueueData{
     int len;
     int nextIn;
     int nextOut;
-    //Mutex *mutex;
+    Mutex *mutex;
 } QueueData;
 
 typedef struct SharedData {
@@ -33,6 +33,11 @@ void simple_queue_test();
 Cond* simple_new_cond();
 void simple_cond_wait(Cond *cond, Mutex *mutex);
 void simple_cond_signal(Cond *cond);
+
+//
+Mutex* simple_new_mutex();
+void simple_mutex_lock(Mutex *mutex);
+void simple_mutex_unlock(Mutex *mutex);
 
 SharedData* simple_new_shared_data();
 pthread_t simple_new_thread(ThreadCallback_t fn, SharedData *shared);

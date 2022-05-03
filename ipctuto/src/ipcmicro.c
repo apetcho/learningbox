@@ -27,7 +27,7 @@ QueueData* simple_new_queue(int len){
     queue->array = (int*)ipcmicro_malloc((sizeof(QueueData)*len));
     queue->nextIn = 0;
     queue->nextOut = 0;
-
+    queue->mutex = 0;
     return queue;
 }
 
@@ -143,6 +143,19 @@ void* simple_consumer(void *arg){
 
     pthread_exit(NULL);
 }
+
+// --------- MUTEX UTILS ---------
+Mutex* simple_new_mutex(){
+    Mutex *mutex = ipcmicro_malloc(sizeof(Mutex));
+    int n = pthread_mutex_init(mutex, NULL);
+    if(n != 0){
+        ipcmicro_perror("pthread_mutex_init() faild");
+    }
+    return mutex;
+}
+
+
+// ------ END OF MUTEX UTILS -----
 
 #undef TEST_QUEUE
 // -----------------------------
