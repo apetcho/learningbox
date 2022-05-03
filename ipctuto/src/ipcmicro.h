@@ -14,9 +14,12 @@ typedef struct QueueData{
     int len;
     int nextIn;
     int nextOut;
-    Mutex *mutex;
-    Cond *nonempty;
-    Cond *nonfull;
+    //Mutex *mutex;
+    //Cond *nonempty;
+    //Cond *nonfull;
+    Semaphore *mutex;
+    Semaphore *items;
+    Semaphore *spaces;
 } QueueData;
 
 typedef struct SharedData {

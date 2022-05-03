@@ -5,6 +5,7 @@
 
 #define NUM_CHILDREN 2
 #define QUEUE_LENGTH 16
+#define NUM_ITEMS   127
 
 //
 void ipcmicro_perror(char *message){
