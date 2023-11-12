@@ -21,29 +21,24 @@ int main(int argc, char **argv){
         filename = "accounts.dat";
     }
 
-    if((fp=fopen(filename, "rb+"))==NULL){
+    if((fp=fopen(filename, "rb"))==NULL){
         fprintf(stderr, "Unable to open file: \"%s\"\n", filename);
     }else{
-        AccountData data = {
-            .account=0,
-            .lname="",
-            .fname="",
-            .balance=0.0,
-        };
-        printf("%s", "Enter account number (1 to 100, 0 to end input): ");
-        scanf("%d", &data.account);
-
-        while(data.account!=0){
-            printf("%s", "Enter lastname, firstname, balance: ");
-            fscanf(stdin, "%14s%9s%lf", data.lname, data.fname, &data.balance);
-            // seek position in file to user-specified record
-            fseek(fp, (data.account - 1)*sizeof(data), SEEK_SET);
-            // write user-specified information in file
-            fwrite(&data, sizeof(data), 1, fp);
-            // enable user to input another account
-            printf("%s", "Enter account number: ");
-            scanf("%d", &data.account);
+        printf("%-6s%-16s%-11s%10s\n", "Acct", "Last Name", "First Name", "Balance");
+        // read all records from file (until eof)
+        while(!feof(fp)){
+            AccountData data = {
+                .account=0, .lname="", .fname="", .balance=0.0,
+            };
+            size_t result = fread(&data, sizeof(data), 1, fp);
+            if(result !=0 && data.account != 0){
+                printf(
+                    "%-6d%-16s%-11s%10.2lf\n",
+                    data.account, data.lname, data.fname, data.balance
+                );
+            }
         }
+        
         fclose(fp);
     }
 
