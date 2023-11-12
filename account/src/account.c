@@ -1,13 +1,6 @@
 #include<stdbool.h>
 #include<stdio.h>
 
-typedef enum {
-    ZERO_BALANCE = 1,
-    CREDIT_BALANCE,
-    DEBIT_BLANCE,
-    END
-} Option;
-
 typedef struct {
     int account;
     char lname[15];
@@ -28,7 +21,7 @@ int main(int argc, char **argv){
         filename = "accounts.dat";
     }
 
-    if((fp=fopen(filename, "wb"))==NULL){
+    if((fp=fopen(filename, "rb+"))==NULL){
         fprintf(stderr, "Unable to open file: \"%s\"\n", filename);
     }else{
         AccountData data = {
@@ -37,9 +30,19 @@ int main(int argc, char **argv){
             .fname="",
             .balance=0.0,
         };
-        // output 100 blank records to file
-        for(int i=1; i <= 100; ++i){
+        printf("%s", "Enter account number (1 to 100, 0 to end input): ");
+        scanf("%d", &data.account);
+
+        while(data.account!=0){
+            printf("%s", "Enter lastname, firstname, balance: ");
+            fscanf(stdin, "%14s%9s%lf", data.lname, data.fname, &data.balance);
+            // seek position in file to user-specified record
+            fseek(fp, (data.account - 1)*sizeof(data), SEEK_SET);
+            // write user-specified information in file
             fwrite(&data, sizeof(data), 1, fp);
+            // enable user to input another account
+            printf("%s", "Enter account number: ");
+            scanf("%d", &data.account);
         }
         fclose(fp);
     }
