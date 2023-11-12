@@ -19,28 +19,36 @@ int main(int argc, char **argv){
     signal(SIGKILL, handle_interrupt);
     signal(SIGTERM, handle_interrupt);
     FILE *fp = NULL;
+    char *filename = NULL;
+    if(argc > 1){
+        filename = argv[1];
+    }else{
+        filename = "account.txt";
+    }
 
-    const char* filename = "account.txt";
-
-    fp = fopen(filename, "w");
+    fp = fopen(filename, "r");
     if(fp == NULL){
         fprintf(stderr, "Error opening file '%s'\n", filename);
     }else{
-        puts("Enter the account, name, and balance.");
-        puts("Enter EOF to end input.");
-        prompt();
+        // puts("Enter the account, name, and balance.");
+        // puts("Enter EOF to end input.");
+        // prompt();
         int account = 0;
         size_t len = 30;
         char *name = calloc(len, sizeof(char));
         double balance = 0.0;
         memset(name, 0, len);
-        readata(&account, name, &balance);
-        while(!feof(stdin)){
-            show(account, name, balance);
-            fprintf(fp, "%d %s %.2lf\n", account, name, balance);
-            prompt();
-            memset(name, 0, len);
-            readata(&account, name, &balance);
+        printf("%-10s%-13s%s\n", "Account", "Name", "Balance");
+        // readata(&account, name, &balance);
+        fscanf(fp, "%d%29s%lf", &account, name, &balance);
+        while(!feof(fp)){
+            // show(account, name, balance);
+            // fprintf(fp, "%d %s %.2lf\n", account, name, balance);
+            // prompt();
+            // memset(name, 0, len);
+            // readata(&account, name, &balance);
+            printf("%-10d%-13s%7.2lf\n", account, name, balance);
+            fscanf(fp, "%d%29s%lf", &account, name, &balance);
         }
         free(name);
         fclose(fp);
